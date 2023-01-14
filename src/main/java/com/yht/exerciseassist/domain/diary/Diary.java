@@ -20,8 +20,6 @@ public class Diary {
 
     private String trainingName;//운동 이름
 
-    private int point;//점수
-
     private int reps;//횟수
 
     private int exSetCount;//세트

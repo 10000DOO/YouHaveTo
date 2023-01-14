@@ -16,7 +16,7 @@ public class ChatRoom {
     @Column(name = "chat_room_id")
     private Long id;
 
-    private String ChatTitle;
+    private String chatTitle;
 
     @Embedded
     private DateTime dateTime;

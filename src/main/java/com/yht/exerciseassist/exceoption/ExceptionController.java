@@ -3,6 +3,7 @@ package com.yht.exerciseassist.exceoption;
 import com.yht.exerciseassist.domain.member.controller.MemberController;
 import com.yht.exerciseassist.exceoption.dto.ErrorMessageDto;
 import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice(assignableTypes = MemberController.class)
 public class ExceptionController {
 
@@ -28,7 +30,7 @@ public class ExceptionController {
         for (FieldError fieldError : fieldErrors) {
             ErrorMessageDto errorMessageDto = new ErrorMessageDto();
             errorMessageDto.setError(fieldError.getDefaultMessage());
-            System.out.println(fieldError.getCode());
+            log.error(fieldError.getDefaultMessage());
             exceptionResponses.add(errorMessageDto);
         }
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exceptionResponses);
@@ -38,6 +40,7 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ExceptionResponse signUpHandle(IllegalArgumentException exception){
 
+        log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
@@ -45,6 +48,7 @@ public class ExceptionController {
     @ExceptionHandler(BadCredentialsException.class)
     public ExceptionResponse signInHandle(BadCredentialsException exception){
 
+        log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
@@ -52,6 +56,7 @@ public class ExceptionController {
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ExceptionResponse signInHandle(InternalAuthenticationServiceException exception){
 
+        log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 }

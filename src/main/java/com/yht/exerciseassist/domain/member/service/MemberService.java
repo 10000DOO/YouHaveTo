@@ -9,6 +9,7 @@ import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -31,6 +32,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
@@ -57,6 +59,7 @@ public class MemberService implements UserDetailsService {
                     .build();
 
             memberRepository.save(member);
+            log.info(member.getUsername()+" 회원가입 완료");
 
             return new ResponseResult(HttpStatus.CREATED.value(), member.getUsername());
         }
@@ -97,7 +100,7 @@ public class MemberService implements UserDetailsService {
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-
+        log.info(authentication.getName()+" 로그인");
         return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
     }
 
