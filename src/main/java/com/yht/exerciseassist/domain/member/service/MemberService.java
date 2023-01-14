@@ -7,9 +7,14 @@ import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
+import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -72,6 +77,28 @@ public class MemberService implements UserDetailsService {
             errorMessage += "이미 존재하는 이름입니다. ";
         }
         return errorMessage;
+    }
+
+    public ResponseResult signIn(String loginId, String password){
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, password);
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        } catch (Exception e) {
+            if (e instanceof BadCredentialsException){
+                throw new BadCredentialsException("비밀번호가 틀렸습니다. 다시 시도해주세요.");
+            } else if (e instanceof InternalAuthenticationServiceException){
+                throw new InternalAuthenticationServiceException("아이디가 틀렸습니다. 다시 시도해주세요.");
+            }
+        }
+
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
     }
 
     @Override
