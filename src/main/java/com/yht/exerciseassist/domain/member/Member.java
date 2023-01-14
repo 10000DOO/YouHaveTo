@@ -1,7 +1,6 @@
 package com.yht.exerciseassist.domain.member;
 
 import com.yht.exerciseassist.domain.DateTime;
-import com.yht.exerciseassist.domain.challenge.Challenge;
 import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.post.Post;
@@ -52,9 +51,6 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "commentWriter")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
-    private List<Challenge> challenges = new ArrayList<>();
-
     @Builder
     public Member(String username, String email, String loginId, String password, String field, MemberType role, DateTime dateTime) {
         this.username = username;
@@ -75,7 +71,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.loginId;
     }
 
     @Override
