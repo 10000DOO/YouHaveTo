@@ -4,6 +4,8 @@ import com.yht.exerciseassist.domain.member.controller.MemberController;
 import com.yht.exerciseassist.exceoption.dto.ErrorMessageDto;
 import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +37,20 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ExceptionResponse signUpHandle(IllegalArgumentException exception){
+
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ExceptionResponse signInHandle(BadCredentialsException exception){
+
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ExceptionResponse signInHandle(InternalAuthenticationServiceException exception){
 
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
