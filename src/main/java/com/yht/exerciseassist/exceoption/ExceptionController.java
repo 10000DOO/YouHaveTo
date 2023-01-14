@@ -1,0 +1,41 @@
+package com.yht.exerciseassist.exceoption;
+
+import com.yht.exerciseassist.domain.member.controller.MemberController;
+import com.yht.exerciseassist.exceoption.dto.ErrorMessageDto;
+import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestControllerAdvice(assignableTypes = MemberController.class)
+public class ExceptionController {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ExceptionResponse validHandle(MethodArgumentNotValidException exception){
+
+        List<ErrorMessageDto> exceptionResponses = new ArrayList<>();
+        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+
+        for (FieldError fieldError : fieldErrors) {
+            ErrorMessageDto errorMessageDto = new ErrorMessageDto();
+            errorMessageDto.setError(fieldError.getDefaultMessage());
+            System.out.println(fieldError.getCode());
+            exceptionResponses.add(errorMessageDto);
+        }
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exceptionResponses);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ExceptionResponse signUpHandle(IllegalArgumentException exception){
+
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+}
