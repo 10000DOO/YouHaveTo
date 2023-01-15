@@ -19,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = MemberController.class)
-public class ExceptionController {
+public class SignExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

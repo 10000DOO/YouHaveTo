@@ -6,6 +6,7 @@ import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,5 +25,10 @@ public class MemberController {
     @PostMapping("/signin")
     public ResponseResult signIn(@RequestBody @Valid SignInRequestDto signInRequestDto){
         return memberService.signIn(signInRequestDto.getLoginId(),signInRequestDto.getPassword());
+    }
+
+    @GetMapping("/a")
+    public String a(){
+        return "a";
     }
 }
