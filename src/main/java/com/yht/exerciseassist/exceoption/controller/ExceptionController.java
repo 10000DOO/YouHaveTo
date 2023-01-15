@@ -1,8 +1,9 @@
-package com.yht.exerciseassist.exceoption;
+package com.yht.exerciseassist.exceoption.controller;
 
 import com.yht.exerciseassist.domain.member.controller.MemberController;
 import com.yht.exerciseassist.exceoption.dto.ErrorMessageDto;
 import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
+import com.yht.exerciseassist.exceoption.error.AuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -55,6 +56,14 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ExceptionResponse signInHandle(InternalAuthenticationServiceException exception){
+
+        log.error(exception.getMessage());
+        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AuthenticationException.class)
+    public ExceptionResponse signInHandle(AuthenticationException exception){
 
         log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());

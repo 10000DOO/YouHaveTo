@@ -6,6 +6,7 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.exceoption.error.AuthenticationException;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import lombok.RequiredArgsConstructor;
@@ -98,10 +99,14 @@ public class MemberService implements UserDetailsService {
             }
         }
 
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-        log.info(authentication.getName()+" 로그인");
-        return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
+        if (authentication == null){
+            throw new AuthenticationException("로그인 실패입니다 다시 시도해주세요.");
+        } else {
+            // 3. 인증 정보를 기반으로 JWT 토큰 생성
+            TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+            log.info(authentication.getName()+" 로그인");
+            return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
+        }
     }
 
     @Override
