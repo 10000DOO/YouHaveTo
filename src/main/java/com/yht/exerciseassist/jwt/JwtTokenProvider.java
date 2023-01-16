@@ -4,6 +4,7 @@ import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
 
+    @Getter
     private final Key key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -50,7 +52,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 30*60*1000))
+                .setExpiration(new Date(now + 14*24*60*60*1000))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
@@ -82,20 +84,23 @@ public class JwtTokenProvider {
     }
 
     // 토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public ValidationTokenSign  validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            return ValidationTokenSign.VALID;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
+            log.error("Invalid JWT Token");
+            return ValidationTokenSign.INVALID;
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            log.error("Expired JWT Token");
+            return ValidationTokenSign.EXPIRED;
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
+            log.error("Unsupported JWT Token");
+            return ValidationTokenSign.UNSUPPORTED;
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
+            log.error("JWT claims string is empty.");
+            return ValidationTokenSign.EMPTY;
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {

@@ -28,7 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -44,6 +44,7 @@ dependencies {
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
 	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
 }
 
 	tasks.named('test') {

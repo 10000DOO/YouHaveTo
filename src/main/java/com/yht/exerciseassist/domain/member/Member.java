@@ -5,10 +5,7 @@ import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +33,9 @@ public class Member implements UserDetails {
     private String password;
 
     private String field; //유저 활동 지역
+
+    @Setter
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     private MemberType role;
