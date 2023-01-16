@@ -1,7 +1,11 @@
 package com.yht.exerciseassist.jwt.filter;
 
-import com.yht.exerciseassist.exceoption.error.UnacceptableJWTToken;
+import com.yht.exerciseassist.exceoption.error.jwt.EmptyJWTTokenExcep;
+import com.yht.exerciseassist.exceoption.error.jwt.ExpiredJWTTokenExcep;
+import com.yht.exerciseassist.exceoption.error.jwt.InvalidJWTTokenExcep;
+import com.yht.exerciseassist.exceoption.error.jwt.UnsupportedJWTTokenExcep;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
+import com.yht.exerciseassist.jwt.JwtTokenResolver;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -11,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -21,33 +24,37 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenResolver jwtTokenResolver;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         // 1. Request Header 에서 JWT 토큰 추출
-        String token = resolveToken((HttpServletRequest) request);
+        String token = jwtTokenResolver.resolveToken((HttpServletRequest) request);
 
-        // 2. validateToken 으로 토큰 유효성 검사
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }else if(token == null){
-
+        if (token == null){
+            //회원가입 로그인 시
         }else{
-            log.error("JWT token validation failed");
-            throw new UnacceptableJWTToken("JWT token validation failed");
+            // 2. validateToken 으로 토큰 유효성 검사
+            switch (jwtTokenProvider.validateToken(token)){
+                case VALID -> {
+                    Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+                case EXPIRED -> {
+                    throw new ExpiredJWTTokenExcep("만료된 토큰입니다.");
+                }
+                case INVALID -> {
+                    throw new InvalidJWTTokenExcep("유효하지 않은 토큰입니다.");
+                }
+                case UNSUPPORTED -> {
+                    throw new UnsupportedJWTTokenExcep("지원되지 않는 토큰입니다");
+                }
+                case EMPTY -> {
+                    throw new EmptyJWTTokenExcep("claims 내용이 빈 토큰입니다.");
+                }
+            }
         }
         chain.doFilter(request, response);
-    }
-
-    // Request Header 에서 토큰 정보 추출
-    public static String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 }

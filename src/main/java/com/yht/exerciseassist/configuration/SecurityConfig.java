@@ -2,8 +2,10 @@ package com.yht.exerciseassist.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
+import com.yht.exerciseassist.jwt.JwtTokenResolver;
 import com.yht.exerciseassist.jwt.filter.ExceptionHandlerFilter;
 import com.yht.exerciseassist.jwt.filter.JwtAuthenticationFilter;
+import com.yht.exerciseassist.jwt.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,8 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
+    private final JwtTokenResolver jwtTokenResolver;
+    private final JWTService jwtService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,13 +40,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/signin").permitAll()
+                .requestMatchers("/refreshtoken").permitAll()
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/a").hasAnyRole("USER")
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionHandlerFilter(objectMapper), JwtAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(objectMapper,jwtTokenResolver,jwtService), JwtAuthenticationFilter.class);
         return http.build();
     }
     @Bean

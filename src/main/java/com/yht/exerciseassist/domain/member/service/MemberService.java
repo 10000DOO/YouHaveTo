@@ -108,6 +108,8 @@ public class MemberService implements UserDetailsService {
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
             log.info(authentication.getName()+" 로그인");
+            Member member = memberRepository.findByLoginId(loginId).get();
+            member.setRefreshToken(tokenInfo.getRefreshToken());
             return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
         }
     }
