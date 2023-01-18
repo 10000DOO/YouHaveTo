@@ -42,7 +42,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 30*60*1000);
+        Date accessTokenExpiresIn = new Date(now + 30 * 60 * 1000);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -52,7 +52,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 14*24*60*60*1000))
+                .setExpiration(new Date(now + 14 * 24 * 60 * 60 * 1000))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
@@ -84,7 +84,7 @@ public class JwtTokenProvider {
     }
 
     // 토큰 정보를 검증하는 메서드
-    public ValidationTokenSign  validateToken(String token) {
+    public ValidationTokenSign validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return ValidationTokenSign.VALID;

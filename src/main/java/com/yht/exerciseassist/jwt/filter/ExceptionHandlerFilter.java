@@ -7,7 +7,6 @@ import com.yht.exerciseassist.exceoption.error.jwt.EmptyJWTTokenExcep;
 import com.yht.exerciseassist.exceoption.error.jwt.ExpiredJWTTokenExcep;
 import com.yht.exerciseassist.exceoption.error.jwt.InvalidJWTTokenExcep;
 import com.yht.exerciseassist.exceoption.error.jwt.UnsupportedJWTTokenExcep;
-import com.yht.exerciseassist.jwt.JwtTokenResolver;
 import com.yht.exerciseassist.jwt.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,7 +24,6 @@ import java.io.IOException;
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     private final ObjectMapper mapper;
-    private final JwtTokenResolver jwtTokenResolver;
     private final JWTService jwtService;
 
     @Override

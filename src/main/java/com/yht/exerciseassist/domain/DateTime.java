@@ -23,11 +23,11 @@ public class DateTime {
         this.updatedAt = updatedAt;
     }
 
-    public void canceledAtUpdate(){
+    public void canceledAtUpdate() {
         this.canceledAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
-    public void updatedAtUpdate(){
+    public void updatedAtUpdate() {
         this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }

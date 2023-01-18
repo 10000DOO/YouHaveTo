@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class Media {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="media_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "media_id")
     private Long id;
 
     private String originalFilename;

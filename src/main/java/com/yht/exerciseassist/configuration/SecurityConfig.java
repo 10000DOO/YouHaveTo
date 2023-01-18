@@ -47,9 +47,10 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionHandlerFilter(objectMapper,jwtTokenResolver,jwtService), JwtAuthenticationFilter.class);
+                .addFilterBefore(new ExceptionHandlerFilter(objectMapper, jwtService), JwtAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

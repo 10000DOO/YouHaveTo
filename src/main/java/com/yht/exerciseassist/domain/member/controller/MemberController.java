@@ -18,17 +18,17 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseResult signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto){
+    public ResponseResult signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
         return memberService.join(signUpRequestDto);
     }
 
     @PostMapping("/signin")
-    public ResponseResult signIn(@RequestBody @Valid SignInRequestDto signInRequestDto){
-        return memberService.signIn(signInRequestDto.getLoginId(),signInRequestDto.getPassword());
+    public ResponseResult signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
+        return memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword());
     }
 
     @GetMapping("/a")
-    public String a(){
+    public String a() {
         return "a";
     }
 }
