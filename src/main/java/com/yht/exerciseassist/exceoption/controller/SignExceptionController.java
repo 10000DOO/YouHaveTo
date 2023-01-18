@@ -23,7 +23,7 @@ public class SignExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ExceptionResponse validHandle(MethodArgumentNotValidException exception){
+    public ExceptionResponse validHandle(MethodArgumentNotValidException exception) {
 
         List<ErrorMessageDto> exceptionResponses = new ArrayList<>();
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
@@ -39,7 +39,7 @@ public class SignExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse signUpHandle(IllegalArgumentException exception){
+    public ExceptionResponse signUpHandle(IllegalArgumentException exception) {
 
         log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
@@ -47,7 +47,7 @@ public class SignExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadCredentialsException.class)
-    public ExceptionResponse signInHandle(BadCredentialsException exception){
+    public ExceptionResponse signInHandle(BadCredentialsException exception) {
 
         log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
@@ -55,7 +55,7 @@ public class SignExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ExceptionResponse signInHandle(InternalAuthenticationServiceException exception){
+    public ExceptionResponse signInHandle(InternalAuthenticationServiceException exception) {
 
         log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
@@ -63,7 +63,7 @@ public class SignExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AuthenticationException.class)
-    public ExceptionResponse signInHandle(AuthenticationException exception){
+    public ExceptionResponse signInHandle(AuthenticationException exception) {
 
         log.error(exception.getMessage());
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());

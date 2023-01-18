@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class JWTService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public ResponseResult refreshToken(String inputToken) {
         Base64.Decoder decoder = Base64.getDecoder();
         String payload = new String(decoder.decode(inputToken.split("\\.")[1]));
@@ -40,7 +42,7 @@ public class JWTService {
                     // Access Token 생성
                     Date accessTokenExpiresIn = new Date(now + 30*60*1000);
                     String accessToken = Jwts.builder()
-                            .setSubject(findMember.getLoginId())
+                            .setSubject(findMember.getUsername())
                             .claim("auth", "ROLE_" + findMember.getRole())
                             .setExpiration(accessTokenExpiresIn)
                             .signWith(jwtTokenProvider.getKey(), SignatureAlgorithm.HS512)

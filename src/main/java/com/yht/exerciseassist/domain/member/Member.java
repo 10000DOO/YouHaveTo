@@ -71,7 +71,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.loginId;
+        return this.username;
     }
 
     @Override
@@ -93,4 +93,6 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

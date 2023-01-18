@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 public class SignUpRequestDto {
 
     @NotBlank(message = "아이디는 필수 입니다.")
-    @Length(min = 5,max = 20,message = "아이디는 5~20자 입니다.")
+    @Length(min = 5, max = 20, message = "아이디는 5~20자 입니다.")
     private String loginId;
 
     @NotBlank(message = "비밀번호는 필수 입니다.")

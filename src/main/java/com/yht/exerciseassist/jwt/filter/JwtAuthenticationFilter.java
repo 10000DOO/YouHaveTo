@@ -32,11 +32,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         // 1. Request Header 에서 JWT 토큰 추출
         String token = jwtTokenResolver.resolveToken((HttpServletRequest) request);
 
-        if (token == null){
+        if (token == null) {
             //회원가입 로그인 시
-        }else{
+        } else {
             // 2. validateToken 으로 토큰 유효성 검사
-            switch (jwtTokenProvider.validateToken(token)){
+            switch (jwtTokenProvider.validateToken(token)) {
                 case VALID -> {
                     Authentication authentication = jwtTokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
