@@ -18,7 +18,7 @@ public class SignUpRequestDto {
             message = "비밀번호는 영문 대 소문자, 숫자, 특수문자($@$!%*?&)를 사용하세요. 비밀번호는 8~20자 입니다.")
     private String password;
 
-    @NotBlank(message = "사용자명은 필수입니다.")
+    @NotBlank(message = "유저 이름은 필수입니다.")
     private String username;
 
     @NotBlank(message = "이메일은 필수 입니다.")
