@@ -32,7 +32,7 @@ public class JWTService {
         long time = new Date().getTime();
         long expTime = Long.parseLong(payload.substring(7, payload.length() - 1));
 
-        if ((time/1000) < expTime) {
+        if ((time / 1000) < expTime) {
             Optional<Member> byRefreshToken = memberRepository.findByRefreshToken(inputToken);
             if (byRefreshToken.isPresent()) {
                 Member findMember = byRefreshToken.get();
@@ -40,7 +40,7 @@ public class JWTService {
                 if (token.equals(inputToken)) {
                     long now = (new Date()).getTime();
                     // Access Token 생성
-                    Date accessTokenExpiresIn = new Date(now + 30*60*1000);
+                    Date accessTokenExpiresIn = new Date(now + 30 * 60 * 1000);
                     String accessToken = Jwts.builder()
                             .setSubject(findMember.getUsername())
                             .claim("auth", "ROLE_" + findMember.getRole())
@@ -50,7 +50,7 @@ public class JWTService {
 
                     // Refresh Token 생성
                     String refreshToken = Jwts.builder()
-                            .setExpiration(new Date(now + 14*24*60*60*1000))
+                            .setExpiration(new Date(now + 14 * 24 * 60 * 60 * 1000))
                             .signWith(jwtTokenProvider.getKey(), SignatureAlgorithm.HS512)
                             .compact();
                     TokenInfo tokenInfo = TokenInfo.builder()
@@ -69,7 +69,7 @@ public class JWTService {
                 return new ResponseResult(HttpStatus.UNAUTHORIZED.value(), "존재하지 않는 토큰입니다. 토큰 재발급이 불가능하니 " +
                         "다시 로그인 부탁드립니다.");
             }
-        }else {
+        } else {
             return new ResponseResult(HttpStatus.UNAUTHORIZED.value(), "토큰이 만료 되었습니다. 다시 로그인 해주세요.");
         }
     }

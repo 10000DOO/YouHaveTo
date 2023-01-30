@@ -29,28 +29,28 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        try{
+        try {
             filterChain.doFilter(request, response);
-        }catch (InvalidJWTTokenExcep | UnsupportedJWTTokenExcep
-                | EmptyJWTTokenExcep e){
+        } catch (InvalidJWTTokenExcep | UnsupportedJWTTokenExcep
+                 | EmptyJWTTokenExcep e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
 
             mapper.writeValue(response.getWriter(), exceptionResponse);
-        }catch (ExpiredJWTTokenExcep e){
+        } catch (ExpiredJWTTokenExcep e) {
             String refreshToken = request.getHeader("RefreshToken");
 
             if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer")) {
                 String token = refreshToken.substring(7);
-                ResponseResult result = jwtService.refreshToken(token.substring(0, token.length()-1));
+                ResponseResult result = jwtService.refreshToken(token.substring(0, token.length() - 1));
                 response.setStatus(HttpStatus.OK.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setCharacterEncoding("UTF-8");
 
                 mapper.writeValue(response.getWriter(), result);
-            } else{
+            } else {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setCharacterEncoding("UTF-8");
