@@ -33,8 +33,7 @@ class MemberRepositoryTest {
                 .email("test@test.com")
                 .loginId("testId2")
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        null))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                 .role(MemberType.USER)
                 .password("testPassword1!")
                 .field("서울시")

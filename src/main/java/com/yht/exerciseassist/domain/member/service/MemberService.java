@@ -55,8 +55,7 @@ public class MemberService implements UserDetailsService {
                     .field(signUpRequestDto.getField())
                     .role(MemberType.USER)
                     .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            null))
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                     .build();
 
             memberRepository.save(member);

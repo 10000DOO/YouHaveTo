@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -29,5 +30,17 @@ public class DateTime {
 
     public void updatedAtUpdate() {
         this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DateTime dateTime)) return false;
+        return getCreatedAt().equals(dateTime.getCreatedAt()) && Objects.equals(getCanceledAt(), dateTime.getCanceledAt()) && getUpdatedAt().equals(dateTime.getUpdatedAt());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCreatedAt(), getCanceledAt(), getUpdatedAt());
     }
 }
