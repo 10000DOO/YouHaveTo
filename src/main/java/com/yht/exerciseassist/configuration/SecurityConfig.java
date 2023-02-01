@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/refreshtoken").permitAll()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/a").hasAnyRole("USER")
+                .requestMatchers("/diary/write").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)

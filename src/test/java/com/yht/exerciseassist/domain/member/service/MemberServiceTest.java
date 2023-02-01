@@ -70,8 +70,7 @@ class MemberServiceTest {
                 .email("test@test.com")
                 .loginId("testId1")
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        null))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                 .role(MemberType.USER)
                 .password("testPassword1!")
                 .field("서울시")
@@ -99,8 +98,7 @@ class MemberServiceTest {
                 .email("test@test.com")
                 .loginId("testId3")
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        null))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                 .role(MemberType.USER)
                 .password("testPassword3!")
                 .field("서울시")
