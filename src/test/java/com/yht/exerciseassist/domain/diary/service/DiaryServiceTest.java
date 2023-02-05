@@ -31,14 +31,17 @@ import static org.mockito.Mockito.mockStatic;
 @Rollback
 class DiaryServiceTest {
 
+    private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
+    DiaryService diaryService;
     @MockBean
     private DiaryRepository diaryRepository;
-
     @MockBean
     private MemberRepository memberRepository;
 
-    private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
-    DiaryService diaryService;
+    @AfterAll
+    public static void afterAll() {
+        securityUtilMockedStatic.close();
+    }
 
     @BeforeEach
     void setUp() {
@@ -46,13 +49,8 @@ class DiaryServiceTest {
         securityUtilMockedStatic = mockStatic(SecurityUtil.class);
     }
 
-    @AfterAll
-    public static void afterAll() {
-        securityUtilMockedStatic.close();
-    }
-
     @Test
-    public void saveDiary(){
+    public void saveDiary() {
         //given
         WriteDiaryDto writeDiaryDto = new WriteDiaryDto();
         writeDiaryDto.setExerciseName("pushUp");
@@ -74,8 +72,8 @@ class DiaryServiceTest {
                 .field("서울시")
                 .build();
 
-        given(SecurityUtil.getCurrentMemberId()).willReturn("username");
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentMemberId())).thenReturn(Optional.ofNullable(member));
+        given(SecurityUtil.getCurrentUsername()).willReturn("username");
+        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
         //when
         ResponseResult result = diaryService.saveDiary(writeDiaryDto);
         //then

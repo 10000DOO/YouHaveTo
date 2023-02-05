@@ -25,15 +25,22 @@ class DiaryTest {
                 .password("testPassword3!")
                 .field("서울시")
                 .build();
-        //when
-        Diary diary = Diary.builder()
-                .member(member)
+
+        ExerciseInfo exInfo = ExerciseInfo.builder()
                 .exerciseName("pushUp")
                 .reps(10)
                 .exSetCount(10)
-                .review("열심히 했다 오운완")
                 .cardio(true)
                 .cardioTime(30)
+                .finished(true)
+                .build();
+
+
+        //when
+        Diary diary = Diary.builder()
+                .member(member)
+                .exerciseInfo(exInfo)
+                .review("열심히 했다 오운완")
                 .exerciseDate("2023-01-30")
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))

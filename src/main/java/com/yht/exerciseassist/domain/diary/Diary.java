@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,46 +24,22 @@ public class Diary {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String exerciseName;//운동 이름
-
-    private int reps;//횟수
-
-    private int exSetCount;//세트
+    private String exerciseDate; //운동 날짜
 
     private String review;//후기 or 평가
 
-    private boolean cardio; //유산소 = ture 무산소 = false
-
-    private int cardioTime; //유산소 운동 시간
-
-    private String exerciseDate; //운동 날짜
+    @ElementCollection
+    private List<ExerciseInfo> exerciseInfo;
 
     @Embedded
     private DateTime dateTime;
 
     @Builder
-    public Diary(Member member, String exerciseName, int reps, int exSetCount, String review,
-                 boolean cardio, int cardioTime, String exerciseDate, DateTime dateTime) {
+    public Diary(Member member, String exerciseDate, String review, List<ExerciseInfo> exerciseInfo, DateTime dateTime) {
         this.member = member;
-        this.exerciseName = exerciseName;
-        this.reps = reps;
-        this.exSetCount = exSetCount;
-        this.review = review;
-        this.cardio = cardio;
-        this.cardioTime = cardioTime;
         this.exerciseDate = exerciseDate;
+        this.review = review;
+        this.exerciseInfo = exerciseInfo;
         this.dateTime = dateTime;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Diary diary)) return false;
-        return getReps() == diary.getReps() && getExSetCount() == diary.getExSetCount() && isCardio() == diary.isCardio() && getCardioTime() == diary.getCardioTime() && getId().equals(diary.getId()) && getMember().equals(diary.getMember()) && Objects.equals(getExerciseName(), diary.getExerciseName()) && Objects.equals(getReview(), diary.getReview()) && Objects.equals(getExerciseDate(), diary.getExerciseDate()) && getDateTime().equals(diary.getDateTime());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getMember(), getExerciseName(), getReps(), getExSetCount(), getReview(), isCardio(), getCardioTime(), getExerciseDate(), getDateTime());
     }
 }
