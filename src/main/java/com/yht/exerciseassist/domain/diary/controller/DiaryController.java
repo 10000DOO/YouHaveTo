@@ -1,13 +1,17 @@
 package com.yht.exerciseassist.domain.diary.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +25,8 @@ public class DiaryController {
 //    }
 
     @PostMapping("/diary/write")
-    public ResponseResult writeDiary(@RequestBody @Valid WriteDiaryDto writeDiaryDto) {
-        return diaryService.saveDiary(writeDiaryDto);
+    public ResponseEntity writeDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
+                                     @RequestPart(required = false) List<MultipartFile> files) throws IOException {
+        return diaryService.saveDiary(writeDiaryDto, files);
     }
 }

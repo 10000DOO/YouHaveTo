@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.diary;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,6 +36,9 @@ public class Diary {
     @Embedded
     private DateTime dateTime;
 
+    @OneToMany(mappedBy = "diary")
+    private List<Media> mediaList = new ArrayList<>();
+
     @Builder
     public Diary(Member member, String exerciseDate, String review, List<ExerciseInfo> exerciseInfo, DateTime dateTime) {
         this.member = member;
@@ -41,5 +46,12 @@ public class Diary {
         this.review = review;
         this.exerciseInfo = exerciseInfo;
         this.dateTime = dateTime;
+    }
+
+    public void linkToMedia(List<Media> mediaList) {
+        this.mediaList = mediaList;
+        for (Media media : mediaList) {
+            media.linkToDiary(this);
+        }
     }
 }

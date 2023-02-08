@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.diary.repository;
 
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.Diary;
+import com.yht.exerciseassist.domain.diary.ExerciseInfo;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,14 +38,22 @@ class DiaryRepositoryTest {
                 .field("서울시")
                 .build();
 
-        Diary diary = Diary.builder()
-                .member(member)
+        ExerciseInfo exInfo = ExerciseInfo.builder()
                 .exerciseName("pushUp")
                 .reps(10)
                 .exSetCount(10)
-                .review("열심히 했다 오운완")
                 .cardio(true)
                 .cardioTime(30)
+                .finished(true)
+                .build();
+
+        List<ExerciseInfo> exInfoList = new ArrayList<>();
+        exInfoList.add(exInfo);
+
+        Diary diary = Diary.builder()
+                .member(member)
+                .exerciseInfo(exInfoList)
+                .review("열심히 했다 오운완")
                 .exerciseDate("2023-01-30")
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))

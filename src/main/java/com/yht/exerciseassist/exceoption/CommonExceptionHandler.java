@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CustomExceptionHandler {
+public class CommonExceptionHandler {
 
     public ExceptionResponse exceptionArrayRes(MethodArgumentNotValidException exception, Logger log) {
         List<ErrorMessageDto> exceptionResponses = new ArrayList<>();

@@ -1,7 +1,7 @@
 package com.yht.exerciseassist.exceoption.controller;
 
 import com.yht.exerciseassist.domain.member.controller.MemberController;
-import com.yht.exerciseassist.exceoption.CustomExceptionHandler;
+import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
 import com.yht.exerciseassist.exceoption.error.AuthenticationException;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RequiredArgsConstructor
 public class SignExceptionController {
 
-    private final CustomExceptionHandler customExceptionHandler;
+    private final CommonExceptionHandler commonExceptionHandler;
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ExceptionResponse validHandle(MethodArgumentNotValidException exception) {
 
-        return customExceptionHandler.exceptionArrayRes(exception, log);
+        return commonExceptionHandler.exceptionArrayRes(exception, log);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ExceptionResponse signUpHandle(IllegalArgumentException exception) {
 
-        return customExceptionHandler.exceptionRes(exception, log);
+        return commonExceptionHandler.exceptionRes(exception, log);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
