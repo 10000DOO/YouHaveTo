@@ -48,8 +48,8 @@ public class MediaService {
                     .build();
 
             mediaList.add(media);
-            mediaRepository.save(media);
             file.transferTo(new File(fileDir + storeFileName));
+            mediaRepository.save(media);
             log.info(storeFileName + " 저장되었습니다.");
         }
 
