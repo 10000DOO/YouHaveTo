@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.diary.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
@@ -46,6 +47,7 @@ class DiaryControllerTest {
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
+        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
         exerciseInfoDto.setFinished(true);
 
         List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();

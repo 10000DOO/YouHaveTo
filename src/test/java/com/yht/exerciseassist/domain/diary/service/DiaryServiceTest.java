@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.diary.service;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
@@ -70,6 +71,7 @@ class DiaryServiceTest {
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
+        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
         exerciseInfoDto.setFinished(true);
 
         List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
