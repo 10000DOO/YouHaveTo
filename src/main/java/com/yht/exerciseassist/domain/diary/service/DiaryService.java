@@ -52,7 +52,7 @@ public class DiaryService {
 
         List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
         List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
-                .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName())
+                .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
                         .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
                 .collect(Collectors.toList());
