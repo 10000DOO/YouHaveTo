@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+*.log
 *.yml
 .idea
 *.iws
@@ -36,3 +37,5 @@ out/
 
 ### VS Code ###
 .vscode/
+### Querydsl
+/src/main/generated

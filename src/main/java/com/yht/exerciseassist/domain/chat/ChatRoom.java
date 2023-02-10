@@ -12,11 +12,11 @@ import java.util.List;
 public class ChatRoom {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_id")
     private Long id;
 
-    private String ChatTitle;
+    private String chatTitle;
 
     @Embedded
     private DateTime dateTime;
