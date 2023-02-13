@@ -32,30 +32,27 @@ public class SignExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ExceptionResponse signUpHandle(IllegalArgumentException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log);
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public ExceptionResponse passwordExcepHandle(BadCredentialsException exception) {
 
-        log.error(exception.getMessage());
-        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNAUTHORIZED.value());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ExceptionResponse idExcepHandle(InternalAuthenticationServiceException exception) {
 
-        log.error(exception.getMessage());
-        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNAUTHORIZED.value());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
     public ExceptionResponse signInFailHandle(AuthenticationException exception) {
 
-        log.error(exception.getMessage());
-        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNAUTHORIZED.value());
     }
 }

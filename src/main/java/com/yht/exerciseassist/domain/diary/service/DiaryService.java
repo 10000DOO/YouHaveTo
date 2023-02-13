@@ -4,6 +4,8 @@ import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
+import com.yht.exerciseassist.domain.diary.dto.Calender;
+import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
@@ -12,6 +14,7 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.SecurityUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,15 +40,42 @@ public class DiaryService {
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
 
-//    public ResponseResult getDiaryList(String date) {
-//
-//        List<Diary> findDiaries = diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentMemberId(), date);
-//        if (findDiaries == null || findDiaries.isEmpty()) {
-//            throw new IllegalArgumentException("존재하지 않는 다이어리입니다.");
-//        } else {
-//            findDiaries.stream().map(diary -> new DiaryListDto)
-//        }
-//    }
+    public ResponseEntity getDiaryList(String date) {
+
+        List<Diary> findDiaries = diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentUsername(), date);
+        if (findDiaries == null || findDiaries.isEmpty()) {
+            throw new EntityNotFoundException("존재하지 않는 다이어리입니다.");
+        } else {
+            double monthlyTotal = 0;
+            double monthlyFinished = 0;
+            List<Calender> calender = new ArrayList<>();
+
+            for (Diary findDiary : findDiaries) {
+                int exSize = findDiary.getExerciseInfo().size();
+                monthlyTotal += exSize;
+                double dailyTotal = exSize;
+                double dailyFinished = 0;
+
+                for (ExerciseInfo exerciseInfo : findDiary.getExerciseInfo()) {
+                    if (exerciseInfo.isFinished()) {
+                        monthlyFinished++;
+                        dailyFinished++;
+                    }
+                }
+
+                int dailyPercentage = (int) Math.round(dailyFinished / dailyTotal * 100);
+                Calender cal = new Calender(findDiary.getExerciseDate(), dailyPercentage);
+                calender.add(cal);
+            }
+            int monthlyPercentage = (int) Math.round(monthlyFinished / monthlyTotal * 100);
+            DiaryListDto diaryListDto = new DiaryListDto(calender, monthlyPercentage);
+
+            ResponseResult responseResult = new ResponseResult(HttpStatus.OK.value(), diaryListDto);
+
+            log.info(date + " : 다이어리 목록 조회 성공");
+            return ResponseEntity.status(HttpStatus.OK).body(responseResult);
+        }
+    }
 
     public ResponseEntity saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
