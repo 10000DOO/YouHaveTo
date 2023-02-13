@@ -3,7 +3,7 @@
 
     <!-- 해당 설정파일에서 사용하는 프로퍼티-->
     <Properties>
-        <property name="LOGS_PATH">/Users/10000doo/Project/capstone/3.0.1/exercise-assist/src/main/resources/</property>
+        <property name="LOGS_PATH">/app/</property>
     </Properties>
 
     <Appenders>

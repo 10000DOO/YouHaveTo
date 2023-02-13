@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -49,7 +50,7 @@ class MemberControllerTest {
         ResponseResult result = new ResponseResult(HttpStatus.CREATED.value(), signUpRequestDto.getUsername());
 
         given(memberService.join(any()))
-                .willReturn(result);
+                .willReturn(ResponseEntity.status(HttpStatus.CREATED).body(result));
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/signup")
                         .content(objectMapper.writeValueAsString(signUpRequestDto))
@@ -68,7 +69,7 @@ class MemberControllerTest {
         SignInRequestDto signInRequestDto = new SignInRequestDto("loginId1", "password1!");
         TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
         ResponseResult result = new ResponseResult(HttpStatus.OK.value(), tokenInfo);
-        given(memberService.signIn(any(),any())).willReturn(result);
+        given(memberService.signIn(any(),any())).willReturn(ResponseEntity.status(HttpStatus.CREATED).body(result));
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/signin")
                 .content(objectMapper.writeValueAsString(signInRequestDto))

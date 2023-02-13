@@ -12,6 +12,7 @@ import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +42,7 @@ public class MemberService implements UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public ResponseResult join(SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity join(SignUpRequestDto signUpRequestDto) {
         String result = validateDuplicateMember(signUpRequestDto);
 
         if (StringUtils.hasText(result)) {
@@ -61,7 +62,7 @@ public class MemberService implements UserDetailsService {
             memberRepository.save(member);
             log.info(member.getUsername() + " 회원가입 완료");
 
-            return new ResponseResult(HttpStatus.CREATED.value(), member.getUsername());
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseResult(HttpStatus.CREATED.value(), member.getUsername()));
         }
     }
 
@@ -82,7 +83,7 @@ public class MemberService implements UserDetailsService {
         return errorMessage;
     }
 
-    public ResponseResult signIn(String loginId, String password) {
+    public ResponseEntity signIn(String loginId, String password) {
 
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
@@ -109,7 +110,8 @@ public class MemberService implements UserDetailsService {
             log.info(authentication.getName() + " 로그인");
             Member member = memberRepository.findByLoginId(loginId).get();
             member.setRefreshToken(tokenInfo.getRefreshToken());
-            return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseResult(HttpStatus.OK.value(), tokenInfo));
         }
     }
 
