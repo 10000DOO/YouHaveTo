@@ -16,6 +16,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -77,10 +79,9 @@ class MemberServiceTest {
                 .build();
 
         //when
-        ResponseResult join = memberService.join(signUpRequestDto);
+        ResponseEntity response = memberService.join(signUpRequestDto);
         //then
-        assertThat(join.getStatus()).isEqualTo(201);
-        assertThat(join.getData()).isEqualTo(signUpRequestDto.getUsername());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
@@ -149,10 +150,9 @@ class MemberServiceTest {
         Mockito.when(jwtTokenProvider.generateToken(authentication)).thenReturn(tokenInfo);
 
         //when
-        ResponseResult result = memberService.signIn(signUpRequestDto.getLoginId(), signUpRequestDto.getPassword());
+        ResponseEntity response = memberService.signIn(signUpRequestDto.getLoginId(), signUpRequestDto.getPassword());
         //then
-        assertThat(result.getStatus()).isEqualTo(200);
-        assertThat(result.getData()).isEqualTo(tokenInfo);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThrows(InternalAuthenticationServiceException.class, () -> {
             memberService.signIn(signUpRequestDto.getLoginId()+"1", signUpRequestDto.getPassword());
         });

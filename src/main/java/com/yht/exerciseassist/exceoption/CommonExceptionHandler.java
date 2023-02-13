@@ -27,9 +27,9 @@ public class CommonExceptionHandler {
         return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exceptionResponses);
     }
 
-    public ExceptionResponse exceptionRes(IllegalArgumentException exception, Logger log) {
+    public ExceptionResponse exceptionRes(Exception exception, Logger log, int statusCode) {
 
         log.error(exception.getMessage());
-        return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        return new ExceptionResponse(statusCode, exception.getMessage());
     }
 }

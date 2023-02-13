@@ -3,11 +3,10 @@ package com.yht.exerciseassist.domain.diary.controller;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,10 +18,10 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-//    @GetMapping("/diary")
-//    public ResponseResult diaryList(@RequestParam @Pattern(regexp = "/^\\d{4}-(0[1-9]|1[012])$/") String date) {
-//        return diaryService.getDiaryList(date);
-//    }
+    @GetMapping("/diary")
+    public ResponseEntity diaryList(@Valid @Pattern(regexp = "(19|20)\\d{2}-((11|12)|(0?(\\d)))") @RequestParam("date") String date) {
+        return diaryService.getDiaryList(date);
+    }
 
     @PostMapping("/diary/write")
     public ResponseEntity writeDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
