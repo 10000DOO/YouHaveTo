@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,12 +15,15 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class DiaryController {
 
     private final DiaryService diaryService;
 
     @GetMapping("/diary")
-    public ResponseEntity diaryList(@Valid @Pattern(regexp = "(19|20)\\d{2}-((11|12)|(0?(\\d)))") @RequestParam("date") String date) {
+    public ResponseEntity diaryList(@RequestParam("date")
+                                    @Pattern(regexp = "(19|20)\\d{2}-((11|12)|(0?(\\d)))",
+                                            message = "YYYY-MM 형식과 일치해야 합니다.") String date) {
         return diaryService.getDiaryList(date);
     }
 

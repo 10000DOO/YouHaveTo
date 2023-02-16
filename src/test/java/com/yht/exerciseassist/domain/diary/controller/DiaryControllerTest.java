@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
+import com.yht.exerciseassist.domain.diary.service.DiaryService;
+import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,8 +30,12 @@ class DiaryControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     //    @Autowired
 //    ResourceLoader loader;
+    @MockBean
+    private DiaryService diaryService;
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private CommonExceptionHandler commonExceptionHandler;
 
     @Test
     @WithMockUser

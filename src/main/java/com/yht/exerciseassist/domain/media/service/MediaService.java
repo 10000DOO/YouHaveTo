@@ -32,12 +32,10 @@ public class MediaService {
 
     public List<Media> uploadImageToFileSystem(List<MultipartFile> files) throws IOException {
 
-        List<String> filePaths = new ArrayList<>();
         List<Media> mediaList = new ArrayList<>();
 
         for (MultipartFile file : files) {
             String storeFileName = createStoreFileName(file.getOriginalFilename());
-            filePaths.add(fileDir + storeFileName);
 
             Media media = Media.builder()
                     .originalFilename(file.getOriginalFilename())

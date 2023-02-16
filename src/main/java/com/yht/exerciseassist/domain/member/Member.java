@@ -5,7 +5,10 @@ import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,7 +39,7 @@ public class Member implements UserDetails {
 
     private String field; //유저 활동 지역
 
-    @Setter
+
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
@@ -62,6 +65,10 @@ public class Member implements UserDetails {
         this.field = field;
         this.role = role;
         this.dateTime = dateTime;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @Override

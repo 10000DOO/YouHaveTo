@@ -51,7 +51,7 @@ class MemberTest {
                 .build();
 
         //when
-        member.setRefreshToken("testRefreshToken1!");
+        member.updateRefreshToken("testRefreshToken1!");
         //then
         assertThat(member.getRefreshToken()).isEqualTo("testRefreshToken1!");
     }

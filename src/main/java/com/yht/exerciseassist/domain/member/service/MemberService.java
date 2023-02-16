@@ -109,7 +109,7 @@ public class MemberService implements UserDetailsService {
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
             log.info(authentication.getName() + " 로그인");
             Member member = memberRepository.findByLoginId(loginId).get();
-            member.setRefreshToken(tokenInfo.getRefreshToken());
+            member.updateRefreshToken(tokenInfo.getRefreshToken());
 
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseResult(HttpStatus.OK.value(), tokenInfo));
         }
