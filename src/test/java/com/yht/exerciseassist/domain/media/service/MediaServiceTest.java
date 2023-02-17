@@ -14,12 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -43,19 +41,16 @@ class MediaServiceTest {
                 .originalFilename("tuxCoding.jpg")
                 .filename("storeFileName.jpg")
                 .filePath("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
 
         String fileName = "tuxCoding.jpg";
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
-
-        when(mediaRepository.save(media)).thenReturn(media);
         //when
-        mediaService.uploadImageToFileSystem(mediaFileList);
+        List<Media> mediaList = mediaService.uploadImageToFileSystem(mediaFileList);
         //then
-
+        assertThat(mediaList.get(0).getOriginalFilename()).isEqualTo(media.getOriginalFilename());
     }
 }

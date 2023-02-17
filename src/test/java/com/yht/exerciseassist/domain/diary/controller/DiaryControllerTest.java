@@ -69,7 +69,7 @@ class DiaryControllerTest {
                         .file(mediaFile)
                         .file(jsonFile)
                         .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         //then
     }
 
