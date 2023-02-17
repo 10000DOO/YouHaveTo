@@ -5,6 +5,8 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
+import com.yht.exerciseassist.domain.diary.dto.Calender;
+import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
@@ -13,7 +15,7 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.SecurityUtil;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -21,7 +23,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +54,8 @@ class DiaryServiceTest {
     @MockBean
     private MediaService mediaService;
 
-    @AfterAll
-    public static void afterAll() {
+    @AfterEach
+    public void afterAll() {
         securityUtilMockedStatic.close();
     }
 
@@ -105,10 +106,10 @@ class DiaryServiceTest {
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
-        ResponseEntity result = diaryService.saveDiary(writeDiaryDto, mediaFileList);
+        ResponseResult responseResult1 = diaryService.saveDiary(writeDiaryDto, mediaFileList);
 
         //then
-        assertThat(result.getBody()).isEqualTo(responseResult);
+        assertThat(responseResult1).isEqualTo(responseResult);
     }
 
     @Test
@@ -117,17 +118,18 @@ class DiaryServiceTest {
         given(SecurityUtil.getCurrentUsername()).willReturn("username");
         List<Diary> diaries = new ArrayList<>();
 
+        Member member = Member.builder()
+                .username("username")
+                .email("test@test.com")
+                .loginId("testId3")
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .role(MemberType.USER)
+                .password("testPassword3!")
+                .field("서울시")
+                .build();
+
         for (int i = 1; i < 21; i++) {
-            Member member = Member.builder()
-                    .username("username")
-                    .email("test@test.com")
-                    .loginId("testId3")
-                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
-                    .role(MemberType.USER)
-                    .password("testPassword3!")
-                    .field("서울시")
-                    .build();
 
             ExerciseInfo exInfo = ExerciseInfo.builder()
                     .exerciseName("pushUp")
@@ -163,10 +165,20 @@ class DiaryServiceTest {
             diaries.add(diary);
         }
 
+        List<Calender> calenderList = new ArrayList<>();
+
+        for (int i = 1; i < 21; i++) {
+            Calender calender = new Calender("2023-01-" + i, 50);
+            calenderList.add(calender);
+        }
+
+        DiaryListDto diaryListDto = new DiaryListDto(calenderList, 50);
+
         Mockito.when(diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentUsername(), "2023-01")).thenReturn(diaries);
         //when
-        ResponseEntity diaryList = diaryService.getDiaryList("2023-01");
+        ResponseResult diaryList = diaryService.getDiaryList("2023-01");
         //then
-        assertThat(diaryList.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(diaryList.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(diaryList.getData()).isEqualTo(diaryListDto);
     }
 }

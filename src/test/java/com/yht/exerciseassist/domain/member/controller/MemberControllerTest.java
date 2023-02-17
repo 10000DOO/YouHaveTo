@@ -6,6 +6,7 @@ import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
+import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,14 +26,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = MemberController.class)
 class MemberControllerTest {
 
+    ObjectMapper objectMapper = new ObjectMapper();
     @MockBean
     private MemberService memberService;
-
     @Autowired
     private MockMvc mockMvc;
-    ObjectMapper objectMapper = new ObjectMapper();
 
-
+    @MockBean
+    private CommonExceptionHandler commonExceptionHandler;
 
     @Test
     @WithMockUser()
@@ -49,14 +48,13 @@ class MemberControllerTest {
 
         ResponseResult result = new ResponseResult(HttpStatus.CREATED.value(), signUpRequestDto.getUsername());
 
-        given(memberService.join(any()))
-                .willReturn(ResponseEntity.status(HttpStatus.CREATED).body(result));
+        given(memberService.join(signUpRequestDto)).willReturn(result);
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/signup")
                         .content(objectMapper.writeValueAsString(signUpRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         //then
         assertThat(result.getStatus()).isEqualTo(201);
         assertThat(result.getData()).isEqualTo(signUpRequestDto.getUsername());
@@ -69,12 +67,12 @@ class MemberControllerTest {
         SignInRequestDto signInRequestDto = new SignInRequestDto("loginId1", "password1!");
         TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
         ResponseResult result = new ResponseResult(HttpStatus.OK.value(), tokenInfo);
-        given(memberService.signIn(any(),any())).willReturn(ResponseEntity.status(HttpStatus.CREATED).body(result));
+        given(memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword())).willReturn(result);
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/signin")
-                .content(objectMapper.writeValueAsString(signInRequestDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(csrf()))
+                        .content(objectMapper.writeValueAsString(signInRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isOk());
         //then
         assertThat(result.getStatus()).isEqualTo(200);

@@ -18,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +39,7 @@ public class DiaryService {
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
 
-    public ResponseEntity getDiaryList(String date) {
+    public ResponseResult getDiaryList(String date) {
 
         List<Diary> findDiaries = diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentUsername(), date);
         if (findDiaries == null || findDiaries.isEmpty()) {
@@ -73,11 +72,12 @@ public class DiaryService {
             ResponseResult responseResult = new ResponseResult(HttpStatus.OK.value(), diaryListDto);
 
             log.info(date + " : 다이어리 목록 조회 성공");
-            return ResponseEntity.status(HttpStatus.OK).body(responseResult);
+
+            return responseResult;
         }
     }
 
-    public ResponseEntity saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
+    public ResponseResult saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
@@ -106,7 +106,7 @@ public class DiaryService {
 
             log.info("사용자명 : " + findMember.getUsername() + " 다이어리 등록 완료");
             ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseResult);
+            return responseResult;
         } else {
             Diary diary = Diary.builder()
                     .member(findMember)
@@ -121,7 +121,8 @@ public class DiaryService {
 
             log.info("사용자명 : " + findMember.getUsername() + " 다이어리 등록 완료");
             ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseResult);
+
+            return responseResult;
         }
     }
 }
