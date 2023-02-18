@@ -34,4 +34,13 @@ public class DiaryController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.saveDiary(writeDiaryDto, files));
     }
+
+    @GetMapping("/diary/detail")
+    public ResponseEntity diaryDetail(@RequestParam("date")
+                                      @Pattern(regexp = "(19|20)\\d{2}-((11|12)|(0?(\\d)))-(30|31|((0|1|2)?\\d))",
+                                              message = "YYYY-MM-DD 형식과 일치해야 합니다.") String date) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.getdiaryDetail(date));
+    }
+
 }

@@ -42,12 +42,14 @@ public class Diary {
     private List<Media> mediaList = new ArrayList<>();
 
     @Builder
-    public Diary(Member member, String exerciseDate, String review, List<ExerciseInfo> exerciseInfo, DateTime dateTime) {
+    public Diary(Long id, Member member, String exerciseDate, String review, List<ExerciseInfo> exerciseInfo, DateTime dateTime, List<Media> mediaList) {
+        this.id = id;
         this.member = member;
         this.exerciseDate = exerciseDate;
         this.review = review;
         this.exerciseInfo = exerciseInfo;
         this.dateTime = dateTime;
+        this.mediaList = mediaList;
     }
 
     public void linkToMedia(List<Media> mediaList) {

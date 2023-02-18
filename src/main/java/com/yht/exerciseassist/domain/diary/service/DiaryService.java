@@ -4,10 +4,7 @@ import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
-import com.yht.exerciseassist.domain.diary.dto.Calender;
-import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
-import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
-import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
+import com.yht.exerciseassist.domain.diary.dto.*;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
@@ -17,6 +14,7 @@ import com.yht.exerciseassist.jwt.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +37,8 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
+    @Value("${base.url}")
+    private String baseUrl;
 
     public ResponseResult getDiaryList(String date) {
 
@@ -124,5 +125,34 @@ public class DiaryService {
 
             return responseResult;
         }
+    }
+
+    public ResponseResult getdiaryDetail(String date) {
+        Optional<Diary> diaryDetails = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date);
+        Diary findDiary = diaryDetails.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 다이어리입니다."));
+
+        List<ExerciseInfoDto> exInfoDto = findDiary.getExerciseInfo().stream()
+                .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
+                        .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
+                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
+                .collect(Collectors.toList());
+
+        List<String> mediaId = new ArrayList<>();
+
+        for (Media media : findDiary.getMediaList()) {
+            mediaId.add(baseUrl + "/media/" + media.getId());
+        }
+
+        DiaryDetailDto diaryDetailDto = DiaryDetailDto.builder()
+                .exerciseDate(findDiary.getExerciseDate())
+                .review(findDiary.getReview())
+                .exerciseInfo(exInfoDto)
+                .dateTime(findDiary.getDateTime())
+                .mediaList(mediaId)
+                .build();
+
+
+        log.info(date + "다이어리 상세 조회 성공");
+        return new ResponseResult(HttpStatus.OK.value(), diaryDetailDto);
     }
 }

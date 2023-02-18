@@ -61,7 +61,7 @@ class DiaryControllerTest {
         String writeDiaryDtoJson = objectMapper.writeValueAsString(writeDiaryDto);
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));
         MockMultipartFile jsonFile = new MockMultipartFile("writeDiaryDto", writeDiaryDtoJson, "application/json", writeDiaryDtoJson.getBytes(StandardCharsets.UTF_8));
 
         //when
@@ -84,5 +84,18 @@ class DiaryControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
+    }
+
+    @Test
+    @WithMockUser
+    public void getDiaryDetail() throws Exception {
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/diary/detail")
+                        .param("date", "2023-02-23")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+
     }
 }
