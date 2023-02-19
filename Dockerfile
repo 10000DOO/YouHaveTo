@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:17
+FROM amazoncorretto:17.0.6
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","/app.jar"]

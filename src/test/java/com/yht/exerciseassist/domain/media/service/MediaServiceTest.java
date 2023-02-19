@@ -51,7 +51,7 @@ class MediaServiceTest {
                 .build();
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when

@@ -99,7 +99,7 @@ class DiaryServiceTest {
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "2023-01-30");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/10000doo/Documents/wallpaper/Users/jeong-yunju/Documents/wallpaper
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
