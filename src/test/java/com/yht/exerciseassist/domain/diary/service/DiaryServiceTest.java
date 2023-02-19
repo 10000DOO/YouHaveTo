@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.mockStatic;
 @SpringBootTest
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 class DiaryServiceTest {
 
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
@@ -205,13 +207,14 @@ class DiaryServiceTest {
 
 
         Media media = Media.builder()
-                .id(8L)
                 .originalFilename("test1.png")
                 .filename("c42d3bb9-10de-45f6-8533-14b3dac07e4e.png")
                 .filePath("/Users/jeong-yunju/Project/Capstone/20230215/YouHaveTo/src/main/resources/media/c42d3bb9-10de-45f6-8533-14b3dac07e4e.png")
                 .post(null)
                 .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
+        media.setMediaIdUsedOnlyTest(1L);
+
 
         List<Media> mediaId = new ArrayList<>();
         mediaId.add(media);
@@ -223,6 +226,8 @@ class DiaryServiceTest {
                 .exerciseDate("2023-01-20")
                 .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
+
+        diaryDetail.setDiaryIdUsedOnlyTest(1L);
 
         diaryDetail.linkToMedia(mediaId);
 
@@ -241,7 +246,7 @@ class DiaryServiceTest {
         exerciseInfoDtoList.add(exerciseInfoDto);
 
         List<String> mediaIdList = new ArrayList<>();
-        mediaIdList.add("null" + "/media/" + "8");
+        mediaIdList.add("null" + "/media/" + 1);
 
         DiaryDetailDto diaryDetailDto = DiaryDetailDto.builder()
                 .exerciseDate("2023-01-20")

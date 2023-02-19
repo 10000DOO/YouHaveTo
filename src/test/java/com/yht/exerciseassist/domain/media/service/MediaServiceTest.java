@@ -11,6 +11,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 class MediaServiceTest {
 
     private MediaService mediaService;
@@ -62,12 +64,13 @@ class MediaServiceTest {
     public void getMediaFileTest() throws IOException {
         //given
         Media media = Media.builder()
-                .id(1L)
                 .originalFilename("tuxCoding.jpg")
                 .filename("test1.png")
                 .filePath("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png")
                 .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
+
+        media.setMediaIdUsedOnlyTest(1L);
 
         FileSystemResource fileSystemResource = new FileSystemResource(media.getFilePath());
 

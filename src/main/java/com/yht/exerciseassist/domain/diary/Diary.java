@@ -42,14 +42,12 @@ public class Diary {
     private List<Media> mediaList = new ArrayList<>();
 
     @Builder
-    public Diary(Long id, Member member, String exerciseDate, String review, List<ExerciseInfo> exerciseInfo, DateTime dateTime, List<Media> mediaList) {
-        this.id = id;
+    public Diary(Member member, String exerciseDate, String review, List<ExerciseInfo> exerciseInfo, DateTime dateTime) {
         this.member = member;
         this.exerciseDate = exerciseDate;
         this.review = review;
         this.exerciseInfo = exerciseInfo;
         this.dateTime = dateTime;
-        this.mediaList = mediaList;
     }
 
     public void linkToMedia(List<Media> mediaList) {
@@ -58,6 +56,11 @@ public class Diary {
             media.linkToDiary(this);
         }
     }
+
+    public void setDiaryIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
 
     @Override
     public boolean equals(Object o) {
