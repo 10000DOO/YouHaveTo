@@ -12,10 +12,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,8 +36,7 @@ class DiaryRepositoryTest {
                 .username("username")
                 .email("test@test.com")
                 .loginId("testId3")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
                 .password("testPassword3!")
                 .field("서울시")
@@ -68,8 +66,7 @@ class DiaryRepositoryTest {
                 .exerciseInfo(exInfoList)
                 .review("열심히 했다 오운완")
                 .exerciseDate("2023-01-30")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
         //when
         Diary savedDiary = diaryRepository.save(diary);
@@ -84,8 +81,7 @@ class DiaryRepositoryTest {
                 .username("username")
                 .email("test@test.com")
                 .loginId("testId3")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
                 .password("testPassword3!")
                 .field("서울시")
@@ -115,8 +111,7 @@ class DiaryRepositoryTest {
                 .exerciseInfo(exInfoList)
                 .review("열심히 했다 오운완")
                 .exerciseDate("2023-01-30")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
 
         diaryRepository.save(diary);
@@ -126,5 +121,54 @@ class DiaryRepositoryTest {
         List<Diary> diariesByUsername = diaryRepository.findDiariesByUsername(findMember.getUsername(), "2023-01");
         //then
         assertThat(diariesByUsername.get(0)).isEqualTo(diary);
+    }
+
+    @Test
+    public void findDiaryDetailsByUsername() {
+        //given
+        Member member = Member.builder()
+                .username("username")
+                .email("test@test.com")
+                .loginId("testId3")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password("testPassword3!")
+                .field("서울시")
+                .build();
+
+        em.persist(member);
+
+        em.flush();
+        em.clear();
+
+        Member findMember = em.find(Member.class, member.getId());
+
+        ExerciseInfo exInfo = ExerciseInfo.builder()
+                .exerciseName("pushUp")
+                .reps(10)
+                .exSetCount(10)
+                .cardio(true)
+                .cardioTime(30)
+                .finished(true)
+                .build();
+
+        List<ExerciseInfo> exInfoList = new ArrayList<>();
+        exInfoList.add(exInfo);
+
+        Diary diary = Diary.builder()
+                .member(findMember)
+                .exerciseInfo(exInfoList)
+                .review("열심히 했다 오운완")
+                .exerciseDate("2023-02-23")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+
+        diaryRepository.save(diary);
+        em.flush();
+        em.clear();
+        //when
+        Optional<Diary> diaryDetailsByUsername = diaryRepository.findDiaryDetailsByUsername(findMember.getUsername(), "2023-02-23");
+        //then
+        assertThat(diaryDetailsByUsername.get()).isEqualTo(diary);
     }
 }

@@ -3,19 +3,28 @@ package com.yht.exerciseassist.domain.media.service;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -23,7 +32,9 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class MediaService {
+
     private final MediaRepository mediaRepository;
+
     @Value("${file.dir}")
     private String fileDir;
 
@@ -60,5 +71,19 @@ public class MediaService {
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
+    }
+
+    public ResponseEntity getMediaFile(Long mediaId) throws IOException {
+        Optional<Media> findMedia = mediaRepository.findById(mediaId);
+
+        Media media = findMedia.orElseThrow(() -> new EntityNotFoundException("미디어 찾을 수 없음"));
+        HttpHeaders header = new HttpHeaders();
+
+        FileSystemResource fileSystemResource = new FileSystemResource(media.getFilePath());
+        Path filePath = Paths.get(media.getFilePath());
+        header.add("Content-Type", Files.probeContentType(filePath));
+        log.info(media.getFilePath() + "출력 성공");
+
+        return ResponseEntity.status(HttpStatus.OK).headers(header).body(fileSystemResource);
     }
 }

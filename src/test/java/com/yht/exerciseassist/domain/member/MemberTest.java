@@ -2,9 +2,11 @@ package com.yht.exerciseassist.domain.member;
 
 import com.yht.exerciseassist.domain.DateTime;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class MemberTest {
 
     @Test

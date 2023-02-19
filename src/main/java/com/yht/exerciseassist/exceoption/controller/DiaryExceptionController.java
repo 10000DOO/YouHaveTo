@@ -64,4 +64,5 @@ public class DiaryExceptionController {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
+
 }

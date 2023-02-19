@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yht.exerciseassist.domain.diary.BodyPart;
 import jakarta.persistence.Enumerated;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ public class ExerciseInfoDto {
     private boolean finished; //완료 여부
 
     @JsonCreator
+    @Builder
     public ExerciseInfoDto(@JsonProperty("exerciseName") String exerciseName, @JsonProperty("reps") int reps,
                            @JsonProperty("exSetCount") int exSetCount, @JsonProperty("cardio") boolean cardio,
                            @JsonProperty("cardioTime") int cardioTime, @JsonProperty("bodyPart") BodyPart bodyPart,
@@ -39,4 +41,6 @@ public class ExerciseInfoDto {
         this.bodyPart = bodyPart;
         this.finished = finished;
     }
+
+
 }
