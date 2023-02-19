@@ -5,15 +5,15 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
-import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
-import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
+import com.yht.exerciseassist.domain.diary.dto.*;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
+import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.SecurityUtil;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -21,16 +21,14 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +40,7 @@ import static org.mockito.Mockito.mockStatic;
 @SpringBootTest
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 class DiaryServiceTest {
 
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
@@ -53,8 +52,8 @@ class DiaryServiceTest {
     @MockBean
     private MediaService mediaService;
 
-    @AfterAll
-    public static void afterAll() {
+    @AfterEach
+    public void afterAll() {
         securityUtilMockedStatic.close();
     }
 
@@ -88,8 +87,7 @@ class DiaryServiceTest {
                 .username("username")
                 .email("test@test.com")
                 .loginId("testId3")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
                 .password("testPassword3!")
                 .field("서울시")
@@ -101,14 +99,14 @@ class DiaryServiceTest {
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "2023-01-30");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/10000doo/Documents/wallpaper/Users/jeong-yunju/Documents/wallpaper
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
-        ResponseEntity result = diaryService.saveDiary(writeDiaryDto, mediaFileList);
+        ResponseResult responseResult1 = diaryService.saveDiary(writeDiaryDto, mediaFileList);
 
         //then
-        assertThat(result.getBody()).isEqualTo(responseResult);
+        assertThat(responseResult1).isEqualTo(responseResult);
     }
 
     @Test
@@ -117,17 +115,17 @@ class DiaryServiceTest {
         given(SecurityUtil.getCurrentUsername()).willReturn("username");
         List<Diary> diaries = new ArrayList<>();
 
+        Member member = Member.builder()
+                .username("username")
+                .email("test@test.com")
+                .loginId("testId3")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password("testPassword3!")
+                .field("서울시")
+                .build();
+
         for (int i = 1; i < 21; i++) {
-            Member member = Member.builder()
-                    .username("username")
-                    .email("test@test.com")
-                    .loginId("testId3")
-                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
-                    .role(MemberType.USER)
-                    .password("testPassword3!")
-                    .field("서울시")
-                    .build();
 
             ExerciseInfo exInfo = ExerciseInfo.builder()
                     .exerciseName("pushUp")
@@ -156,17 +154,117 @@ class DiaryServiceTest {
                     .exerciseInfo(exInfoList)
                     .review("열심히 했다 오운완")
                     .exerciseDate("2023-01-" + i)
-                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                    .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                     .build();
 
             diaries.add(diary);
         }
 
+        List<Calender> calenderList = new ArrayList<>();
+
+        for (int i = 1; i < 21; i++) {
+            Calender calender = new Calender("2023-01-" + i, 50);
+            calenderList.add(calender);
+        }
+
+        DiaryListDto diaryListDto = new DiaryListDto(calenderList, 50);
+
         Mockito.when(diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentUsername(), "2023-01")).thenReturn(diaries);
         //when
-        ResponseEntity diaryList = diaryService.getDiaryList("2023-01");
+        ResponseResult diaryList = diaryService.getDiaryList("2023-01");
         //then
-        assertThat(diaryList.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(diaryList.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(diaryList.getData()).isEqualTo(diaryListDto);
     }
+
+    @Test
+    public void getDiaryDetail() {
+        //given
+        given(SecurityUtil.getCurrentUsername()).willReturn("username");
+
+        Member member = Member.builder()
+                .username("username")
+                .email("test@test.com")
+                .loginId("testId3")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password("testPassword3!")
+                .field("서울시")
+                .build();
+
+        ExerciseInfo exInfo = ExerciseInfo.builder()
+                .exerciseName("pushUp")
+                .reps(10)
+                .exSetCount(10)
+                .cardio(false)
+                .cardioTime(0)
+                .bodyPart(BodyPart.TRICEP)
+                .finished(true)
+                .build();
+
+        List<ExerciseInfo> exInfoList = new ArrayList<>();
+        exInfoList.add(exInfo);
+
+
+        Media media = Media.builder()
+                .originalFilename("test1.png")
+                .filename("c42d3bb9-10de-45f6-8533-14b3dac07e4e.png")
+                .filePath("/Users/jeong-yunju/Project/Capstone/20230215/YouHaveTo/src/main/resources/media/c42d3bb9-10de-45f6-8533-14b3dac07e4e.png")
+                .post(null)
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+        media.setMediaIdUsedOnlyTest(1L);
+
+
+        List<Media> mediaId = new ArrayList<>();
+        mediaId.add(media);
+
+        Diary diaryDetail = Diary.builder()
+                .member(member)
+                .exerciseInfo(exInfoList)
+                .review("열심히 했다. 오운완")
+                .exerciseDate("2023-01-20")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+
+        diaryDetail.setDiaryIdUsedOnlyTest(1L);
+
+        diaryDetail.linkToMedia(mediaId);
+
+        Optional<Diary> opDiaryDetail = Optional.of(diaryDetail); //Repository에서  찾아올 다이어리
+////////////////////////////////////////////////////////////////
+        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto(); //내가 기대한 Dto반환값
+        exerciseInfoDto.setExerciseName("pushUp");
+        exerciseInfoDto.setReps(10);
+        exerciseInfoDto.setCardio(false);
+        exerciseInfoDto.setExSetCount(10);
+        exerciseInfoDto.setCardioTime(0);
+        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
+        exerciseInfoDto.setFinished(true);
+
+        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
+        exerciseInfoDtoList.add(exerciseInfoDto);
+
+        List<String> mediaIdList = new ArrayList<>();
+        mediaIdList.add("null" + "/media/" + 1);
+
+        DiaryDetailDto diaryDetailDto = DiaryDetailDto.builder()
+                .exerciseDate("2023-01-20")
+                .review("열심히 했다. 오운완")
+                .exerciseInfo(exerciseInfoDtoList)
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .mediaList(mediaIdList)
+                .build();
+
+        //이 정보가 맞다면 Optional<Diary>타입의 diartdetail을 반환해줘
+        Mockito.when(diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), "2023-01-20")).thenReturn(opDiaryDetail);
+        //when
+        ResponseResult diary = diaryService.getdiaryDetail("2023-01-20");
+        //then
+        assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(diary.getData()).isEqualTo(diaryDetailDto);
+
+    }
+
+
 }

@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 class MemberRepositoryTest {
 
     @Autowired
@@ -32,8 +32,7 @@ class MemberRepositoryTest {
                 .username("member1")
                 .email("test@test.com")
                 .loginId("testId2")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
                 .password("testPassword1!")
                 .field("서울시")
@@ -41,7 +40,7 @@ class MemberRepositoryTest {
         //when
         Member saveMember = memberRepository.save(member);
         //then
-        assertThat(saveMember.getId()).isEqualTo(member.getId());
+        assertThat(saveMember).isEqualTo(member);
     }
 
     @Test
@@ -51,15 +50,13 @@ class MemberRepositoryTest {
                 .username("member1")
                 .email("test123@test.com")
                 .loginId("testId2")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
                 .password("testPassword1!")
                 .field("서울시")
                 .build();
 
-        member.setRefreshToken("refreshToken");
+        member.updateRefreshToken("refreshToken");
 
         Member saveMember = memberRepository.save(member);
         em.flush();

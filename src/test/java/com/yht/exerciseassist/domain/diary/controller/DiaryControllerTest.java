@@ -4,11 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
+import com.yht.exerciseassist.domain.diary.service.DiaryService;
+import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -22,13 +26,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = DiaryController.class)
+@ActiveProfiles("test")
 class DiaryControllerTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
     //    @Autowired
 //    ResourceLoader loader;
+    @MockBean
+    private DiaryService diaryService;
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private CommonExceptionHandler commonExceptionHandler;
 
     @Test
     @WithMockUser
@@ -54,7 +63,7 @@ class DiaryControllerTest {
         String writeDiaryDtoJson = objectMapper.writeValueAsString(writeDiaryDto);
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper
         MockMultipartFile jsonFile = new MockMultipartFile("writeDiaryDto", writeDiaryDtoJson, "application/json", writeDiaryDtoJson.getBytes(StandardCharsets.UTF_8));
 
         //when
@@ -62,7 +71,7 @@ class DiaryControllerTest {
                         .file(mediaFile)
                         .file(jsonFile)
                         .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         //then
     }
 
@@ -77,5 +86,18 @@ class DiaryControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
+    }
+
+    @Test
+    @WithMockUser
+    public void getDiaryDetail() throws Exception {
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/diary/detail")
+                        .param("date", "2023-02-23")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+
     }
 }

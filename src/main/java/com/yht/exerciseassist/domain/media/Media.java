@@ -46,6 +46,10 @@ public class Media {
         this.dateTime = dateTime;
     }
 
+    public void setMediaIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
     public void linkToDiary(Diary diary) {
         this.diary = diary;
     }

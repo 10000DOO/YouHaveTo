@@ -4,11 +4,11 @@ import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
+import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,10 +24,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,21 +34,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 class MemberServiceTest {
 
+    MemberService memberService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManagerBuilder authenticationManagerBuilder;
-    @Autowired
-    private EntityManager em;
-
     @MockBean
     private MemberRepository memberRepository;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
-
-    MemberService memberService;
 
     @BeforeEach
     void setup() {
@@ -70,22 +65,23 @@ class MemberServiceTest {
         Member member = Member.builder()
                 .username("username")
                 .email("test@test.com")
-                .loginId("testId1")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .loginId("testId3")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
-                .password("testPassword1!")
+                .password("testPassword3!")
                 .field("서울시")
                 .build();
 
+        Mockito.when(memberRepository.save(member)).thenReturn(member);
         //when
-        ResponseEntity response = memberService.join(signUpRequestDto);
+        ResponseResult response = memberService.join(signUpRequestDto);
         //then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getData()).isEqualTo(member.getUsername());
     }
 
     @Test
-    public void duplicatedSignUp(){
+    public void duplicatedSignUp() {
         //given
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
         signUpRequestDto.setUsername("username");
@@ -98,8 +94,7 @@ class MemberServiceTest {
                 .username("username")
                 .email("test@test.com")
                 .loginId("testId3")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
                 .password("testPassword3!")
                 .field("서울시")
@@ -117,47 +112,38 @@ class MemberServiceTest {
     }
 
     @Test
-    public void signIn(){
+    public void signIn() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
-        signUpRequestDto.setUsername("username");
-        signUpRequestDto.setPassword("testPassword3!");
-        signUpRequestDto.setEmail("test@test.com");
-        signUpRequestDto.setLoginId("testId3");
-        signUpRequestDto.setField("서울시");
-
-        memberService.join(signUpRequestDto);
-        em.flush();
-        em.clear();
+        SignInRequestDto signInRequestDto = new SignInRequestDto();
+        signInRequestDto.setPassword("testPassword1!");
+        signInRequestDto.setLoginId("testId3");
 
         Member member = Member.builder()
                 .username("username")
                 .email("test@test.com")
-                .loginId("testId3")
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        null))
+                .loginId(signInRequestDto.getLoginId())
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
-                .password(passwordEncoder.encode("testPassword3!"))
+                .password(passwordEncoder.encode(signInRequestDto.getPassword()))
                 .field("서울시")
                 .build();
 
-        Mockito.when(memberRepository.findByLoginId(signUpRequestDto.getLoginId())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByLoginId(signInRequestDto.getLoginId())).thenReturn(Optional.ofNullable(member));
 
         TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signUpRequestDto.getLoginId(), signUpRequestDto.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInRequestDto.getLoginId(), signInRequestDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         Mockito.when(jwtTokenProvider.generateToken(authentication)).thenReturn(tokenInfo);
 
         //when
-        ResponseEntity response = memberService.signIn(signUpRequestDto.getLoginId(), signUpRequestDto.getPassword());
+        ResponseResult response = memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword());
         //then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThrows(InternalAuthenticationServiceException.class, () -> {
-            memberService.signIn(signUpRequestDto.getLoginId()+"1", signUpRequestDto.getPassword());
+            memberService.signIn(signInRequestDto.getLoginId() + "1", signInRequestDto.getPassword());
         });
         Assertions.assertThrows(BadCredentialsException.class, () -> {
-            memberService.signIn(signUpRequestDto.getLoginId(), signUpRequestDto.getPassword()+"2");
+            memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword() + "2");
         });
     }
 }

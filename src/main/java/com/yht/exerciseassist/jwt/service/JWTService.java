@@ -58,7 +58,7 @@ public class JWTService {
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
                             .build();
-                    findMember.setRefreshToken(tokenInfo.getRefreshToken());
+                    findMember.updateRefreshToken(tokenInfo.getRefreshToken());
                     log.info("토큰이 재발급 되었습니다.");
                     return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
                 } else {

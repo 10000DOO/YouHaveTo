@@ -57,6 +57,11 @@ public class Diary {
         }
     }
 
+    public void setDiaryIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

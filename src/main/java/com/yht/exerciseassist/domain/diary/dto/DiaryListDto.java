@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,7 +11,7 @@ public class DiaryListDto {
 
     private String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    private List<Calender> calenders = new ArrayList<>();
+    private List<Calender> calenders;
 
     private int monthlyPercentage;
 
