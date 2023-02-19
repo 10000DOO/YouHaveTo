@@ -98,6 +98,7 @@ public class MediaService {
                 if (!deleteSuccess) {
                     throw new IOException("사진 삭제 실패");
                 }
+                log.info(media.getFilename() + " 삭제 완료");
             }
         }
     }
