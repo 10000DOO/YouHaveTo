@@ -43,4 +43,11 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getdiaryDetail(date));
     }
 
+    @PatchMapping("/diary/edit/{id}")
+    public ResponseEntity editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
+                                    @RequestPart(required = false) List<MultipartFile> files,
+                                    @PathVariable Long id) throws IOException {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.editDiary(writeDiaryDto, files, id));
+    }
 }

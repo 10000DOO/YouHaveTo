@@ -86,4 +86,19 @@ public class MediaService {
 
         return ResponseEntity.status(HttpStatus.OK).headers(header).body(fileSystemResource);
     }
+
+    public void deleteFile(Long diaryId) throws IOException {
+        List<Media> byDiaryId = mediaRepository.findByDiaryId(diaryId);
+
+        if (byDiaryId != null && !byDiaryId.isEmpty()) {
+            for (Media media : byDiaryId) {
+                File file = new File(media.getFilePath());
+                boolean deleteSuccess = file.delete();
+                mediaRepository.deleteById(media.getId());
+                if (!deleteSuccess) {
+                    throw new IOException("사진 삭제 실패");
+                }
+            }
+        }
+    }
 }

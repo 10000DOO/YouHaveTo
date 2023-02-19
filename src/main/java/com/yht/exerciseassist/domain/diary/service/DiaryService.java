@@ -89,42 +89,24 @@ public class DiaryService {
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
                 .collect(Collectors.toList());
 
+        Diary diary = Diary.builder()
+                .member(findMember)
+                .exerciseDate(writeDiaryDto.getExerciseDate())
+                .review(writeDiaryDto.getReview())
+                .exerciseInfo(exInfo)
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .build();
+
         if (files != null && !(files.isEmpty())) {
             List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
-
-            Diary diary = Diary.builder()
-                    .member(findMember)
-                    .exerciseDate(writeDiaryDto.getExerciseDate())
-                    .review(writeDiaryDto.getReview())
-                    .exerciseInfo(exInfo)
-                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
-                    .build();
-
             diary.linkToMedia(mediaList);
-
-            diaryRepository.save(diary);
-
-            log.info("사용자명 : " + findMember.getUsername() + " 다이어리 등록 완료");
-            ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
-            return responseResult;
-        } else {
-            Diary diary = Diary.builder()
-                    .member(findMember)
-                    .exerciseDate(writeDiaryDto.getExerciseDate())
-                    .review(writeDiaryDto.getReview())
-                    .exerciseInfo(exInfo)
-                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
-                    .build();
-
-            diaryRepository.save(diary);
-
-            log.info("사용자명 : " + findMember.getUsername() + " 다이어리 등록 완료");
-            ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
-
-            return responseResult;
         }
+        diaryRepository.save(diary);
+
+        log.info("사용자명 : " + findMember.getUsername() + " 다이어리 등록 완료");
+        ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
+        return responseResult;
     }
 
     public ResponseResult getdiaryDetail(String date) {
@@ -154,5 +136,34 @@ public class DiaryService {
 
         log.info(date + "다이어리 상세 조회 성공");
         return new ResponseResult(HttpStatus.OK.value(), diaryDetailDto);
+    }
+
+    public ResponseResult editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
+        Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        Diary diaryById = diaryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 다이어리 입니다."));
+
+        List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
+        List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
+                .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
+                        .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
+                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
+                .collect(Collectors.toList());
+
+        diaryById.editDiary(writeDiaryDto.getExerciseDate(), writeDiaryDto.getReview(), exInfo);
+        diaryById.getDateTime().updatedAtUpdate();
+
+        if (files != null && !(files.isEmpty())) {
+            mediaService.deleteFile(id);
+            List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
+            diaryById.linkToMedia(mediaList);
+        }
+        diaryRepository.save(diaryById);
+
+        log.info("사용자명 : " + findMember.getUsername() + " 다이어리 수정 완료");
+        ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
+        return responseResult;
     }
 }

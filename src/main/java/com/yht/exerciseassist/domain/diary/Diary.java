@@ -61,6 +61,12 @@ public class Diary {
         this.id = id;
     }
 
+    public void editDiary(String exerciseDate, String review, List<ExerciseInfo> exerciseInfo) {
+        this.exerciseDate = exerciseDate;
+        this.review = review;
+        this.exerciseInfo = exerciseInfo;
+    }
+
 
     @Override
     public boolean equals(Object o) {
