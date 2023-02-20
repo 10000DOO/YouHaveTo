@@ -1,8 +1,10 @@
 package com.yht.exerciseassist.domain.member.controller;
 
+import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
+import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,12 +20,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<ResponseResult<String>> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.join(signUpRequestDto));
     }
 
     @PostMapping("/signin")
-    public ResponseEntity signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
+    public ResponseEntity<ResponseResult<TokenInfo>> signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword()));
     }
 }
