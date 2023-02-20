@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.media.service;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
+import com.yht.exerciseassist.exceoption.error.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,10 +74,10 @@ public class MediaService {
         return originalFilename.substring(pos + 1);
     }
 
-    public ResponseEntity getMediaFile(Long mediaId) throws IOException {
+    public ResponseEntity<FileSystemResource> getMediaFile(Long mediaId) throws IOException {
         Optional<Media> findMedia = mediaRepository.findById(mediaId);
 
-        Media media = findMedia.orElseThrow(() -> new EntityNotFoundException("미디어 찾을 수 없음"));
+        Media media = findMedia.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NotFoundExceptionMedia.getMessage()));
         HttpHeaders header = new HttpHeaders();
 
         FileSystemResource fileSystemResource = new FileSystemResource(media.getFilePath());
@@ -96,7 +97,7 @@ public class MediaService {
                 boolean deleteSuccess = file.delete();
                 mediaRepository.deleteById(media.getId());
                 if (!deleteSuccess) {
-                    throw new IOException("사진 삭제 실패");
+                    throw new IOException(ErrorCode.DeleteFailedMediaException.getMessage());
                 }
                 log.info(media.getFilename() + " 삭제 완료");
             }

@@ -1,5 +1,8 @@
 package com.yht.exerciseassist.domain.diary.controller;
 
+import com.yht.exerciseassist.ResponseResult;
+import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
+import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
 import jakarta.validation.Valid;
@@ -22,31 +25,31 @@ public class DiaryController {
     private final DiaryService diaryService;
 
     @GetMapping("/diary")
-    public ResponseEntity diaryList(@RequestParam("date")
-                                    @Pattern(regexp = "(19|20)\\d{2}-((11|12)|(0?(\\d)))",
-                                            message = "YYYY-MM 형식과 일치해야 합니다.") String date) {
+    public ResponseEntity<ResponseResult<DiaryListDto>> diaryList(@RequestParam("date")
+                                                                  @Pattern(regexp = "(19|20)\\d{2}-(0[1-9]|1[012])",
+                                                                          message = "YYYY-MM 형식과 일치해야 합니다.") String date) {
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getDiaryList(date));
     }
 
     @PostMapping("/diary/write")
-    public ResponseEntity writeDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
-                                     @RequestPart(required = false) List<MultipartFile> files) throws IOException {
+    public ResponseEntity<ResponseResult<WriteDiaryDto>> writeDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
+                                                                    @RequestPart(required = false) List<MultipartFile> files) throws IOException {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.saveDiary(writeDiaryDto, files));
     }
 
     @GetMapping("/diary/detail")
-    public ResponseEntity diaryDetail(@RequestParam("date")
-                                      @Pattern(regexp = "(19|20)\\d{2}-((11|12)|(0?(\\d)))-(30|31|((0|1|2)?\\d))",
-                                              message = "YYYY-MM-DD 형식과 일치해야 합니다.") String date) {
+    public ResponseEntity<ResponseResult<DiaryDetailDto>> diaryDetail(@RequestParam("date")
+                                                                      @Pattern(regexp = "(19|20)\\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])",
+                                                                              message = "YYYY-MM-DD 형식과 일치해야 합니다.") String date) {
 
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getdiaryDetail(date));
     }
 
     @PatchMapping("/diary/edit/{id}")
-    public ResponseEntity editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
-                                    @RequestPart(required = false) List<MultipartFile> files,
-                                    @PathVariable Long id) throws IOException {
+    public ResponseEntity<ResponseResult<WriteDiaryDto>> editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
+                                                                   @RequestPart(required = false) List<MultipartFile> files,
+                                                                   @PathVariable Long id) throws IOException {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.editDiary(writeDiaryDto, files, id));
     }

@@ -7,6 +7,7 @@ import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.exceoption.error.AuthenticationException;
+import com.yht.exerciseassist.exceoption.error.ErrorCode;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class MemberService implements UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public ResponseResult join(SignUpRequestDto signUpRequestDto) {
+    public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
         String result = validateDuplicateMember(signUpRequestDto);
 
         if (StringUtils.hasText(result)) {
@@ -61,7 +62,7 @@ public class MemberService implements UserDetailsService {
             memberRepository.save(member);
             log.info(member.getUsername() + " 회원가입 완료");
 
-            return new ResponseResult(HttpStatus.CREATED.value(), member.getUsername());
+            return new ResponseResult<String>(HttpStatus.CREATED.value(), member.getUsername());
         }
     }
 
@@ -71,18 +72,18 @@ public class MemberService implements UserDetailsService {
         Optional<Member> findUnameMember = memberRepository.findByUsername(signUpRequestDto.getUsername());
         String errorMessage = "";
         if (findIdMember.isPresent()) {
-            errorMessage += "이미 존재하는 아이디입니다. ";
+            errorMessage += ErrorCode.NotFoundMember.getMessage();
         }
         if (findEmailMember.isPresent()) {
-            errorMessage += "이미 존재하는 이메일입니다. ";
+            errorMessage += ErrorCode.NotFoundEmail.getMessage();
         }
         if (findUnameMember.isPresent()) {
-            errorMessage += "이미 존재하는 이름입니다. ";
+            errorMessage += ErrorCode.NotFoundUserName.getMessage();
         }
         return errorMessage;
     }
 
-    public ResponseResult signIn(String loginId, String password) {
+    public ResponseResult<TokenInfo> signIn(String loginId, String password) {
 
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
@@ -95,14 +96,14 @@ public class MemberService implements UserDetailsService {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
-                throw new BadCredentialsException("비밀번호가 틀렸습니다. 다시 시도해주세요.");
+                throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
             } else if (e instanceof InternalAuthenticationServiceException) {
-                throw new InternalAuthenticationServiceException("아이디가 틀렸습니다. 다시 시도해주세요.");
+                throw new InternalAuthenticationServiceException(ErrorCode.InternalAuthenticationServiceException.getMessage());
             }
         }
 
         if (authentication == null) {
-            throw new AuthenticationException("로그인 실패입니다 다시 시도해주세요.");
+            throw new AuthenticationException(ErrorCode.AuthenticationException.getMessage());
         } else {
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
@@ -110,7 +111,7 @@ public class MemberService implements UserDetailsService {
             Member member = memberRepository.findByLoginId(loginId).get();
             member.updateRefreshToken(tokenInfo.getRefreshToken());
 
-            return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
+            return new ResponseResult<TokenInfo>(HttpStatus.OK.value(), tokenInfo);
         }
     }
 
