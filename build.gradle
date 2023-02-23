@@ -17,6 +17,7 @@ configurations {
     }
 }
 test {
+    systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
     exclude '**/*'
 }
 
@@ -59,6 +60,8 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
     //test
     testImplementation 'org.mockito:mockito-inline:3.12.4'
+
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 
 tasks.named('test') {
