@@ -3,9 +3,9 @@ spring:
     active:
       on-profile: prod
   datasource:
-    url: PvhVzk13uUMQH2SMUlZZXnRT1HFtenZSup/jCHfNDC6ilCeBBrYt6f+jTwWFUwJdYvtAnODSPdY=
-    username: 5g7QwLq0KlEt1EjjanVtVvVYcyiXq+Lo
-    password: wsA8utco+CJqQiuDDwG1angHw4aA1Xol
+    url: ENC(PvhVzk13uUMQH2SMUlZZXnRT1HFtenZSup/jCHfNDC6ilCeBBrYt6f+jTwWFUwJdYvtAnODSPdY=)
+    username: ENC(5g7QwLq0KlEt1EjjanVtVvVYcyiXq+Lo)
+    password: ENC(wsA8utco+CJqQiuDDwG1angHw4aA1Xol)
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
@@ -32,7 +32,7 @@ file:
   dir: /app/
 
 logging:
-  config: 4VVZhSCBwQOx/xew0yBfzUczND/QwDoOM0ECcQIfUpolFVSpz9ekHw==
+  config: ENC(4VVZhSCBwQOx/xew0yBfzUczND/QwDoOM0ECcQIfUpolFVSpz9ekHw==)
 
 base:
-  url: gGWykxlqG4A1WYxL9ZEMDXDX4o3RlVARSRflYePYfpJbC7/Sp+wCGw==
+  url: ENC(gGWykxlqG4A1WYxL9ZEMDXDX4o3RlVARSRflYePYfpJbC7/Sp+wCGw==)
