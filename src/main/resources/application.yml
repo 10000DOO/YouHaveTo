@@ -3,3 +3,7 @@ spring:
     active: local
 jwt:
   secret: ENC(RrFQdT/29kKH4QveaTJYCGLC284gxRS7mIv0dBQS9X/kPdb0OPOfG6li+jakRHv4BMg7K76CTzkAfvUaGSQsa9Y1I/cqLQobIcCgommOXHcADIEPWj9/Pja3l5lC7+wjIcJxMw8Tqc1e+7qDPWeEVlG8wDu7yfhz9Mj12WBcAGZlJEZKuTY7lDFs6NcU+JI87V8nPPxN2meoZCwmv/+WriASpROnmhmpzDAfd4JLfs2qDwzHsMJF2Q==)
+
+jasypt:
+  encryptor:
+    password: ${jasypt_encryptor_password}
