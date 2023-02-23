@@ -7,6 +7,3 @@ jwt:
 jasypt:
   encryptor:
     password: ${jasypt_encryptor_password}
-
-server:
-  port: 8081
