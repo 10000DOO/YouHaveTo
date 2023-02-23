@@ -1,0 +1,38 @@
+spring:
+  config:
+    active:
+      on-profile: test
+  datasource:
+    url: OAonGU205q281Teaz9F6ZvQSnajlRAhv9px5jJSj44VnV8LPjo9fJVVVuoKKebn7/3CkC5zckQU=
+    username: 5g7QwLq0KlEt1EjjanVtVvVYcyiXq+Lo
+    password: wsA8utco+CJqQiuDDwG1angHw4aA1Xol
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        #show_sql: true
+        #format_sql: true
+        default_batch_fetch_size: 100
+  #logging.level:
+  #org.hibernate.SQL: debug
+  #org.hibernate.type: trace
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+file:
+  dir: /Users/10000doo/Project/capstone/3.0.1/exercise-assist/src/main/resources/media/
+
+logging:
+  config: JZB/mgdhnbZ0kyygiYEqm2HC6dlUt0ixCZCwpkJXCpo=
+
+base:
+  url: gGWykxlqG4A1WYxL9ZEMDXDX4o3RlVARSRflYePYfpJbC7/Sp+wCGw==
