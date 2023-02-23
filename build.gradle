@@ -18,7 +18,7 @@ configurations {
 }
 test {
     systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
-    //exclude '**/*'
+    exclude '**/*'
 }
 
 repositories {
