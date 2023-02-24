@@ -81,7 +81,7 @@ public class DiaryService {
 
     public ResponseResult<WriteDiaryDto> saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.IllegalArgumentException.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionMember.getMessage()));
 
         List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
         List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
@@ -141,7 +141,7 @@ public class DiaryService {
 
     public ResponseResult<WriteDiaryDto> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.IllegalArgumentException.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionMember.getMessage()));
 
         Diary diaryById = diaryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionDiary.getMessage()));
@@ -164,7 +164,20 @@ public class DiaryService {
         diaryRepository.save(diaryById);
 
         log.info("사용자명 : " + findMember.getUsername() + " 다이어리 수정 완료");
-        ResponseResult<WriteDiaryDto> responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
+        ResponseResult<WriteDiaryDto> responseResult = new ResponseResult(HttpStatus.OK.value(), writeDiaryDto.getExerciseDate());
         return responseResult;
+    }
+
+    public ResponseResult<Long> deleteDiary(Long id) throws IOException {
+        Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionMember.getMessage()));
+
+        Diary diaryById = diaryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionDiary.getMessage()));
+
+        diaryById.getDateTime().canceledAtUpdate();
+        mediaService.deleteFile(diaryById.getId());
+        log.info("username : {}, {}번 게시글 삭제 완료", findMember.getUsername(), diaryById.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getId());
     }
 }

@@ -263,8 +263,5 @@ class DiaryServiceTest {
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(diary.getData()).isEqualTo(diaryDetailDto);
-
     }
-
-
 }
