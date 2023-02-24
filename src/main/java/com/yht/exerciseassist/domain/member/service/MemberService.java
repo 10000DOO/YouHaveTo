@@ -72,7 +72,7 @@ public class MemberService implements UserDetailsService {
         Optional<Member> findUnameMember = memberRepository.findByUsername(signUpRequestDto.getUsername());
         String errorMessage = "";
         if (findIdMember.isPresent()) {
-            errorMessage += ErrorCode.NotFoundMember.getMessage();
+            errorMessage += ErrorCode.NotFoundLoginID.getMessage();
         }
         if (findEmailMember.isPresent()) {
             errorMessage += ErrorCode.NotFoundEmail.getMessage();
