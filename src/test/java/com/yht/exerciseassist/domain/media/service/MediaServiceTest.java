@@ -1,6 +1,6 @@
 package com.yht.exerciseassist.domain.media.service;
 
-import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,12 +49,7 @@ class MediaServiceTest {
     @Test
     public void imageUpload() throws IOException {
         //given
-        Media media = Media.builder()
-                .originalFilename("tuxCoding.jpg")
-                .filename("storeFileName.jpg")
-                .filePath("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .build();
+        Media media = MediaFactory.createTeatMedia("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg");
 
         String fileName = "tuxCoding.jpg";
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/
@@ -71,12 +66,7 @@ class MediaServiceTest {
     @Test
     public void getMediaFileTest() throws IOException {
         //given
-        Media media = Media.builder()
-                .originalFilename("tuxCoding.jpg")
-                .filename("test1.png")
-                .filePath("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .build();
+        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png");
 
         media.setMediaIdUsedOnlyTest(1L);
 
@@ -95,12 +85,7 @@ class MediaServiceTest {
     @Test
     public void deleteFile() throws IOException {
         //given
-        Media media = Media.builder()
-                .originalFilename("tuxCoding.jpg")
-                .filename("test1.png")
-                .filePath(fileDir + "tuxCoding.jpg")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .build();
+        Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
 
         media.setMediaIdUsedOnlyTest(1L);
         List<Media> mediaList = new ArrayList<Media>();

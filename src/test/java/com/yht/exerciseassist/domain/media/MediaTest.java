@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.media;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.factory.MediaFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -11,14 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MediaTest {
     @Test
     public void MediaTest() {
-
+        //given
         //when
-        Media media = Media.builder()
-                .originalFilename("tuxCoding.jpg")
-                .filename("test1.png")
-                .filePath("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .build();
+        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Documents/wallpaper/test1.png");
 
         media.setMediaIdUsedOnlyTest(1L);
 

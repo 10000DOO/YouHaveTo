@@ -1,10 +1,9 @@
 package com.yht.exerciseassist.domain.diary.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yht.exerciseassist.domain.diary.BodyPart;
-import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
+import com.yht.exerciseassist.domain.factory.DiaryFactory;
 import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -46,22 +43,7 @@ class DiaryControllerTest {
     @WithMockUser
     public void writeDiary() throws Exception {
         //given
-        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto();
-        exerciseInfoDto.setExerciseName("pushUp");
-        exerciseInfoDto.setReps(10);
-        exerciseInfoDto.setCardio(true);
-        exerciseInfoDto.setExSetCount(10);
-        exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
-        exerciseInfoDto.setFinished(true);
-
-        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
-        exerciseInfoDtoList.add(exerciseInfoDto);
-
-        WriteDiaryDto writeDiaryDto = new WriteDiaryDto();
-        writeDiaryDto.setExerciseInfo(exerciseInfoDtoList);
-        writeDiaryDto.setReview("오늘 운동 끝");
-        writeDiaryDto.setExerciseDate("2023-01-30");
+        WriteDiaryDto writeDiaryDto = DiaryFactory.createTestWriteDiaryDto();
 
         String writeDiaryDtoJson = objectMapper.writeValueAsString(writeDiaryDto);
 
@@ -108,22 +90,7 @@ class DiaryControllerTest {
     @WithMockUser
     public void diaryEdit() throws Exception {
         //given
-        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto();
-        exerciseInfoDto.setExerciseName("pushUp");
-        exerciseInfoDto.setReps(10);
-        exerciseInfoDto.setCardio(true);
-        exerciseInfoDto.setExSetCount(10);
-        exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
-        exerciseInfoDto.setFinished(true);
-
-        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
-        exerciseInfoDtoList.add(exerciseInfoDto);
-
-        WriteDiaryDto writeDiaryDto = new WriteDiaryDto();
-        writeDiaryDto.setExerciseInfo(exerciseInfoDtoList);
-        writeDiaryDto.setReview("오늘 운동 끝");
-        writeDiaryDto.setExerciseDate("2023-01-30");
+        WriteDiaryDto writeDiaryDto = DiaryFactory.createTestWriteDiaryDto();
 
         String writeDiaryDtoJson = objectMapper.writeValueAsString(writeDiaryDto);
 

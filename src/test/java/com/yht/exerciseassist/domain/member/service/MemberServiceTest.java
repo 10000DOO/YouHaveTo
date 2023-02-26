@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.member.service;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
@@ -55,22 +56,9 @@ class MemberServiceTest {
     @Test
     public void signUp() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
-        signUpRequestDto.setUsername("username");
-        signUpRequestDto.setPassword("testPassword3!");
-        signUpRequestDto.setEmail("test@test.com");
-        signUpRequestDto.setLoginId("testId3");
-        signUpRequestDto.setField("서울시");
+        SignUpRequestDto signUpRequestDto = MemberFactory.createTestSignUpRequestDto();
 
-        Member member = Member.builder()
-                .username("username")
-                .email("test@test.com")
-                .loginId("testId3")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .role(MemberType.USER)
-                .password("testPassword3!")
-                .field("서울시")
-                .build();
+        Member member = MemberFactory.createTestMember();
 
         Mockito.when(memberRepository.save(member)).thenReturn(member);
         //when
@@ -83,22 +71,9 @@ class MemberServiceTest {
     @Test
     public void duplicatedSignUp() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
-        signUpRequestDto.setUsername("username");
-        signUpRequestDto.setPassword("testPassword3!");
-        signUpRequestDto.setEmail("test@test.com");
-        signUpRequestDto.setLoginId("testId3");
-        signUpRequestDto.setField("서울시");
+        SignUpRequestDto signUpRequestDto = MemberFactory.createTestSignUpRequestDto();
 
-        Member member = Member.builder()
-                .username("username")
-                .email("test@test.com")
-                .loginId("testId3")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .role(MemberType.USER)
-                .password("testPassword3!")
-                .field("서울시")
-                .build();
+        Member member = MemberFactory.createTestMember();
 
         Mockito.when(memberRepository.findByLoginId(signUpRequestDto.getLoginId())).thenReturn(Optional.ofNullable(member));
         Mockito.when(memberRepository.findByEmail(signUpRequestDto.getEmail())).thenReturn(Optional.ofNullable(member));
@@ -114,23 +89,22 @@ class MemberServiceTest {
     @Test
     public void signIn() {
         //given
-        SignInRequestDto signInRequestDto = new SignInRequestDto();
-        signInRequestDto.setPassword("testPassword1!");
-        signInRequestDto.setLoginId("testId3");
+        SignInRequestDto signInRequestDto = MemberFactory.createTestSignInRequestDto();
+
+        TokenInfo tokenInfo = MemberFactory.createTestTokenInfo();
 
         Member member = Member.builder()
-                .username("username")
+                .username("member1")
                 .email("test@test.com")
-                .loginId(signInRequestDto.getLoginId())
+                .loginId("testId1")
                 .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .role(MemberType.USER)
-                .password(passwordEncoder.encode(signInRequestDto.getPassword()))
+                .password(passwordEncoder.encode("testPassword1!"))
                 .field("서울시")
                 .build();
 
         Mockito.when(memberRepository.findByLoginId(signInRequestDto.getLoginId())).thenReturn(Optional.ofNullable(member));
 
-        TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInRequestDto.getLoginId(), signInRequestDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         Mockito.when(jwtTokenProvider.generateToken(authentication)).thenReturn(tokenInfo);
