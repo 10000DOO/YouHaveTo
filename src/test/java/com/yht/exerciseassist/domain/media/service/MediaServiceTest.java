@@ -1,10 +1,12 @@
 package com.yht.exerciseassist.domain.media.service;
 
-import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.FileSystemResource;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +35,9 @@ class MediaServiceTest {
 
     private MediaService mediaService;
 
+    @Value("${file.dir}")
+    private String fileDir;
+
     @MockBean
     private MediaRepository mediaRepository;
 
@@ -43,12 +49,7 @@ class MediaServiceTest {
     @Test
     public void imageUpload() throws IOException {
         //given
-        Media media = Media.builder()
-                .originalFilename("tuxCoding.jpg")
-                .filename("storeFileName.jpg")
-                .filePath("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .build();
+        Media media = MediaFactory.createTeatMedia("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg");
 
         String fileName = "tuxCoding.jpg";
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/
@@ -56,6 +57,8 @@ class MediaServiceTest {
         mediaFileList.add(mediaFile);
         //when
         List<Media> mediaList = mediaService.uploadImageToFileSystem(mediaFileList);
+        File file = new File(mediaList.get(0).getFilePath());
+        file.delete();
         //then
         assertThat(mediaList.get(0).getOriginalFilename()).isEqualTo(media.getOriginalFilename());
     }
@@ -63,12 +66,7 @@ class MediaServiceTest {
     @Test
     public void getMediaFileTest() throws IOException {
         //given
-        Media media = Media.builder()
-                .originalFilename("tuxCoding.jpg")
-                .filename("test1.png")
-                .filePath("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .build();
+        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png");
 
         media.setMediaIdUsedOnlyTest(1L);
 
@@ -82,5 +80,23 @@ class MediaServiceTest {
 
         //then
         assertThat(result.getBody()).isEqualTo(fileSystemResource);
+    }
+
+    @Test
+    public void deleteFile() throws IOException {
+        //given
+        Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
+
+        media.setMediaIdUsedOnlyTest(1L);
+        List<Media> mediaList = new ArrayList<Media>();
+        mediaList.add(media);
+
+        Mockito.when(mediaRepository.findByDiaryId(1L)).thenReturn(mediaList);
+
+        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
+        mediaFile.transferTo(new File(fileDir + media.getOriginalFilename()));
+        //when
+        mediaService.deleteFile(1L);
+        //then
     }
 }

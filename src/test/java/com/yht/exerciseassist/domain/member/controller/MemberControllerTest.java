@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.ResponseResult;
+import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
@@ -41,12 +42,7 @@ class MemberControllerTest {
     @WithMockUser()
     public void signUp() throws Exception {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
-        signUpRequestDto.setUsername("username");
-        signUpRequestDto.setPassword("testPassword3!");
-        signUpRequestDto.setEmail("test@test.com");
-        signUpRequestDto.setLoginId("testId3");
-        signUpRequestDto.setField("서울시");
+        SignUpRequestDto signUpRequestDto = MemberFactory.createTestSignUpRequestDto();
 
         ResponseResult result = new ResponseResult(HttpStatus.CREATED.value(), signUpRequestDto.getUsername());
 
@@ -66,8 +62,10 @@ class MemberControllerTest {
     @WithMockUser()
     void signIn() throws Exception {
         //given
-        SignInRequestDto signInRequestDto = new SignInRequestDto("loginId1", "password1!");
-        TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
+        SignInRequestDto signInRequestDto = MemberFactory.createTestSignInRequestDto();
+
+        TokenInfo tokenInfo = MemberFactory.createTestTokenInfo();
+
         ResponseResult result = new ResponseResult(HttpStatus.OK.value(), tokenInfo);
         given(memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword())).willReturn(result);
         //when
