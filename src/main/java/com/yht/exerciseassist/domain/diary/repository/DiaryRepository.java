@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-    @Query(value = "select d from Diary d join fetch d.member where d.member.username = :username and to_char(to_timestamp(d.exerciseDate, 'YYYY-MM'),'YYYY-MM') = :date order by d.exerciseDate")
+    @Query(value = "select d from Diary d join fetch d.member where d.member.username = :username and to_char(to_timestamp(d.exerciseDate, 'YYYY-MM'),'YYYY-MM') = :date and d.dateTime.canceledAt = null order by d.exerciseDate")
     List<Diary> findDiariesByUsername(String username, String date);
 
     @Query(value = "select d from Diary d join fetch d.member where d.member.username = :username and to_char(to_timestamp(d.exerciseDate, 'YYYY-MM-DD'),'YYYY-MM-DD') = :date")

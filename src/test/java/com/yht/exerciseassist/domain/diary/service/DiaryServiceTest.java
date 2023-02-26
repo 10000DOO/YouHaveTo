@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,8 @@ class DiaryServiceTest {
 
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
     DiaryService diaryService;
+    @Value("${file.dir}")
+    private String fileDir;
     @MockBean
     private DiaryRepository diaryRepository;
     @MockBean
@@ -263,5 +266,153 @@ class DiaryServiceTest {
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(diary.getData()).isEqualTo(diaryDetailDto);
+    }
+
+    @Test
+    public void editDiary() throws IOException {
+        //given
+        Long id = 1L;
+
+        Member member = Member.builder()
+                .username("username")
+                .email("test@test.com")
+                .loginId("testId3")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password("testPassword3!")
+                .field("서울시")
+                .build();
+
+        ExerciseInfo exInfo = ExerciseInfo.builder()
+                .exerciseName("pushUp")
+                .reps(10)
+                .exSetCount(10)
+                .cardio(false)
+                .cardioTime(0)
+                .bodyPart(BodyPart.TRICEP)
+                .finished(true)
+                .build();
+
+        List<ExerciseInfo> exInfoList = new ArrayList<>();
+        exInfoList.add(exInfo);
+
+        Media media = Media.builder()
+                .originalFilename("tuxCoding.jpg")
+                .filename("test1.png")
+                .filePath(fileDir + "tuxCoding.jpg")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+        media.setMediaIdUsedOnlyTest(1L);
+
+
+        List<Media> mediaId = new ArrayList<>();
+        mediaId.add(media);
+
+        Diary diaryDetail = Diary.builder()
+                .member(member)
+                .exerciseInfo(exInfoList)
+                .review("열심히 했다. 오운완")
+                .exerciseDate("2023-01-20")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+
+        diaryDetail.setDiaryIdUsedOnlyTest(1L);
+
+        diaryDetail.linkToMedia(mediaId);
+
+        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
+        List<MultipartFile> fileList = new ArrayList<>();
+        fileList.add(mediaFile);
+        Mockito.when(diaryRepository.findById(id)).thenReturn(Optional.of(diaryDetail));
+        Mockito.when(mediaService.uploadImageToFileSystem(fileList)).thenReturn(mediaId);
+        Mockito.when(diaryRepository.save(diaryDetail)).thenReturn(diaryDetail);
+
+        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto();
+        exerciseInfoDto.setExerciseName("pushUp");
+        exerciseInfoDto.setReps(10);
+        exerciseInfoDto.setCardio(true);
+        exerciseInfoDto.setExSetCount(10);
+        exerciseInfoDto.setCardioTime(30);
+        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
+        exerciseInfoDto.setFinished(true);
+
+        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
+        exerciseInfoDtoList.add(exerciseInfoDto);
+
+        WriteDiaryDto writeDiaryDto = new WriteDiaryDto();
+        writeDiaryDto.setExerciseInfo(exerciseInfoDtoList);
+        writeDiaryDto.setReview("오늘 운동 끝");
+        writeDiaryDto.setExerciseDate("2023-01-30");
+
+        ResponseResult<String> result = new ResponseResult<>(200, writeDiaryDto.getExerciseDate());
+        //when
+        ResponseResult<String> writeDiaryDtoResponseResult = diaryService.editDiary(writeDiaryDto, fileList, id);
+        //then
+        assertThat(writeDiaryDtoResponseResult).isEqualTo(result);
+    }
+
+    @Test
+    public void deleteDiary() throws IOException {
+        //given
+        Long diaryId = 1L;
+
+        given(SecurityUtil.getCurrentUsername()).willReturn("username");
+
+        Member member = Member.builder()
+                .username("username")
+                .email("test@test.com")
+                .loginId("testId3")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password("testPassword3!")
+                .field("서울시")
+                .build();
+
+        ExerciseInfo exInfo = ExerciseInfo.builder()
+                .exerciseName("pushUp")
+                .reps(10)
+                .exSetCount(10)
+                .cardio(false)
+                .cardioTime(0)
+                .bodyPart(BodyPart.TRICEP)
+                .finished(true)
+                .build();
+
+        List<ExerciseInfo> exInfoList = new ArrayList<>();
+        exInfoList.add(exInfo);
+
+
+        Media media = Media.builder()
+                .originalFilename("test1.png")
+                .filename("c42d3bb9-10de-45f6-8533-14b3dac07e4e.png")
+                .filePath("/Users/jeong-yunju/Project/Capstone/20230215/YouHaveTo/src/main/resources/media/c42d3bb9-10de-45f6-8533-14b3dac07e4e.png")
+                .post(null)
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+        media.setMediaIdUsedOnlyTest(1L);
+
+
+        List<Media> mediaId = new ArrayList<>();
+        mediaId.add(media);
+
+        Diary diaryDetail = Diary.builder()
+                .member(member)
+                .exerciseInfo(exInfoList)
+                .review("열심히 했다. 오운완")
+                .exerciseDate("2023-01-20")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
+
+        diaryDetail.setDiaryIdUsedOnlyTest(diaryId);
+
+        diaryDetail.linkToMedia(mediaId);
+
+        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.of(diaryDetail));
+
+        ResponseResult<Long> result = new ResponseResult<>(200, diaryId);
+        //when
+        ResponseResult<Long> longResponseResult = diaryService.deleteDiary(diaryId);
+        //then
+        assertThat(longResponseResult).isEqualTo(result);
     }
 }

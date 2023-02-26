@@ -149,4 +149,16 @@ class DiaryControllerTest {
                 .andExpect(status().isOk());
         //then
     }
+
+    @Test
+    @WithMockUser
+    public void deleteDiary() throws Exception {
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/diary/delete/{id}", 1)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+
+    }
 }
