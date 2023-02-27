@@ -1,8 +1,7 @@
 package com.yht.exerciseassist.domain.member.repository;
 
-import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.member.Member;
-import com.yht.exerciseassist.domain.member.MemberType;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +20,13 @@ class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private EntityManager em;
 
     @Test
     public void saveMember() {
         //given
-        Member member = Member.builder()
-                .username("member1")
-                .email("test@test.com")
-                .loginId("testId2")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .role(MemberType.USER)
-                .password("testPassword1!")
-                .field("서울시")
-                .build();
+        Member member = MemberFactory.createTestMember();
         //when
         Member saveMember = memberRepository.save(member);
         //then
@@ -46,15 +36,7 @@ class MemberRepositoryTest {
     @Test
     public void findMember() {
         //given
-        Member member = Member.builder()
-                .username("member1")
-                .email("test123@test.com")
-                .loginId("testId2")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .role(MemberType.USER)
-                .password("testPassword1!")
-                .field("서울시")
-                .build();
+        Member member = MemberFactory.createTestMember();
 
         member.updateRefreshToken("refreshToken");
 

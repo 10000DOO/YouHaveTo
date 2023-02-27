@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.member;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.diary.Diary;
+import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -55,6 +56,10 @@ public class Member implements UserDetails {
 
     @OneToMany(mappedBy = "commentWriter")
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id")
+    private Media media;
 
     @Builder
     public Member(String username, String email, String loginId, String password, String field, MemberType role, DateTime dateTime) {

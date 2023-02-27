@@ -32,8 +32,8 @@ public class DiaryController {
     }
 
     @PostMapping("/diary/write")
-    public ResponseEntity<ResponseResult<WriteDiaryDto>> writeDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
-                                                                    @RequestPart(required = false) List<MultipartFile> files) throws IOException {
+    public ResponseEntity<ResponseResult<String>> writeDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
+                                                             @RequestPart(required = false) List<MultipartFile> files) throws IOException {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.saveDiary(writeDiaryDto, files));
     }
@@ -47,11 +47,11 @@ public class DiaryController {
     }
 
     @PatchMapping("/diary/edit/{id}")
-    public ResponseEntity<ResponseResult<WriteDiaryDto>> editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
-                                                                   @RequestPart(required = false) List<MultipartFile> files,
-                                                                   @PathVariable Long id) throws IOException {
+    public ResponseEntity<ResponseResult<String>> editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
+                                                            @RequestPart(required = false) List<MultipartFile> files,
+                                                            @PathVariable Long id) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.editDiary(writeDiaryDto, files, id));
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.editDiary(writeDiaryDto, files, id));
     }
 
     @PatchMapping("diary/delete/{id}")

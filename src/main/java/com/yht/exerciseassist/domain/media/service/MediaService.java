@@ -77,7 +77,7 @@ public class MediaService {
     public ResponseEntity<FileSystemResource> getMediaFile(Long mediaId) throws IOException {
         Optional<Media> findMedia = mediaRepository.findById(mediaId);
 
-        Media media = findMedia.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NotFoundExceptionMedia.getMessage()));
+        Media media = findMedia.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
         HttpHeaders header = new HttpHeaders();
 
         FileSystemResource fileSystemResource = new FileSystemResource(media.getFilePath());
@@ -97,7 +97,7 @@ public class MediaService {
                 boolean deleteSuccess = file.delete();
                 mediaRepository.deleteById(media.getId());
                 if (!deleteSuccess) {
-                    throw new IOException(ErrorCode.DeleteFailedMediaException.getMessage());
+                    throw new IOException(ErrorCode.DELETE_FAILED_MEDIA_EXCEPTION.getMessage());
                 }
                 log.info(media.getFilename() + " 삭제 완료");
             }
