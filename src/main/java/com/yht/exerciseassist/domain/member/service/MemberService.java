@@ -72,13 +72,13 @@ public class MemberService implements UserDetailsService {
         Optional<Member> findUnameMember = memberRepository.findByUsername(signUpRequestDto.getUsername());
         String errorMessage = "";
         if (findIdMember.isPresent()) {
-            errorMessage += ErrorCode.NotFoundLoginID.getMessage();
+            errorMessage += ErrorCode.NOT_FOUND_LOGIN_ID.getMessage();
         }
         if (findEmailMember.isPresent()) {
-            errorMessage += ErrorCode.NotFoundEmail.getMessage();
+            errorMessage += ErrorCode.NOT_FOUND_EMAIL.getMessage();
         }
         if (findUnameMember.isPresent()) {
-            errorMessage += ErrorCode.NotFoundUserName.getMessage();
+            errorMessage += ErrorCode.NOT_FOUND_USERNAME.getMessage();
         }
         return errorMessage;
     }
@@ -96,14 +96,14 @@ public class MemberService implements UserDetailsService {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
-                throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+                throw new BadCredentialsException(ErrorCode.BAD_CREDENTIALS_EXCEPTION.getMessage());
             } else if (e instanceof InternalAuthenticationServiceException) {
-                throw new InternalAuthenticationServiceException(ErrorCode.InternalAuthenticationServiceException.getMessage());
+                throw new InternalAuthenticationServiceException(ErrorCode.INTERNAL_AUTHENTICATION_SERVICE_EXCEPTION.getMessage());
             }
         }
 
         if (authentication == null) {
-            throw new AuthenticationException(ErrorCode.AuthenticationException.getMessage());
+            throw new AuthenticationException(ErrorCode.AUTHENTICATION_EXCEPTION.getMessage());
         } else {
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
