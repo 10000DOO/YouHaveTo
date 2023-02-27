@@ -44,7 +44,7 @@ public class DiaryService {
     public ResponseResult<DiaryListDto> getDiaryList(String date) {
         List<Diary> findDiaries = diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentUsername(), date);
         if (findDiaries == null || findDiaries.isEmpty()) {
-            throw new EntityNotFoundException(ErrorCode.NotFoundExceptionDiary.getMessage());
+            throw new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage());
         } else {
             double monthlyTotal = 0;
             double monthlyFinished = 0;
@@ -80,7 +80,7 @@ public class DiaryService {
 
     public ResponseResult<String> saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionMember.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
         List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
@@ -111,7 +111,7 @@ public class DiaryService {
 
     public ResponseResult<DiaryDetailDto> getdiaryDetail(String date) {
         Optional<Diary> diaryDetails = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date);
-        Diary findDiary = diaryDetails.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NotFoundExceptionDiary.getMessage()));
+        Diary findDiary = diaryDetails.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         List<ExerciseInfoDto> exInfoDto = findDiary.getExerciseInfo().stream()
                 .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
@@ -140,7 +140,7 @@ public class DiaryService {
 
     public ResponseResult<String> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
         Diary diaryById = diaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionDiary.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
         List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
@@ -166,7 +166,7 @@ public class DiaryService {
 
     public ResponseResult<Long> deleteDiary(Long id) throws IOException {
         Diary diaryById = diaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NotFoundExceptionDiary.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         diaryById.getDateTime().canceledAtUpdate();
         mediaService.deleteFile(diaryById.getId());

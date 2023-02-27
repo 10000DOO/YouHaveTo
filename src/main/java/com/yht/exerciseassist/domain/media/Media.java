@@ -37,12 +37,10 @@ public class Media {
     private DateTime dateTime;
 
     @Builder
-    public Media(String originalFilename, String filename, String filePath, Post post, Diary diary, DateTime dateTime) {
+    public Media(String originalFilename, String filename, String filePath, DateTime dateTime) {
         this.originalFilename = originalFilename;
         this.filename = filename;
         this.filePath = filePath;
-        this.post = post;
-        this.diary = diary;
         this.dateTime = dateTime;
     }
 
