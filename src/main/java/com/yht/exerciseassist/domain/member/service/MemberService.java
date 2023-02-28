@@ -25,7 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,44 +42,21 @@ public class MemberService implements UserDetailsService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
-        String result = validateDuplicateMember(signUpRequestDto);
+        Member member = Member.builder()
+                .username(signUpRequestDto.getUsername())
+                .email(signUpRequestDto.getEmail())
+                .loginId(signUpRequestDto.getLoginId())
+                .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
+                .field(signUpRequestDto.getField())
+                .role(MemberType.USER)
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .build();
 
-        if (StringUtils.hasText(result)) {
-            throw new IllegalArgumentException(result);
-        } else {
-            Member member = Member.builder()
-                    .username(signUpRequestDto.getUsername())
-                    .email(signUpRequestDto.getEmail())
-                    .loginId(signUpRequestDto.getLoginId())
-                    .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
-                    .field(signUpRequestDto.getField())
-                    .role(MemberType.USER)
-                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
-                    .build();
+        memberRepository.save(member);
+        log.info(member.getUsername() + " 회원가입 완료");
 
-            memberRepository.save(member);
-            log.info(member.getUsername() + " 회원가입 완료");
-
-            return new ResponseResult<String>(HttpStatus.CREATED.value(), member.getUsername());
-        }
-    }
-
-    private String validateDuplicateMember(SignUpRequestDto signUpRequestDto) {
-        Optional<Member> findIdMember = memberRepository.findByLoginId(signUpRequestDto.getLoginId());
-        Optional<Member> findEmailMember = memberRepository.findByEmail(signUpRequestDto.getEmail());
-        Optional<Member> findUnameMember = memberRepository.findByUsername(signUpRequestDto.getUsername());
-        String errorMessage = "";
-        if (findIdMember.isPresent()) {
-            errorMessage += ErrorCode.NOT_FOUND_LOGIN_ID.getMessage();
-        }
-        if (findEmailMember.isPresent()) {
-            errorMessage += ErrorCode.NOT_FOUND_EMAIL.getMessage();
-        }
-        if (findUnameMember.isPresent()) {
-            errorMessage += ErrorCode.NOT_FOUND_USERNAME.getMessage();
-        }
-        return errorMessage;
+        return new ResponseResult<String>(HttpStatus.CREATED.value(), member.getUsername());
     }
 
     public ResponseResult<TokenInfo> signIn(String loginId, String password) {
