@@ -40,14 +40,16 @@ public class DiaryExceptionController {
     @ExceptionHandler(IOException.class)
     public ExceptionResponse ioExceptionHandle(IOException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        log.error("{} 파일 입출력 오류입니다.", exception.getMessage());
+        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "파일 입출력 오류입니다.");
     }
 
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ExceptionResponse wrongContentTpye(HttpMediaTypeNotSupportedException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+        log.error("{} 잘못된 Content-Type", exception.getMessage());
+        return new ExceptionResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "잘못된 Content-Type입니다.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -24,7 +24,8 @@ public class MediaExceptionController {
     @ExceptionHandler(IOException.class)
     public ExceptionResponse ioExceptionHandle(IOException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        log.error("{} 파일 입출력 오류입니다.", exception.getMessage());
+        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "파일 입출력 오류입니다.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

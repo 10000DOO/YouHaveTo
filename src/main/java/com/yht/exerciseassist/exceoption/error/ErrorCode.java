@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    NOT_FOUND_LOGIN_ID("이미 존재하는 아이디입니다. "),
-    NOT_FOUND_EMAIL("이미 존재하는 이메일입니다. "),
+    NOT_FOUND_LOGIN_ID("이미 존재하는 아이디입니다."),
+    NOT_FOUND_EMAIL("이미 존재하는 이메일입니다."),
     NOT_FOUND_USERNAME("이미 존재하는 이름입니다."),
     BAD_CREDENTIALS_EXCEPTION("비밀번호가 틀렸습니다. 다시 시도해주세요."),
     INTERNAL_AUTHENTICATION_SERVICE_EXCEPTION("아이디가 틀렸습니다. 다시 시도해주세요."),
