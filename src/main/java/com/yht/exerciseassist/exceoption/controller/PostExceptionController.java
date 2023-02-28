@@ -3,6 +3,7 @@ package com.yht.exerciseassist.exceoption.controller;
 import com.yht.exerciseassist.domain.post.controller.PostController;
 import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
+import com.yht.exerciseassist.exceoption.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,13 +40,15 @@ public class PostExceptionController {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ExceptionResponse wrongContentTpye(HttpMediaTypeNotSupportedException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+        log.error("{} // {}", exception.getMessage(), ErrorCode.WRONG_CONTENT_TYPE.getMessage());
+        return new ExceptionResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), ErrorCode.WRONG_CONTENT_TYPE.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IOException.class)
     public ExceptionResponse ioExceptionHandle(IOException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        log.error("{} // {}", exception.getMessage(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
+        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
     }
 }
