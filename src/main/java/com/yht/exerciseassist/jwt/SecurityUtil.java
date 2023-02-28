@@ -11,4 +11,13 @@ public class SecurityUtil {
         }
         return authentication.getName();
     }
+
+    public static String getMemberRole() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities() == null) {
+            throw new IllegalArgumentException("No authentication information.");
+        }
+        String userRole = authentication.getAuthorities().toString();
+        return userRole.substring(userRole.indexOf("_") + 1, userRole.length() - 1);
+    }
 }
