@@ -30,8 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DiaryControllerTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
-    //    @Autowired
-//    ResourceLoader loader;
     @MockBean
     private DiaryService diaryService;
     @Autowired
