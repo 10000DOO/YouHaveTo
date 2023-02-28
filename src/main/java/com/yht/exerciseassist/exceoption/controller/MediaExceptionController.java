@@ -3,6 +3,7 @@ package com.yht.exerciseassist.exceoption.controller;
 import com.yht.exerciseassist.domain.media.controller.MediaController;
 import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
 import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
+import com.yht.exerciseassist.exceoption.error.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,8 @@ public class MediaExceptionController {
     @ExceptionHandler(IOException.class)
     public ExceptionResponse ioExceptionHandle(IOException exception) {
 
-        log.error("{} 파일 입출력 오류입니다.", exception.getMessage());
-        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "파일 입출력 오류입니다.");
+        log.error("{} // {}", exception.getMessage(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
+        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

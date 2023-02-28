@@ -13,8 +13,9 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_DIARY("존재하지 않는 다이어리입니다."),
     NOT_FOUND_EXCEPTION_MEDIA("존재하지 않는 미디어입니다."),
     NOT_FOUND_EXCEPTION_MEMBER("존재하지 않는 유저입니다."),
-    DELETE_FAILED_MEDIA_EXCEPTION("미디어 파일 삭제 실패입니다. 다시 시도해주세요.");
-
+    DELETE_FAILED_MEDIA_EXCEPTION("미디어 파일 삭제 실패입니다. 다시 시도해주세요."),
+    IO_FAIL_EXCEOPTION("파일 입출력 실패입니다."),
+    WRONG_CONTENT_TYPE("잘못된 Content-Type입니다.");
     private final String message;
 
     ErrorCode(String message) {
