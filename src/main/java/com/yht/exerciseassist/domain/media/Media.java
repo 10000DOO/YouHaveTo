@@ -51,4 +51,8 @@ public class Media {
     public void linkToDiary(Diary diary) {
         this.diary = diary;
     }
+
+    public void linkToPost(Post post) {
+        this.post = post;
+    }
 }

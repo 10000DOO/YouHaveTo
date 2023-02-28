@@ -22,14 +22,14 @@ public class MediaExceptionController {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IOException.class)
-    public ExceptionResponse exceptionHandle(IOException exception) {
+    public ExceptionResponse ioExceptionHandle(IOException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ExceptionResponse exceptionHandle(EntityNotFoundException exception) {
+    public ExceptionResponse mediaNotFound(EntityNotFoundException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
