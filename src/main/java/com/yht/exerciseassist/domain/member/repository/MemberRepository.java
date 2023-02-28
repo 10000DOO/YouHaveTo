@@ -11,9 +11,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query(value = "select m from Member m where m.loginId = :loginId and m.dateTime.canceledAt = null")
     Optional<Member> findByLoginId(String loginId);
 
-    @Query(value = "select m from Member m where m.email = :email and m.dateTime.canceledAt = null")
-    Optional<Member> findByEmail(String email);
-
     @Query(value = "select m from Member m where m.username = :username and m.dateTime.canceledAt = null")
     Optional<Member> findByUsername(String username);
 

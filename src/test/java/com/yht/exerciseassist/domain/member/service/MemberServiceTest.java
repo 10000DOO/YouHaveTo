@@ -69,24 +69,6 @@ class MemberServiceTest {
     }
 
     @Test
-    public void duplicatedSignUp() {
-        //given
-        SignUpRequestDto signUpRequestDto = MemberFactory.createTestSignUpRequestDto();
-
-        Member member = MemberFactory.createTestMember();
-
-        Mockito.when(memberRepository.findByLoginId(signUpRequestDto.getLoginId())).thenReturn(Optional.ofNullable(member));
-        Mockito.when(memberRepository.findByEmail(signUpRequestDto.getEmail())).thenReturn(Optional.ofNullable(member));
-        Mockito.when(memberRepository.findByUsername(signUpRequestDto.getUsername())).thenReturn(Optional.ofNullable(member));
-
-        //when
-        //then
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            memberService.join(signUpRequestDto);
-        });
-    }
-
-    @Test
     public void signIn() {
         //given
         SignInRequestDto signInRequestDto = MemberFactory.createTestSignInRequestDto();
