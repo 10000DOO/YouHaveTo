@@ -153,7 +153,7 @@ public class DiaryService {
         diaryById.getDateTime().updatedAtUpdate();
 
         if (files != null && !(files.isEmpty())) {
-            mediaService.deleteFile(id);
+            mediaService.deleteDiaryImage(id);
             List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
             diaryById.linkToMedia(mediaList);
         }
@@ -169,7 +169,7 @@ public class DiaryService {
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         diaryById.getDateTime().canceledAtUpdate();
-        mediaService.deleteFile(diaryById.getId());
+        mediaService.deleteDiaryImage(diaryById.getId());
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), diaryById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getId());
     }

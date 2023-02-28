@@ -96,7 +96,7 @@ class MediaServiceTest {
         MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
         mediaFile.transferTo(new File(fileDir + media.getOriginalFilename()));
         //when
-        mediaService.deleteFile(1L);
+        mediaService.deleteDiaryImage(1L);
         //then
     }
 }

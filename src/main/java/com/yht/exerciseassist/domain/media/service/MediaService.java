@@ -88,19 +88,30 @@ public class MediaService {
         return ResponseEntity.status(HttpStatus.OK).headers(header).body(fileSystemResource);
     }
 
-    public void deleteFile(Long diaryId) throws IOException {
+    public void deleteDiaryImage(Long diaryId) throws IOException {
         List<Media> byDiaryId = mediaRepository.findByDiaryId(diaryId);
 
         if (byDiaryId != null && !byDiaryId.isEmpty()) {
             for (Media media : byDiaryId) {
-                File file = new File(media.getFilePath());
-                boolean deleteSuccess = file.delete();
-                mediaRepository.deleteById(media.getId());
-                if (!deleteSuccess) {
-                    throw new IOException(ErrorCode.DELETE_FAILED_MEDIA_EXCEPTION.getMessage());
-                }
-                log.info(media.getFilename() + " 삭제 완료");
+                deleteFile(media);
             }
         }
+    }
+
+    public void deleteProfileImage(Long mediaId) throws IOException {
+        Media media = mediaRepository.findById(mediaId).orElseThrow(
+                () -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage())
+        );
+        deleteFile(media);
+    }
+
+    private void deleteFile(Media media) throws IOException {
+        File file = new File(media.getFilePath());
+        boolean deleteSuccess = file.delete();
+        mediaRepository.deleteById(media.getId());
+        if (!deleteSuccess) {
+            throw new IOException(ErrorCode.DELETE_FAILED_MEDIA_EXCEPTION.getMessage());
+        }
+        log.info(media.getFilename() + " 삭제 완료");
     }
 }
