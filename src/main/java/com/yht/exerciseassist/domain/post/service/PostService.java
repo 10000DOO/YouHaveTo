@@ -70,17 +70,24 @@ public class PostService {
         Post postById = postRepository.findNotDeletedById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
-        List<String> mediaId = new ArrayList<>();
+        List<String> mediaList = new ArrayList<>();
         for (Media media : postById.getMediaList()) {
-            mediaId.add(baseUrl + "/media/" + media.getId());
+            mediaList.add(baseUrl + "/media/" + media.getId());
+        }
+        
+        String profileImage;
+        try {
+            profileImage = baseUrl + "/media/" + postById.getPostWriter().getMedia().getId();
+        } catch (NullPointerException e) {
+            profileImage = null;
         }
 
         PostDetailRes postDetailRes = PostDetailRes.builder()
                 .username(postById.getPostWriter().getUsername())
-                .profileImage(baseUrl + "/media/" + postById.getPostWriter().getMedia().getId())
+                .profileImage(profileImage)
                 .title(postById.getTitle())
                 .content(postById.getContent())
-                .mediaList(mediaId)
+                .mediaList(mediaList)
                 .views(postById.getViews())
                 .likeCount(postById.getLikeCount())
                 .createdAt(postById.getDateTime().getCreatedAt())
