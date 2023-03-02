@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,8 +109,8 @@ public class DiaryService {
     }
 
     public ResponseResult<DiaryDetailDto> getdiaryDetail(String date) {
-        Optional<Diary> diaryDetails = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date);
-        Diary findDiary = diaryDetails.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
+        Diary findDiary = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         List<ExerciseInfoDto> exInfoDto = findDiary.getExerciseInfo().stream()
                 .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())

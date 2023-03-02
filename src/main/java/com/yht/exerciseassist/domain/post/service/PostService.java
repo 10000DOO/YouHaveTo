@@ -7,12 +7,15 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.Post;
+import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.exceoption.error.ErrorCode;
 import com.yht.exerciseassist.jwt.SecurityUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +36,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
+    @Value("${base.url}")
+    private String baseUrl;
 
     public ResponseResult<String> savePost(WritePostDto writePostDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
@@ -58,5 +64,31 @@ public class PostService {
         log.info("사용자명 : " + findMember.getUsername() + " 게시글 등록 완료");
         ResponseResult<String> responseResult = new ResponseResult(HttpStatus.CREATED.value(), writePostDto.getTitle());
         return responseResult;
+    }
+
+    public ResponseResult<PostDetailRes> getPostDetail(Long postId) {
+        Post postById = postRepository.findNotDeletedById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+        List<String> mediaId = new ArrayList<>();
+        for (Media media : postById.getMediaList()) {
+            mediaId.add(baseUrl + "/media/" + media.getId());
+        }
+
+        PostDetailRes postDetailRes = PostDetailRes.builder()
+                .username(postById.getPostWriter().getUsername())
+                .profileImage(baseUrl + "/media/" + postById.getPostWriter().getMedia().getId())
+                .title(postById.getTitle())
+                .content(postById.getContent())
+                .mediaList(mediaId)
+                .views(postById.getViews())
+                .likeCount(postById.getLikeCount())
+                .createdAt(postById.getDateTime().getCreatedAt())
+                .postType(postById.getPostType())
+                .workOutCategory(postById.getWorkOutCategory())
+                .build();
+
+        log.info("Username : {} postId : {} 게시글 상세 조회 성공", SecurityUtil.getCurrentUsername(), postById.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(), postDetailRes);
     }
 }
