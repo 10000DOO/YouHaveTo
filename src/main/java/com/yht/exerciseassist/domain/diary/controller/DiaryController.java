@@ -46,12 +46,12 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getdiaryDetail(date));
     }
 
-    @PatchMapping("/diary/edit/{id}")
+    @PatchMapping("/diary/edit/{diaryId}")
     public ResponseEntity<ResponseResult<String>> editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
                                                             @RequestPart(required = false) List<MultipartFile> files,
-                                                            @PathVariable Long id) throws IOException {
+                                                            @PathVariable Long diaryId) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.OK).body(diaryService.editDiary(writeDiaryDto, files, id));
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.editDiary(writeDiaryDto, files, diaryId));
     }
 
     @PatchMapping("diary/delete/{id}")

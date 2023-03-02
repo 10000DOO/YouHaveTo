@@ -4,14 +4,13 @@ import com.yht.exerciseassist.domain.DateTime;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class DiaryDetailDto {
     private String exerciseDate;
     private String review;
-    private List<ExerciseInfoDto> exerciseInfo = new ArrayList<>();
+    private List<ExerciseInfoDto> exerciseInfo;
     private DateTime dateTime;
     private List<String> mediaList;
 

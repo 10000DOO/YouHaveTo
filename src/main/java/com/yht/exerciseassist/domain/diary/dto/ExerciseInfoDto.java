@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.diary.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yht.exerciseassist.domain.diary.BodyPart;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class ExerciseInfoDto {
 
     private int cardioTime; //유산소 운동 시간
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
     private boolean finished; //완료 여부
