@@ -35,4 +35,4 @@ logging:
   config: classpath:log4j2-prod.xml
 
 base:
-  url: ENC(gGWykxlqG4A1WYxL9ZEMDXDX4o3RlVARSRflYePYfpJbC7/Sp+wCGw==)
+  url: ENC(UpPv/Vcdlw6MzD2697sdTa+SUMXgt0CtbtQIlD5ymxNVS7mgKnUKeA==)

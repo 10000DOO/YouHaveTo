@@ -62,8 +62,7 @@ public class PostService {
         postRepository.save(post);
 
         log.info("사용자명 : " + findMember.getUsername() + " 게시글 등록 완료");
-        ResponseResult<String> responseResult = new ResponseResult(HttpStatus.CREATED.value(), writePostDto.getTitle());
-        return responseResult;
+        return new ResponseResult<>(HttpStatus.CREATED.value(), writePostDto.getTitle());
     }
 
     public ResponseResult<PostDetailRes> getPostDetail(Long postId) {
@@ -74,7 +73,7 @@ public class PostService {
         for (Media media : postById.getMediaList()) {
             mediaList.add(baseUrl + "/media/" + media.getId());
         }
-        
+
         String profileImage;
         try {
             profileImage = baseUrl + "/media/" + postById.getPostWriter().getMedia().getId();

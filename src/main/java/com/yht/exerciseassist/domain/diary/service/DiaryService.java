@@ -69,11 +69,8 @@ public class DiaryService {
             int monthlyPercentage = (int) Math.round(monthlyFinished / monthlyTotal * 100);
             DiaryListDto diaryListDto = new DiaryListDto(calender, monthlyPercentage);
 
-            ResponseResult<DiaryListDto> responseResult = new ResponseResult(HttpStatus.OK.value(), diaryListDto);
-
             log.info(date + " : 다이어리 목록 조회 성공");
-
-            return responseResult;
+            return new ResponseResult<>(HttpStatus.OK.value(), diaryListDto);
         }
     }
 
@@ -104,8 +101,7 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         log.info("사용자명 : " + findMember.getUsername() + " 다이어리 등록 완료");
-        ResponseResult<String> responseResult = new ResponseResult(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
-        return responseResult;
+        return new ResponseResult<>(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
     }
 
     public ResponseResult<DiaryDetailDto> getdiaryDetail(String date) {
@@ -134,7 +130,7 @@ public class DiaryService {
 
 
         log.info(date + "다이어리 상세 조회 성공");
-        return new ResponseResult<DiaryDetailDto>(HttpStatus.OK.value(), diaryDetailDto);
+        return new ResponseResult<>(HttpStatus.OK.value(), diaryDetailDto);
     }
 
     public ResponseResult<String> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
@@ -159,8 +155,7 @@ public class DiaryService {
         diaryRepository.save(diaryById);
 
         log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 다이어리 수정 완료");
-        ResponseResult<String> responseResult = new ResponseResult(HttpStatus.OK.value(), writeDiaryDto.getExerciseDate());
-        return responseResult;
+        return new ResponseResult<>(HttpStatus.OK.value(), writeDiaryDto.getExerciseDate());
     }
 
     public ResponseResult<Long> deleteDiary(Long id) throws IOException {
