@@ -212,7 +212,7 @@ class DiaryServiceTest {
         //given
         Long diaryId = 1L;
 
-        given(SecurityUtil.getCurrentUsername()).willReturn("username");
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
 
         Member member = MemberFactory.createTestMember();
 

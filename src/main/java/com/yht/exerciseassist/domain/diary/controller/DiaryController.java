@@ -61,9 +61,9 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.editDiary(writeDiaryDto, files, diaryId));
     }
 
-    @PatchMapping("diary/delete/{id}")
-    public ResponseEntity<ResponseResult> deleteDiary(@PathVariable Long id) throws IOException {
+    @PatchMapping("diary/delete/{diaryId}")
+    public ResponseEntity<ResponseResult<Long>> deleteDiary(@PathVariable Long diaryId) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.OK).body(diaryService.deleteDiary(id));
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.deleteDiary(diaryId));
     }
 }

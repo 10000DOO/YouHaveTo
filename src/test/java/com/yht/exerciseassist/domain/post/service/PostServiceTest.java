@@ -1,8 +1,10 @@
 package com.yht.exerciseassist.domain.post.service;
 
 import com.yht.exerciseassist.ResponseResult;
+import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
+import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
@@ -44,8 +46,9 @@ import static org.mockito.Mockito.mockStatic;
 class PostServiceTest {
 
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
-
     PostService postService;
+    @Value("${file.dir}")
+    private String fileDir;
     @MockBean
     private PostRepository postRepository;
     @MockBean
@@ -119,6 +122,7 @@ class PostServiceTest {
     public void editPost() throws IOException {
         //given
         WritePostDto writePostDto = PostFactory.writePostDto();
+        given(SecurityUtil.getMemberRole()).willReturn("USER");
         String fileName = "tuxCoding.jpg";
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         List<MultipartFile> mediaFileList = new ArrayList<>();
@@ -127,12 +131,39 @@ class PostServiceTest {
         Member testMember = MemberFactory.createTestMember();
         Post testPost = PostFactory.createTestPost(testMember);
 
-        Mockito.when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(testPost));
+        Mockito.when(postRepository.findByIdWithRole(postId, SecurityUtil.getMemberRole())).thenReturn(Optional.ofNullable(testPost));
 
         ResponseResult responseResult = new ResponseResult(200, writePostDto.getTitle());
         //when
         ResponseResult<String> stringResponseResult = postService.editPost(writePostDto, mediaFileList, postId);
         //then
         assertThat(stringResponseResult).isEqualTo(responseResult);
+    }
+
+    @Test
+    public void deletePost() throws IOException {
+        //given
+        Long postId = 1L;
+
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
+
+        Member member = MemberFactory.createTestMember();
+
+        Post testPost = PostFactory.createTestPost(member);
+        testPost.setPostIdUsedOnlyTest(postId);
+
+        Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
+        media.setMediaIdUsedOnlyTest(1L);
+        List<Media> mediaId = new ArrayList<>();
+        mediaId.add(media);
+
+        testPost.linkToMedia(mediaId);
+
+        Mockito.when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        ResponseResult<Long> mockResult = new ResponseResult<>(HttpStatus.OK.value(), postId);
+        //when
+        ResponseResult<Long> ResponseResult = postService.deletePost(postId);
+        //then
+        assertThat(ResponseResult).isEqualTo(mockResult);
     }
 }

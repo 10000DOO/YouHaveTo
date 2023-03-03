@@ -158,13 +158,14 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getExerciseDate());
     }
 
-    public ResponseResult<Long> deleteDiary(Long id) throws IOException {
-        Diary diaryById = diaryRepository.findById(id)
+    public ResponseResult<Long> deleteDiary(Long diaryId) throws IOException {
+        Diary diaryById = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        diaryById.getDateTime().canceledAtUpdate();
         mediaService.deleteDiaryImage(diaryById.getId());
-        log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), diaryById.getId());
+        diaryById.getDateTime().canceledAtUpdate();
+
+        log.info("username : {}, {}번 다이어리 삭제 완료", SecurityUtil.getCurrentUsername(), diaryById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getId());
     }
 
