@@ -7,6 +7,7 @@ import com.yht.exerciseassist.domain.post.service.PostService;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
@@ -34,6 +35,8 @@ class PostControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private CommonExceptionHandler commonExceptionHandler;
+    @Value("${test.address}")
+    private String testAddress;
 
     @Test
     @WithMockUser
@@ -43,7 +46,7 @@ class PostControllerTest {
         String writePostDtoJson = objectMapper.writeValueAsString(writePostDto);
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         MockMultipartFile jsonFile = new MockMultipartFile("writePostDto", writePostDtoJson, "application/json", writePostDtoJson.getBytes(StandardCharsets.UTF_8));
         //when
         mockMvc.perform(multipart("/post/write")

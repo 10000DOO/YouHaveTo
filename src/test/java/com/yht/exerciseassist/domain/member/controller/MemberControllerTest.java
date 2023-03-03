@@ -78,4 +78,17 @@ class MemberControllerTest {
         assertThat(result.getStatus()).isEqualTo(200);
         assertThat(result.getData()).isEqualTo(tokenInfo);
     }
+
+    @Test
+    @WithMockUser()
+    public void deleteMember() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/member/delete")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+
+    }
 }

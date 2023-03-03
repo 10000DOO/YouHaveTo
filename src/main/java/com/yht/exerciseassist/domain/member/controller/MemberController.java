@@ -9,9 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +27,10 @@ public class MemberController {
     @PostMapping("/signin")
     public ResponseEntity<ResponseResult<TokenInfo>> signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.signIn(signInRequestDto.getLoginId(), signInRequestDto.getPassword()));
+    }
+
+    @PatchMapping("/member/delete")
+    public ResponseEntity<ResponseResult<Long>> memberDelete() throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember());
     }
 }

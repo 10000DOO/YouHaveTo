@@ -55,7 +55,7 @@ public class PostExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ExceptionResponse diaryNotFound(EntityNotFoundException exception) {
+    public ExceptionResponse postNotFound(EntityNotFoundException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
