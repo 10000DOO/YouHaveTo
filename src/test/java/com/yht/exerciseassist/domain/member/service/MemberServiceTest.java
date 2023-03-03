@@ -62,6 +62,8 @@ class MemberServiceTest {
     private MediaService mediaService;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+    @Value("${file.dir}")
+    private String fileDir;
 
     @AfterEach
     public void afterAll() {
@@ -125,11 +127,11 @@ class MemberServiceTest {
     }
 
     @Test
-    public void deleteMember() throws IOException{
+    public void deleteMember() throws IOException {
         //given
         Member member = MemberFactory.createTestMember();
 
-        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Project/Capstone/20230301/YouHaveTo/src/main/resources/media/test1.png");
+        Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
         media.setMediaIdUsedOnlyTest(1L);
 
         given(SecurityUtil.getCurrentUsername()).willReturn("username");

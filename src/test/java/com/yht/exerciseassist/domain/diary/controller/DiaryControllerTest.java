@@ -7,6 +7,7 @@ import com.yht.exerciseassist.domain.factory.DiaryFactory;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -37,6 +38,9 @@ class DiaryControllerTest {
     @MockBean
     private CommonExceptionHandler commonExceptionHandler;
 
+    @Value("${test.address}")
+    private String testAddress;
+
     @Test
     @WithMockUser
     public void writeDiary() throws Exception {
@@ -46,7 +50,7 @@ class DiaryControllerTest {
         String writeDiaryDtoJson = objectMapper.writeValueAsString(writeDiaryDto);
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         MockMultipartFile jsonFile = new MockMultipartFile("writeDiaryDto", writeDiaryDtoJson, "application/json", writeDiaryDtoJson.getBytes(StandardCharsets.UTF_8));
 
         //when
@@ -93,7 +97,7 @@ class DiaryControllerTest {
         String writeDiaryDtoJson = objectMapper.writeValueAsString(writeDiaryDto);
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         MockMultipartFile jsonFile = new MockMultipartFile("writeDiaryDto", writeDiaryDtoJson, "application/json", writeDiaryDtoJson.getBytes(StandardCharsets.UTF_8));
 
         //when

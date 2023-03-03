@@ -112,7 +112,7 @@ public class MediaService {
         Media media = mediaRepository.findById(mediaId).orElseThrow(
                 () -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage())
         );
-            deleteFile(media);
+        deleteFile(media);
     }
 
     private void deleteFile(Media media) throws IOException {
