@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.post.controller;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
+import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.service.PostService;
 import io.jsonwebtoken.io.IOException;
@@ -35,11 +36,23 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostDetail(postId));
     }
 
+    @GetMapping("/post/edit/{postId}")
+    public ResponseEntity<ResponseResult<PostEditList>> getEditData(@PathVariable Long postId) throws IllegalAccessException {
+
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostEditData(postId));
+    }
+
     @PatchMapping("/post/edit/{postId}")
     public ResponseEntity<ResponseResult<String>> editPost(@RequestPart @Valid WritePostDto writePostDto,
                                                            @RequestPart(required = false) List<MultipartFile> files,
                                                            @PathVariable Long postId) throws java.io.IOException {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(writePostDto, files, postId));
+    }
+
+    @PatchMapping("post/delete/{postId}")
+    public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException {
+
+        return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
 }

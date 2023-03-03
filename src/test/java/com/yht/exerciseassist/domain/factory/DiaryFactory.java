@@ -86,4 +86,20 @@ public class DiaryFactory {
 
         return diaryDetailDto;
     }
+
+    public static List<ExerciseInfoDto> getExerciseInfoDto() {
+        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto(); //내가 기대한 Dto반환값
+        exerciseInfoDto.setExerciseName("pushUp");
+        exerciseInfoDto.setReps(10);
+        exerciseInfoDto.setCardio(true);
+        exerciseInfoDto.setExSetCount(10);
+        exerciseInfoDto.setCardioTime(30);
+        exerciseInfoDto.setBodyPart(null);
+        exerciseInfoDto.setFinished(true);
+
+        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
+        exerciseInfoDtoList.add(exerciseInfoDto);
+
+        return exerciseInfoDtoList;
+    }
 }

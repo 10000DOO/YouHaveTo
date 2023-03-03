@@ -2,10 +2,7 @@ package com.yht.exerciseassist.domain.diary.service;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.Diary;
-import com.yht.exerciseassist.domain.diary.dto.Calender;
-import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
-import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
-import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
+import com.yht.exerciseassist.domain.diary.dto.*;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
 import com.yht.exerciseassist.domain.factory.DiaryFactory;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
@@ -56,6 +53,8 @@ class DiaryServiceTest {
     private MemberRepository memberRepository;
     @MockBean
     private MediaService mediaService;
+    @Value("${test.address}")
+    private String testAddress;
 
     @AfterEach
     public void afterAll() {
@@ -81,7 +80,7 @@ class DiaryServiceTest {
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "2023-01-30");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/10000doo/Documents/wallpaper/Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
@@ -128,7 +127,7 @@ class DiaryServiceTest {
 
         Member member = MemberFactory.createTestMember();
 
-        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Project/Capstone/20230215/YouHaveTo/src/main/resources/media/test1.png");
+        Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
         media.setMediaIdUsedOnlyTest(1L);
 
         List<Media> mediaId = new ArrayList<>();
@@ -140,17 +139,38 @@ class DiaryServiceTest {
 
         diaryDetail.linkToMedia(mediaId);
 
-        Optional<Diary> opDiaryDetail = Optional.of(diaryDetail); //Repository에서  찾아올 다이어리
+        Optional<Diary> opDiaryDetail = Optional.of(diaryDetail);
 
         DiaryDetailDto diaryDetailDto = DiaryFactory.createTestDiaryDetailDto();
 
-        //이 정보가 맞다면 Optional<Diary>타입의 diartdetail을 반환해줘
         Mockito.when(diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), "2023-01-30")).thenReturn(opDiaryDetail);
         //when
         ResponseResult diary = diaryService.getdiaryDetail("2023-01-30");
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(diary.getData()).isEqualTo(diaryDetailDto);
+    }
+
+    @Test
+    public void getPostEditData() {
+        //given
+        Long diaryId = 1L;
+        Member testMember = MemberFactory.createTestMember();
+        Diary testDiary = DiaryFactory.createTestDiary(testMember);
+        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.ofNullable(testDiary));
+
+        List<ExerciseInfoDto> exerciseInfoDto = DiaryFactory.getExerciseInfoDto();
+        DiaryEditData diaryEditData = DiaryEditData.builder()
+                .review(testDiary.getReview())
+                .exerciseInfo(exerciseInfoDto)
+                .mediaList(new ArrayList<>())
+                .build();
+
+        ResponseResult<DiaryEditData> diaryEditDataResponseResult = new ResponseResult<>(200, diaryEditData);
+        //when
+        ResponseResult<DiaryEditData> diaryEditDataResult = diaryService.getDiaryEditData(diaryId);
+        //then
+        assertThat(diaryEditDataResult).isEqualTo(diaryEditDataResponseResult);
     }
 
     @Test
@@ -171,7 +191,7 @@ class DiaryServiceTest {
 
         diaryDetail.linkToMedia(mediaId);
 
-        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
         List<MultipartFile> fileList = new ArrayList<>();
         fileList.add(mediaFile);
         Mockito.when(diaryRepository.findById(id)).thenReturn(Optional.of(diaryDetail));
@@ -192,7 +212,7 @@ class DiaryServiceTest {
         //given
         Long diaryId = 1L;
 
-        given(SecurityUtil.getCurrentUsername()).willReturn("username");
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
 
         Member member = MemberFactory.createTestMember();
 

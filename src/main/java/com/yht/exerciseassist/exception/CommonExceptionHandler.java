@@ -1,7 +1,7 @@
-package com.yht.exerciseassist.exceoption;
+package com.yht.exerciseassist.exception;
 
-import com.yht.exerciseassist.exceoption.dto.ErrorMessageDto;
-import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
+import com.yht.exerciseassist.exception.dto.ErrorMessageDto;
+import com.yht.exerciseassist.exception.dto.ExceptionResponse;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

@@ -1,9 +1,9 @@
 package com.yht.exerciseassist.jwt.filter;
 
-import com.yht.exerciseassist.exceoption.error.jwt.EmptyJWTTokenExcep;
-import com.yht.exerciseassist.exceoption.error.jwt.ExpiredJWTTokenExcep;
-import com.yht.exerciseassist.exceoption.error.jwt.InvalidJWTTokenExcep;
-import com.yht.exerciseassist.exceoption.error.jwt.UnsupportedJWTTokenExcep;
+import com.yht.exerciseassist.exception.error.jwt.EmptyJWTTokenExcep;
+import com.yht.exerciseassist.exception.error.jwt.ExpiredJWTTokenExcep;
+import com.yht.exerciseassist.exception.error.jwt.InvalidJWTTokenExcep;
+import com.yht.exerciseassist.exception.error.jwt.UnsupportedJWTTokenExcep;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.JwtTokenResolver;
 import jakarta.servlet.FilterChain;

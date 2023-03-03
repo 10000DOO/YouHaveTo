@@ -37,6 +37,8 @@ class MediaServiceTest {
 
     @Value("${file.dir}")
     private String fileDir;
+    @Value("${test.address}")
+    private String testAddress;
 
     @MockBean
     private MediaRepository mediaRepository;
@@ -49,10 +51,10 @@ class MediaServiceTest {
     @Test
     public void imageUpload() throws IOException {
         //given
-        Media media = MediaFactory.createTeatMedia("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg");
+        Media media = MediaFactory.createTeatMedia(testAddress + "storeFileName.jpg");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
@@ -66,7 +68,7 @@ class MediaServiceTest {
     @Test
     public void getMediaFileTest() throws IOException {
         //given
-        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Documents/wallpaper/" + "test1.png");
+        Media media = MediaFactory.createTeatMedia(testAddress + "test1.png");
 
         media.setMediaIdUsedOnlyTest(1L);
 
@@ -93,7 +95,7 @@ class MediaServiceTest {
 
         Mockito.when(mediaRepository.findByDiaryId(1L)).thenReturn(mediaList);
 
-        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
         mediaFile.transferTo(new File(fileDir + media.getOriginalFilename()));
         //when
         mediaService.deleteDiaryImage(1L);

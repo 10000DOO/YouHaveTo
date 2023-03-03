@@ -10,7 +10,7 @@ import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
-import com.yht.exerciseassist.exceoption.error.ErrorCode;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.jwt.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -78,12 +78,7 @@ public class DiaryService {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
-        List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
-        List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
-                .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
-                        .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
-                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
-                .collect(Collectors.toList());
+        List<ExerciseInfo> exInfo = getExInfo(writeDiaryDto);
 
         Diary diary = Diary.builder()
                 .member(findMember)
@@ -108,17 +103,9 @@ public class DiaryService {
         Diary findDiary = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        List<ExerciseInfoDto> exInfoDto = findDiary.getExerciseInfo().stream()
-                .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
-                        .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
-                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
-                .collect(Collectors.toList());
+        List<ExerciseInfoDto> exInfoDto = getExInfoDto(findDiary);
 
-        List<String> mediaId = new ArrayList<>();
-
-        for (Media media : findDiary.getMediaList()) {
-            mediaId.add(baseUrl + "/media/" + media.getId());
-        }
+        List<String> mediaId = getMediaList(findDiary);
 
         DiaryDetailDto diaryDetailDto = DiaryDetailDto.builder()
                 .exerciseDate(findDiary.getExerciseDate())
@@ -133,16 +120,29 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.OK.value(), diaryDetailDto);
     }
 
+    public ResponseResult<DiaryEditData> getDiaryEditData(Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
+
+        List<ExerciseInfoDto> exInfoDto = getExInfoDto(diary);
+
+        List<String> mediaList = getMediaList(diary);
+
+        DiaryEditData diaryEditData = DiaryEditData.builder()
+                .review(diary.getReview())
+                .exerciseInfo(exInfoDto)
+                .mediaList(mediaList)
+                .build();
+
+        log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 다이어리 수정 데이터 조회 성공");
+        return new ResponseResult<>(HttpStatus.OK.value(), diaryEditData);
+    }
+
     public ResponseResult<String> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
         Diary diaryById = diaryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        List<ExerciseInfoDto> exerciseInfoDto = writeDiaryDto.getExerciseInfo();
-        List<ExerciseInfo> exInfo = exerciseInfoDto.stream()
-                .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
-                        .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
-                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
-                .collect(Collectors.toList());
+        List<ExerciseInfo> exInfo = getExInfo(writeDiaryDto);
 
         diaryById.editDiary(writeDiaryDto.getExerciseDate(), writeDiaryDto.getReview(), exInfo);
         diaryById.getDateTime().updatedAtUpdate();
@@ -158,13 +158,38 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getExerciseDate());
     }
 
-    public ResponseResult<Long> deleteDiary(Long id) throws IOException {
-        Diary diaryById = diaryRepository.findById(id)
+    public ResponseResult<Long> deleteDiary(Long diaryId) throws IOException {
+        Diary diaryById = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        diaryById.getDateTime().canceledAtUpdate();
         mediaService.deleteDiaryImage(diaryById.getId());
-        log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), diaryById.getId());
+        diaryById.getDateTime().canceledAtUpdate();
+
+        log.info("username : {}, {}번 다이어리 삭제 완료", SecurityUtil.getCurrentUsername(), diaryById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getId());
+    }
+
+    private List<String> getMediaList(Diary diary) {
+        List<String> mediaList = new ArrayList<>();
+        for (Media media : diary.getMediaList()) {
+            mediaList.add(baseUrl + "/media/" + media.getId());
+        }
+        return mediaList;
+    }
+
+    public List<ExerciseInfoDto> getExInfoDto(Diary diary) {
+        return diary.getExerciseInfo().stream()
+                .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
+                        .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
+                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseInfo> getExInfo(WriteDiaryDto writeDiaryDto) {
+        return writeDiaryDto.getExerciseInfo().stream()
+                .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
+                        .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
+                        .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
+                .collect(Collectors.toList());
     }
 }

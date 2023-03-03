@@ -1,7 +1,7 @@
 package com.yht.exerciseassist.domain.media.controller;
 
 import com.yht.exerciseassist.domain.media.service.MediaService;
-import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
+import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

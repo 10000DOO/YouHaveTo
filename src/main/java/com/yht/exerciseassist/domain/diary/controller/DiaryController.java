@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.diary.controller;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
+import com.yht.exerciseassist.domain.diary.dto.DiaryEditData;
 import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
@@ -46,6 +47,12 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getdiaryDetail(date));
     }
 
+    @GetMapping("/diary/edit/{diaryId}")
+    public ResponseEntity<ResponseResult<DiaryEditData>> getEditData(@PathVariable Long diaryId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.getDiaryEditData(diaryId));
+    }
+
     @PatchMapping("/diary/edit/{diaryId}")
     public ResponseEntity<ResponseResult<String>> editDiary(@RequestPart @Valid WriteDiaryDto writeDiaryDto,
                                                             @RequestPart(required = false) List<MultipartFile> files,
@@ -54,9 +61,9 @@ public class DiaryController {
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.editDiary(writeDiaryDto, files, diaryId));
     }
 
-    @PatchMapping("diary/delete/{id}")
-    public ResponseEntity<ResponseResult> deleteDiary(@PathVariable Long id) throws IOException {
+    @PatchMapping("diary/delete/{diaryId}")
+    public ResponseEntity<ResponseResult<Long>> deleteDiary(@PathVariable Long diaryId) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.OK).body(diaryService.deleteDiary(id));
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.deleteDiary(diaryId));
     }
 }
