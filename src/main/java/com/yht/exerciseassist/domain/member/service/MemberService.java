@@ -56,7 +56,7 @@ public class MemberService implements UserDetailsService {
         memberRepository.save(member);
         log.info(member.getUsername() + " 회원가입 완료");
 
-        return new ResponseResult<String>(HttpStatus.CREATED.value(), member.getUsername());
+        return new ResponseResult<>(HttpStatus.CREATED.value(), member.getUsername());
     }
 
     public ResponseResult<TokenInfo> signIn(String loginId, String password) {
@@ -87,7 +87,7 @@ public class MemberService implements UserDetailsService {
             Member member = memberRepository.findByLoginId(loginId).get();
             member.updateRefreshToken(tokenInfo.getRefreshToken());
 
-            return new ResponseResult<TokenInfo>(HttpStatus.OK.value(), tokenInfo);
+            return new ResponseResult<>(HttpStatus.OK.value(), tokenInfo);
         }
     }
 
