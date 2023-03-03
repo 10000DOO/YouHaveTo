@@ -81,7 +81,7 @@ class DiaryServiceTest {
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "2023-01-30");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/10000doo/Documents/wallpaper/Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/Users/jeong-yunju/Documents/wallpaper
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
@@ -128,7 +128,7 @@ class DiaryServiceTest {
 
         Member member = MemberFactory.createTestMember();
 
-        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Project/Capstone/20230215/YouHaveTo/src/main/resources/media/test1.png");
+        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Project/Capstone/20230301/YouHaveTo/src/main/resources/media/test1.png");
         media.setMediaIdUsedOnlyTest(1L);
 
         List<Media> mediaId = new ArrayList<>();
@@ -171,7 +171,7 @@ class DiaryServiceTest {
 
         diaryDetail.linkToMedia(mediaId);
 
-        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/tuxCoding.jpg"));
         List<MultipartFile> fileList = new ArrayList<>();
         fileList.add(mediaFile);
         Mockito.when(diaryRepository.findById(id)).thenReturn(Optional.of(diaryDetail));

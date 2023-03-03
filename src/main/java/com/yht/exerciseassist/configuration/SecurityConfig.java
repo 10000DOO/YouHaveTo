@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/media/*").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/post/*").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/member/*").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)

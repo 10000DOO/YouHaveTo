@@ -60,7 +60,7 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "commentWriter")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id")
     private Media media;
 
@@ -77,6 +77,10 @@ public class Member implements UserDetails {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void ChangeMedia(Media media) {
+        this.media = media;
     }
 
     @Override

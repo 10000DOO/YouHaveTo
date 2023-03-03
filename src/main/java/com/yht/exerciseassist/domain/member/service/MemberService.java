@@ -2,14 +2,17 @@ package com.yht.exerciseassist.domain.member.service;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
-import com.yht.exerciseassist.exceoption.error.AuthenticationException;
-import com.yht.exerciseassist.exceoption.error.ErrorCode;
+import com.yht.exerciseassist.exception.error.AuthenticationException;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
+import com.yht.exerciseassist.jwt.SecurityUtil;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -40,6 +44,8 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final MediaService mediaService;
 
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
         Member member = Member.builder()
@@ -104,5 +110,28 @@ public class MemberService implements UserDetailsService {
                 .password(member.getPassword())
                 .roles(member.getRole().toString())
                 .build();
+    }
+
+    public ResponseResult<Long> deleteMember() throws IOException {
+        Member member = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        Long mediaId = null;
+
+        try {
+            mediaId = member.getMedia().getId();
+        } catch (NullPointerException e) {
+            log.info("mediaId 없음");
+        }
+
+        if (mediaId != null) {
+            member.ChangeMedia(null);
+            mediaService.deleteProfileImage(mediaId);
+        }
+
+        member.getDateTime().canceledAtUpdate();
+
+        log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(),member.getId());
     }
 }

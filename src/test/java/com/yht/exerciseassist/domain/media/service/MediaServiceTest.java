@@ -49,10 +49,10 @@ class MediaServiceTest {
     @Test
     public void imageUpload() throws IOException {
         //given
-        Media media = MediaFactory.createTeatMedia("/Users/10000doo/Documents/wallpaper/" + "storeFileName.jpg");
+        Media media = MediaFactory.createTeatMedia("/Users/jeong-yunju/Documents/wallpaper/" + "storeFileName.jpg");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper/
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
@@ -93,7 +93,7 @@ class MediaServiceTest {
 
         Mockito.when(mediaRepository.findByDiaryId(1L)).thenReturn(mediaList);
 
-        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/tuxCoding.jpg"));
+        MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/tuxCoding.jpg"));
         mediaFile.transferTo(new File(fileDir + media.getOriginalFilename()));
         //when
         mediaService.deleteDiaryImage(1L);

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.domain.factory.PostFactory;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.service.PostService;
-import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
+import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -43,7 +43,7 @@ class PostControllerTest {
         String writePostDtoJson = objectMapper.writeValueAsString(writePostDto);
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/jeong-yunju/Documents/wallpaper/" + fileName));///Users/jeong-yunju/Documents/wallpaper
         MockMultipartFile jsonFile = new MockMultipartFile("writePostDto", writePostDtoJson, "application/json", writePostDtoJson.getBytes(StandardCharsets.UTF_8));
         //when
         mockMvc.perform(multipart("/post/write")

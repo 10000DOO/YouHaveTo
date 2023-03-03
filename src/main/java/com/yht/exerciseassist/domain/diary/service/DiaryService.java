@@ -10,7 +10,7 @@ import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
-import com.yht.exerciseassist.exceoption.error.ErrorCode;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.jwt.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
