@@ -1,10 +1,10 @@
-package com.yht.exerciseassist.exceoption.controller;
+package com.yht.exerciseassist.exception.controller;
 
 import com.yht.exerciseassist.domain.member.controller.MemberController;
-import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
-import com.yht.exerciseassist.exceoption.dto.ExceptionResponse;
-import com.yht.exerciseassist.exceoption.error.AuthenticationException;
-import com.yht.exerciseassist.exceoption.error.ErrorCode;
+import com.yht.exerciseassist.exception.CommonExceptionHandler;
+import com.yht.exerciseassist.exception.dto.ExceptionResponse;
+import com.yht.exerciseassist.exception.error.AuthenticationException;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.util.PSQLException;

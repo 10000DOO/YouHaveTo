@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.diary.controller;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
+import com.yht.exerciseassist.domain.diary.dto.DiaryEditData;
 import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
@@ -44,6 +45,12 @@ public class DiaryController {
                                                                               message = "YYYY-MM-DD 형식과 일치해야 합니다.") String date) {
 
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getdiaryDetail(date));
+    }
+
+    @GetMapping("/diary/edit/{diaryId}")
+    public ResponseEntity<ResponseResult<DiaryEditData>> getEditData(@PathVariable Long diaryId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.getPostEditData(diaryId));
     }
 
     @PatchMapping("/diary/edit/{diaryId}")

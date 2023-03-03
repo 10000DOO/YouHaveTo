@@ -3,7 +3,7 @@ package com.yht.exerciseassist.domain.media.service;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
-import com.yht.exerciseassist.exceoption.error.ErrorCode;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

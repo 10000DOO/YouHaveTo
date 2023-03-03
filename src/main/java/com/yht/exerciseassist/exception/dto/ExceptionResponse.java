@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.exceoption.dto;
+package com.yht.exerciseassist.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
