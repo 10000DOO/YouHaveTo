@@ -87,14 +87,33 @@ public class PostService {
                 .title(postById.getTitle())
                 .content(postById.getContent())
                 .mediaList(mediaList)
-                .views(postById.getViews())
+                .views(postById.getViews() + 1)
                 .likeCount(postById.getLikeCount())
                 .createdAt(postById.getDateTime().getCreatedAt())
                 .postType(postById.getPostType())
                 .workOutCategory(postById.getWorkOutCategory())
+                .isMine(SecurityUtil.getCurrentUsername().equals(postById.getPostWriter().getUsername()))
                 .build();
 
+        postById.pulsViews(postById.getViews() + 1);
         log.info("Username : {} postId : {} 게시글 상세 조회 성공", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postDetailRes);
+    }
+
+    public ResponseResult<String> editPost(WritePostDto writePostDto, List<MultipartFile> files, Long postId) throws IOException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+        post.editPost(writePostDto.getTitle(), writePostDto.getContent(), writePostDto.getPostType(), writePostDto.getWorkOutCategory());
+        post.getDateTime().updatedAtUpdate();
+
+        if (files != null && !(files.isEmpty())) {
+            mediaService.deletePostImage(postId);
+            List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
+            post.linkToMedia(mediaList);
+        }
+
+        log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 완료");
+        return new ResponseResult<>(HttpStatus.OK.value(), post.getTitle());
     }
 }

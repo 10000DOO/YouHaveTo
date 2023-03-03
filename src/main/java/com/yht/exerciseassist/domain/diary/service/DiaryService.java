@@ -155,7 +155,7 @@ public class DiaryService {
         diaryRepository.save(diaryById);
 
         log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 다이어리 수정 완료");
-        return new ResponseResult<>(HttpStatus.OK.value(), writeDiaryDto.getExerciseDate());
+        return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getExerciseDate());
     }
 
     public ResponseResult<Long> deleteDiary(Long id) throws IOException {

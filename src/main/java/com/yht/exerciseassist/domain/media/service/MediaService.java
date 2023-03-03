@@ -98,6 +98,16 @@ public class MediaService {
         }
     }
 
+    public void deletePostImage(Long postId) throws IOException {
+        List<Media> byPostId = mediaRepository.findByPostId(postId);
+
+        if (byPostId != null && !byPostId.isEmpty()) {
+            for (Media media : byPostId) {
+                deleteFile(media);
+            }
+        }
+    }
+
     public void deleteProfileImage(Long mediaId) throws IOException {
         Media media = mediaRepository.findById(mediaId).orElseThrow(
                 () -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage())
