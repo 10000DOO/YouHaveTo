@@ -26,9 +26,10 @@ public class PostDetailRes {
     @Enumerated(EnumType.STRING)
     private WorkOutCategory workOutCategory;
     private List<Comment> comments;
+    private boolean isMine;
 
     @Builder
-    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<Comment> comments) {
+    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<Comment> comments, boolean isMine) {
         this.username = username;
         this.profileImage = profileImage;
         this.title = title;
@@ -40,5 +41,6 @@ public class PostDetailRes {
         this.postType = postType;
         this.workOutCategory = workOutCategory;
         this.comments = comments;
+        this.isMine = isMine;
     }
 }

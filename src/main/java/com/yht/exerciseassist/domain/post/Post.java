@@ -71,6 +71,17 @@ public class Post {
         }
     }
 
+    public void editPost(String title, String content, PostType postType, WorkOutCategory workOutCategory) {
+        this.title = title;
+        this.content = content;
+        this.postType = postType;
+        this.workOutCategory = workOutCategory;
+    }
+
+    public void pulsViews(Long views) {
+        this.views = views;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
