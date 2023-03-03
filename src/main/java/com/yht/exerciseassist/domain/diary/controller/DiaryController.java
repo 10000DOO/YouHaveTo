@@ -50,7 +50,7 @@ public class DiaryController {
     @GetMapping("/diary/edit/{diaryId}")
     public ResponseEntity<ResponseResult<DiaryEditData>> getEditData(@PathVariable Long diaryId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(diaryService.getPostEditData(diaryId));
+        return ResponseEntity.status(HttpStatus.OK).body(diaryService.getDiaryEditData(diaryId));
     }
 
     @PatchMapping("/diary/edit/{diaryId}")

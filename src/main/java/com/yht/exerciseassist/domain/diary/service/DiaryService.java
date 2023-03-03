@@ -120,7 +120,7 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.OK.value(), diaryDetailDto);
     }
 
-    public ResponseResult<DiaryEditData> getPostEditData(Long diaryId) {
+    public ResponseResult<DiaryEditData> getDiaryEditData(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 

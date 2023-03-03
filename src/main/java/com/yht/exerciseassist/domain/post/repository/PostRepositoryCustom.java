@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface PostRepositoryCustom {
 
-    Optional<Post> findNotDeletedById(Long id, String role);
+    Optional<Post> findByIdWithRole(Long id, String role);
 }

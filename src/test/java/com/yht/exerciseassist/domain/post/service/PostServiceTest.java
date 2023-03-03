@@ -6,9 +6,12 @@ import com.yht.exerciseassist.domain.factory.PostFactory;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.domain.post.Post;
+import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.jwt.SecurityUtil;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,5 +87,52 @@ class PostServiceTest {
 
         //then
         assertThat(responseResult1).isEqualTo(responseResult);
+    }
+
+    @Test
+    public void getPostEditData() throws IllegalAccessException {
+        //given
+        given(SecurityUtil.getMemberRole()).willReturn("USER");
+
+        Member member = MemberFactory.createTestMember();
+        Post testPost = PostFactory.createTestPost(member);
+        Mockito.when(postRepository.findByIdWithRole(1L, SecurityUtil.getMemberRole())).thenReturn(Optional.ofNullable(testPost));
+
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
+
+        PostEditList postEditList = PostEditList.builder()
+                .title(testPost.getTitle())
+                .content(testPost.getContent())
+                .postType(testPost.getPostType())
+                .workOutCategory(testPost.getWorkOutCategory())
+                .mediaList(new ArrayList<>())
+                .build();
+
+        ResponseResult<PostEditList> postEditListResponseResult = new ResponseResult<>(200, postEditList);
+        //when
+        ResponseResult<PostEditList> postEditData = postService.getPostEditData(1L);
+        //then
+        Assertions.assertThat(postEditData).isEqualTo(postEditListResponseResult);
+    }
+
+    @Test
+    public void editPost() throws IOException {
+        //given
+        WritePostDto writePostDto = PostFactory.writePostDto();
+        String fileName = "tuxCoding.jpg";
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
+        List<MultipartFile> mediaFileList = new ArrayList<>();
+        mediaFileList.add(mediaFile);
+        Long postId = 1L;
+        Member testMember = MemberFactory.createTestMember();
+        Post testPost = PostFactory.createTestPost(testMember);
+
+        Mockito.when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(testPost));
+
+        ResponseResult responseResult = new ResponseResult(200, writePostDto.getTitle());
+        //when
+        ResponseResult<String> stringResponseResult = postService.editPost(writePostDto, mediaFileList, postId);
+        //then
+        assertThat(stringResponseResult).isEqualTo(responseResult);
     }
 }

@@ -16,7 +16,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<Post> findNotDeletedById(Long id, String role) {
+    public Optional<Post> findByIdWithRole(Long id, String role) {
         return Optional.ofNullable(queryFactory.selectFrom(post)
                 .where(post.id.eq(id), memberRoleEq(role))
                 .fetchOne());
