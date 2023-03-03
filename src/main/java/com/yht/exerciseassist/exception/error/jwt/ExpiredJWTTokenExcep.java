@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.exceoption.error.jwt;
+package com.yht.exerciseassist.exception.error.jwt;
 
 public class ExpiredJWTTokenExcep extends RuntimeException {
 

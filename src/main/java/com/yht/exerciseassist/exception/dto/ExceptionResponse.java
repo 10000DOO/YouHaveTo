@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.exceoption.dto;
+package com.yht.exerciseassist.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorMessageDto {
+public class ExceptionResponse<T> {
 
-    private String error;
+    private int status;
+    private T error;
 }
-

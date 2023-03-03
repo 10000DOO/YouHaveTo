@@ -43,14 +43,14 @@ class PostServiceTest {
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
 
     PostService postService;
-    @Value("${file.dir}")
-    private String fileDir;
     @MockBean
     private PostRepository postRepository;
     @MockBean
     private MemberRepository memberRepository;
     @MockBean
     private MediaService mediaService;
+    @Value("${test.address}")
+    private String testAddress;
 
     @AfterEach
     public void afterAll() {
@@ -76,7 +76,7 @@ class PostServiceTest {
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "테스트 제목");
 
         String fileName = "tuxCoding.jpg";
-        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream("/Users/10000doo/Documents/wallpaper/" + fileName));///Users/10000doo/Documents/wallpaper/Users/jeong-yunju/Documents/wallpaper
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when

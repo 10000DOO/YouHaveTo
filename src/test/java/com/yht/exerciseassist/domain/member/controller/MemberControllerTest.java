@@ -7,7 +7,7 @@ import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
-import com.yht.exerciseassist.exceoption.CommonExceptionHandler;
+import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +77,18 @@ class MemberControllerTest {
         //then
         assertThat(result.getStatus()).isEqualTo(200);
         assertThat(result.getData()).isEqualTo(tokenInfo);
+    }
+
+    @Test
+    @WithMockUser()
+    public void deleteMember() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/member/delete")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+
     }
 }

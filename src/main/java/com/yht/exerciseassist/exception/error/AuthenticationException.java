@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.exceoption.error;
+package com.yht.exerciseassist.exception.error;
 
 public class AuthenticationException extends RuntimeException {
 
