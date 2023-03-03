@@ -111,4 +111,15 @@ class PostControllerTest {
                 .andExpect(status().isOk());
         //then
     }
+
+    @Test
+    @WithMockUser
+    public void deletePost() throws Exception {
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/post/delete/{postId}", 1)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
 }

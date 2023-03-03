@@ -82,6 +82,10 @@ public class Post {
         this.views = views;
     }
 
+    public void setPostIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

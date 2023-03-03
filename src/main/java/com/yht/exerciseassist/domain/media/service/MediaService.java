@@ -120,7 +120,7 @@ public class MediaService {
         boolean deleteSuccess = file.delete();
         mediaRepository.deleteById(media.getId());
         if (!deleteSuccess) {
-            throw new IOException(ErrorCode.DELETE_FAILED_MEDIA_EXCEPTION.getMessage());
+            throw new IOException();
         }
         log.info(media.getFilename() + " 삭제 완료");
     }

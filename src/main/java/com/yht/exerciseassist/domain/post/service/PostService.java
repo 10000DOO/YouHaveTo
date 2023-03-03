@@ -124,7 +124,8 @@ public class PostService {
     }
 
     public ResponseResult<String> editPost(WritePostDto writePostDto, List<MultipartFile> files, Long postId) throws IOException {
-        Post post = postRepository.findById(postId)
+        String memberRole = SecurityUtil.getMemberRole();
+        Post post = postRepository.findByIdWithRole(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
         post.editPost(writePostDto.getTitle(), writePostDto.getContent(), writePostDto.getPostType(), writePostDto.getWorkOutCategory());
@@ -138,6 +139,17 @@ public class PostService {
 
         log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 완료");
         return new ResponseResult<>(HttpStatus.OK.value(), post.getTitle());
+    }
+
+    public ResponseResult<Long> deletePost(Long postId) throws IOException {
+        Post postById = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+        mediaService.deletePostImage(postById.getId());
+        postById.getDateTime().canceledAtUpdate();
+
+        log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(), postById.getId());
     }
 
     private List<String> getMediaList(Post post) {

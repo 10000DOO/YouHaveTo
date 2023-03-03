@@ -138,10 +138,9 @@ class DiaryControllerTest {
     public void deleteDiary() throws Exception {
 
         //when
-        mockMvc.perform(MockMvcRequestBuilders.patch("/diary/delete/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.patch("/diary/delete/{diaryId}", 1)
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
-
     }
 }

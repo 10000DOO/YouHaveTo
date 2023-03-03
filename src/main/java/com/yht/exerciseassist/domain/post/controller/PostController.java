@@ -49,4 +49,10 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(writePostDto, files, postId));
     }
+
+    @PatchMapping("post/delete/{postId}")
+    public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException {
+
+        return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
+    }
 }
