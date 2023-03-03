@@ -14,11 +14,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,6 +58,57 @@ class PostControllerTest {
                         .file(jsonFile)
                         .with(csrf()))
                 .andExpect(status().isCreated());
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void postDetail() throws Exception {
+        //given
+        MockHttpServletRequestBuilder builder = get("/post/detail/{postId}", 1);
+        //when
+        mockMvc.perform((builder)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void dataForEdit() throws Exception {
+        //given
+        MockHttpServletRequestBuilder builder = get("/post/edit/{postId}", 1);
+        //when
+        mockMvc.perform((builder)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void editPost() throws Exception {
+        //given
+        WritePostDto writePostDto = PostFactory.writePostDto();
+        String writePostDtoJson = objectMapper.writeValueAsString(writePostDto);
+
+        String fileName = "tuxCoding.jpg";
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
+        MockMultipartFile jsonFile = new MockMultipartFile("writePostDto", writePostDtoJson, "application/json", writePostDtoJson.getBytes(StandardCharsets.UTF_8));
+
+
+        MockMultipartHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.multipart("/post/edit/{id}", 1);
+        builder.with(request -> {
+            request.setMethod("PATCH");
+            return request;
+        });
+        //when
+        mockMvc.perform((builder)
+                        .file(mediaFile)
+                        .file(jsonFile)
+                        .with(csrf()))
+                .andExpect(status().isOk());
         //then
     }
 }

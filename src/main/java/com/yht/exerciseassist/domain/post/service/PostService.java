@@ -68,7 +68,7 @@ public class PostService {
 
     public ResponseResult<PostDetailRes> getPostDetail(Long postId) {
         String memberRole = SecurityUtil.getMemberRole();
-        Post postById = postRepository.findNotDeletedById(postId, memberRole)
+        Post postById = postRepository.findByIdWithRole(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
         List<String> mediaList = getMediaList(postById);
@@ -101,7 +101,7 @@ public class PostService {
 
     public ResponseResult<PostEditList> getPostEditData(Long postId) throws IllegalAccessException {
         String memberRole = SecurityUtil.getMemberRole();
-        Post post = postRepository.findNotDeletedById(postId, memberRole)
+        Post post = postRepository.findByIdWithRole(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
         if (post.getPostWriter().getUsername().equals(SecurityUtil.getCurrentUsername())) {

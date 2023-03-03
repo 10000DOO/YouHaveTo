@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -23,6 +24,7 @@ import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,6 +88,18 @@ class DiaryControllerTest {
                 .andExpect(status().isOk());
         //then
 
+    }
+
+    @Test
+    @WithMockUser
+    public void dataForEdit() throws Exception {
+        //given
+        MockHttpServletRequestBuilder builder = get("/diary/edit/{diaryId}", 1);
+        //when
+        mockMvc.perform((builder)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
     }
 
     @Test

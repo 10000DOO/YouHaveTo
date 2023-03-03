@@ -2,10 +2,7 @@ package com.yht.exerciseassist.domain.diary.service;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.Diary;
-import com.yht.exerciseassist.domain.diary.dto.Calender;
-import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
-import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
-import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
+import com.yht.exerciseassist.domain.diary.dto.*;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
 import com.yht.exerciseassist.domain.factory.DiaryFactory;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
@@ -152,6 +149,28 @@ class DiaryServiceTest {
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(diary.getData()).isEqualTo(diaryDetailDto);
+    }
+
+    @Test
+    public void getPostEditData() {
+        //given
+        Long diaryId = 1L;
+        Member testMember = MemberFactory.createTestMember();
+        Diary testDiary = DiaryFactory.createTestDiary(testMember);
+        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.ofNullable(testDiary));
+
+        List<ExerciseInfoDto> exerciseInfoDto = DiaryFactory.getExerciseInfoDto();
+        DiaryEditData diaryEditData = DiaryEditData.builder()
+                .review(testDiary.getReview())
+                .exerciseInfo(exerciseInfoDto)
+                .mediaList(new ArrayList<>())
+                .build();
+
+        ResponseResult<DiaryEditData> diaryEditDataResponseResult = new ResponseResult<>(200, diaryEditData);
+        //when
+        ResponseResult<DiaryEditData> diaryEditDataResult = diaryService.getDiaryEditData(diaryId);
+        //then
+        assertThat(diaryEditDataResult).isEqualTo(diaryEditDataResponseResult);
     }
 
     @Test
