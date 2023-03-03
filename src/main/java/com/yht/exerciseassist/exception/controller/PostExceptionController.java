@@ -4,6 +4,7 @@ import com.yht.exerciseassist.domain.post.controller.PostController;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import com.yht.exerciseassist.exception.dto.ExceptionResponse;
 import com.yht.exerciseassist.exception.error.ErrorCode;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,5 +51,19 @@ public class PostExceptionController {
 
         log.error("{} // {}", exception.getMessage(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
         return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ExceptionResponse postNotFound(EntityNotFoundException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IllegalAccessException.class)
+    public ExceptionResponse notYourPost(IllegalAccessException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
     }
 }

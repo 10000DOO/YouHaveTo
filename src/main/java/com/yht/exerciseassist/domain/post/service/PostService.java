@@ -8,6 +8,7 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
+import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
@@ -66,13 +67,11 @@ public class PostService {
     }
 
     public ResponseResult<PostDetailRes> getPostDetail(Long postId) {
-        Post postById = postRepository.findNotDeletedById(postId)
+        String memberRole = SecurityUtil.getMemberRole();
+        Post postById = postRepository.findNotDeletedById(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
-        List<String> mediaList = new ArrayList<>();
-        for (Media media : postById.getMediaList()) {
-            mediaList.add(baseUrl + "/media/" + media.getId());
-        }
+        List<String> mediaList = getMediaList(postById);
 
         String profileImage;
         try {
@@ -100,6 +99,30 @@ public class PostService {
         return new ResponseResult<>(HttpStatus.OK.value(), postDetailRes);
     }
 
+    public ResponseResult<PostEditList> getPostEditData(Long postId) throws IllegalAccessException {
+        String memberRole = SecurityUtil.getMemberRole();
+        Post post = postRepository.findNotDeletedById(postId, memberRole)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+        if (post.getPostWriter().getUsername().equals(SecurityUtil.getCurrentUsername())) {
+
+            List<String> mediaList = getMediaList(post);
+
+            PostEditList postEditList = PostEditList.builder()
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .postType(post.getPostType())
+                    .workOutCategory(post.getWorkOutCategory())
+                    .mediaList(mediaList)
+                    .build();
+
+            log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 데이터 조회 성공");
+            return new ResponseResult<>(HttpStatus.OK.value(), postEditList);
+        } else {
+            throw new IllegalAccessException("본인 게시글이 아닙니다.");
+        }
+    }
+
     public ResponseResult<String> editPost(WritePostDto writePostDto, List<MultipartFile> files, Long postId) throws IOException {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
@@ -115,5 +138,13 @@ public class PostService {
 
         log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 완료");
         return new ResponseResult<>(HttpStatus.OK.value(), post.getTitle());
+    }
+
+    private List<String> getMediaList(Post post) {
+        List<String> mediaList = new ArrayList<>();
+        for (Media media : post.getMediaList()) {
+            mediaList.add(baseUrl + "/media/" + media.getId());
+        }
+        return mediaList;
     }
 }

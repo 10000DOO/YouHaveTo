@@ -12,3 +12,4 @@ public class ExceptionResponse<T> {
     private int status;
     private T error;
 }
+
