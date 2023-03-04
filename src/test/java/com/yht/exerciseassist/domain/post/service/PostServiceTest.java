@@ -4,6 +4,7 @@ import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
+import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
@@ -14,12 +15,14 @@ import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.jwt.SecurityUtil;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,6 +51,8 @@ class PostServiceTest {
 
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
     PostService postService;
+    @Autowired
+    EntityManager em;
     @Value("${file.dir}")
     private String fileDir;
     @MockBean
@@ -168,5 +173,31 @@ class PostServiceTest {
         ResponseResult<Long> ResponseResult = postService.deletePost(postId);
         //then
         assertThat(ResponseResult).isEqualTo(mockResult);
+    }
+
+    @Test
+    public void updateLike() {
+        //given
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
+        given(SecurityUtil.getMemberRole()).willReturn("USER");
+
+        Long postId = 1L;
+        Member testMember = MemberFactory.createTestMember();
+        em.persist(testMember);
+        Post testPost = PostFactory.createTestPost(testMember);
+        em.persist(testPost);
+        em.flush();
+        em.clear();
+
+        Mockito.when(postRepository.findByIdWithRole(postId, SecurityUtil.getMemberRole())).thenReturn(Optional.ofNullable(testPost));
+        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
+        ResponseResult<Long> result = new ResponseResult<>(200, 1L);
+        //when
+        ResponseResult<Long> like = postService.updateLike(postId, false);
+        Mockito.when(likeCountRepository.findByPost(testPost)).thenReturn(Optional.of(new LikeCount(testPost, testMember)));
+        ResponseResult<Long> unlike = postService.updateLike(postId, true);
+        //then
+        assertThat(result).isEqualTo(unlike);
+        assertThat(result).isEqualTo(like);
     }
 }

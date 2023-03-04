@@ -10,6 +10,5 @@ public interface LikeCountRepository extends JpaRepository<LikeCount, Long> {
 
     Optional<LikeCount> findByPost(Post post);
 
-    //@Query("select l from LikeCount  l where l.post = :post")
     void deleteByPost(Post post);
 }

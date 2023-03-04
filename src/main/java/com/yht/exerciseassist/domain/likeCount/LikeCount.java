@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -30,5 +33,22 @@ public class LikeCount {
         post.updateLikeCount(this);
         this.member = member;
         member.updateLikeCount(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        LikeCount that = (LikeCount) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

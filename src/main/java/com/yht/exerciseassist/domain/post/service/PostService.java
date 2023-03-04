@@ -196,7 +196,7 @@ public class PostService {
             } else {
                 likeCountRepository.save(new LikeCount(post, member));
                 log.info("username : {}, 게시글 : {} 좋아요 누름", username, post.getId());
-                return new ResponseResult<>(HttpStatus.CREATED.value(), post.getId());
+                return new ResponseResult<>(HttpStatus.OK.value(), post.getId());
             }
         } else {
             LikeCount likeCount = likeCountRepository.findByPost(post)

@@ -41,8 +41,6 @@ class DiaryRepositoryTest {
         em.flush();
         em.clear();
 
-        Member findMember = em.find(Member.class, member.getId());
-
         Diary diary = DiaryFactory.createTestDiary(member);
         //when
         Diary savedDiary = diaryRepository.save(diary);
