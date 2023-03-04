@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.member.repository;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.post.repository.PostRepositoryImpl;
+import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ class MemberRepositoryTest {
     public void findMember() {
         //given
         Member member = MemberFactory.createTestMember();
-
-        member.updateRefreshToken("refreshToken");
+        RefreshToken refreshToken = new RefreshToken("refreshToken");
+        member.updateRefreshToken(refreshToken);
 
         Member saveMember = memberRepository.save(member);
         em.flush();
@@ -50,7 +51,7 @@ class MemberRepositoryTest {
         //when
         Optional<Member> byLoginId = memberRepository.findByLoginId(member.getLoginId());
         Optional<Member> byUsername = memberRepository.findByUsername(member.getUsername());
-        Optional<Member> byRefreshToken = memberRepository.findByRefreshToken(member.getRefreshToken());
+        Optional<Member> byRefreshToken = memberRepository.findByRefreshToken(member.getRefreshToken().getRefreshToken());
         //then
         assertThat(byLoginId.get()).isEqualTo(saveMember);
         assertThat(byUsername.get()).isEqualTo(saveMember);

@@ -4,6 +4,7 @@ import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
+import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
@@ -52,6 +53,8 @@ class PostServiceTest {
     @MockBean
     private PostRepository postRepository;
     @MockBean
+    private LikeCountRepository likeCountRepository;
+    @MockBean
     private MemberRepository memberRepository;
     @MockBean
     private MediaService mediaService;
@@ -65,7 +68,7 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        postService = new PostService(postRepository, memberRepository, mediaService);
+        postService = new PostService(postRepository, memberRepository, mediaService, likeCountRepository);
         securityUtilMockedStatic = mockStatic(SecurityUtil.class);
     }
 

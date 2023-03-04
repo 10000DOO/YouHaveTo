@@ -15,7 +15,12 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_MEDIA("존재하지 않는 미디어입니다."),
     NOT_FOUND_EXCEPTION_MEMBER("존재하지 않는 유저입니다."),
     IO_FAIL_EXCEOPTION("파일 I/O 서버 오류입니다."),
-    WRONG_CONTENT_TYPE("잘못된 Content-Type입니다.");
+    WRONG_CONTENT_TYPE("잘못된 Content-Type입니다."),
+    WRONG_TOKEN("잘못된 토큰입니다. 토큰 재발급이 불가능하니 다시 로그인 부탁드립니다."),
+    NO_EXIST_TOKEN("존재하지 않는 토큰입니다. 토큰 재발급이 불가능하니 다시 로그인 부탁드립니다."),
+    EXPIRED_TOKEN("토큰이 만료 되었습니다. 다시 로그인 해주세요."),
+    NOT_LIKE_PRESSED("좋아요 정보가 없습니다."),
+    ALREADY_PRESSED("이미 좋아요를 누르셨습니다.");
     private final String message;
 
     ErrorCode(String message) {

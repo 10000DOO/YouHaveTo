@@ -30,11 +30,11 @@ public class PostExceptionController {
         return commonExceptionHandler.exceptionArrayRes(exception, log);
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse findMemberException(IllegalArgumentException exception) {
+    public ExceptionResponse worngArgsException(IllegalArgumentException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNAUTHORIZED.value());
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)

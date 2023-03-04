@@ -21,7 +21,7 @@ class PostTest {
         assertThat(post.getContent()).isEqualTo("테스트 내용");
         assertThat(post.getPostWriter()).isEqualTo(member);
         assertThat(post.getViews()).isEqualTo(0L);
-        assertThat(post.getLikeCount()).isEqualTo(0);
+        assertThat(post.getLikeCount().size()).isEqualTo(0);
         assertThat(post.getDateTime()).isEqualTo(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null));
         assertThat(post.getPostType()).isEqualTo(PostType.KNOWLEDGE);
         assertThat(post.getWorkOutCategory()).isEqualTo(WorkOutCategory.HEALTH);

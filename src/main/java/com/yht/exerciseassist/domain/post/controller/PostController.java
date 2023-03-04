@@ -55,4 +55,10 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
+
+    @PatchMapping("post/like")
+    public ResponseEntity<ResponseResult<Long>> plusLikeCount(@RequestParam("post_id") Long postId, @RequestParam("clicked") boolean clicked) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(postService.updateLike(postId, clicked));
+    }
 }
