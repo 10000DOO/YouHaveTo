@@ -3,6 +3,7 @@ package com.yht.exerciseassist.jwt.service;
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import io.jsonwebtoken.Jwts;
@@ -36,7 +37,7 @@ public class JWTService {
             Optional<Member> byRefreshToken = memberRepository.findByRefreshToken(inputToken);
             if (byRefreshToken.isPresent()) {
                 Member findMember = byRefreshToken.get();
-                String token = findMember.getRefreshToken();
+                String token = findMember.getRefreshToken().getRefreshToken();
                 if (token.equals(inputToken)) {
                     long now = (new Date()).getTime();
                     // Access Token 생성
@@ -58,19 +59,18 @@ public class JWTService {
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
                             .build();
-                    findMember.updateRefreshToken(tokenInfo.getRefreshToken());
+
+                    findMember.getRefreshToken().updateRefreshToken(tokenInfo.getRefreshToken());
                     log.info("토큰이 재발급 되었습니다.");
                     return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
                 } else {
-                    return new ResponseResult(HttpStatus.UNAUTHORIZED.value(), "잘못된 토큰입니다. 토큰 재발급이 불가능하니 " +
-                            "다시 로그인 부탁드립니다.");
+                    return new ResponseResult<>(HttpStatus.UNAUTHORIZED.value(), ErrorCode.WRONG_TOKEN.getMessage());
                 }
             } else {
-                return new ResponseResult(HttpStatus.UNAUTHORIZED.value(), "존재하지 않는 토큰입니다. 토큰 재발급이 불가능하니 " +
-                        "다시 로그인 부탁드립니다.");
+                return new ResponseResult<>(HttpStatus.UNAUTHORIZED.value(), ErrorCode.NO_EXIST_TOKEN.getMessage());
             }
         } else {
-            return new ResponseResult(HttpStatus.UNAUTHORIZED.value(), "토큰이 만료 되었습니다. 다시 로그인 해주세요.");
+            return new ResponseResult<>(HttpStatus.UNAUTHORIZED.value(), ErrorCode.EXPIRED_TOKEN.getMessage());
         }
     }
 }

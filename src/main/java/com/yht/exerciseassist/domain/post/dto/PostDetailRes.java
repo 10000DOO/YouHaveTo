@@ -20,6 +20,7 @@ public class PostDetailRes {
     private List<String> mediaList;
     private Long views;
     private int likeCount;
+    private boolean likePressed;
     private String createdAt;
     @Enumerated(EnumType.STRING)
     private PostType postType;
@@ -29,7 +30,7 @@ public class PostDetailRes {
     private boolean isMine;
 
     @Builder
-    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<Comment> comments, boolean isMine) {
+    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, boolean likePressed, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<Comment> comments, boolean isMine) {
         this.username = username;
         this.profileImage = profileImage;
         this.title = title;
@@ -37,6 +38,7 @@ public class PostDetailRes {
         this.mediaList = mediaList;
         this.views = views;
         this.likeCount = likeCount;
+        this.likePressed = likePressed;
         this.createdAt = createdAt;
         this.postType = postType;
         this.workOutCategory = workOutCategory;

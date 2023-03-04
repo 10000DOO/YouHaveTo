@@ -2,6 +2,8 @@ package com.yht.exerciseassist.domain.post.service;
 
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.likeCount.LikeCount;
+import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
@@ -37,19 +39,19 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
+    private final LikeCountRepository likeCountRepository;
     @Value("${base.url}")
     private String baseUrl;
 
     public ResponseResult<String> savePost(WritePostDto writePostDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         Post post = Post.builder()
                 .title(writePostDto.getTitle())
                 .content(writePostDto.getContent())
                 .postWriter(findMember)
                 .views(0L)
-                .likeCount(0)
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                 .postType(writePostDto.getPostType())
@@ -79,6 +81,15 @@ public class PostService {
         } catch (NullPointerException e) {
             profileImage = null;
         }
+        boolean isPressed = false;
+        List<LikeCount> likeCount = postById.getLikeCount();
+        for (LikeCount count : likeCount) {
+            if (count.getMember() == postById.getPostWriter()) {
+                isPressed = true;
+            } else {
+                isPressed = false;
+            }
+        }
 
         PostDetailRes postDetailRes = PostDetailRes.builder()
                 .username(postById.getPostWriter().getUsername())
@@ -87,14 +98,15 @@ public class PostService {
                 .content(postById.getContent())
                 .mediaList(mediaList)
                 .views(postById.getViews() + 1)
-                .likeCount(postById.getLikeCount())
+                .likeCount(likeCount.size())
+                .likePressed(isPressed)
                 .createdAt(postById.getDateTime().getCreatedAt())
                 .postType(postById.getPostType())
                 .workOutCategory(postById.getWorkOutCategory())
                 .isMine(SecurityUtil.getCurrentUsername().equals(postById.getPostWriter().getUsername()))
                 .build();
 
-        postById.pulsViews(postById.getViews() + 1);
+        postById.pulsViews();
         log.info("Username : {} postId : {} 게시글 상세 조회 성공", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postDetailRes);
     }
@@ -143,7 +155,7 @@ public class PostService {
 
     public ResponseResult<Long> deletePost(Long postId) throws IOException {
         Post postById = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
         mediaService.deletePostImage(postById.getId());
         postById.getDateTime().canceledAtUpdate();
@@ -158,5 +170,43 @@ public class PostService {
             mediaList.add(baseUrl + "/media/" + media.getId());
         }
         return mediaList;
+    }
+
+    public ResponseResult<Long> updateLike(Long postId, boolean clicked) {
+        String memberRole = SecurityUtil.getMemberRole();
+        String username = SecurityUtil.getCurrentUsername();
+        Post post = postRepository.findByIdWithRole(postId, memberRole)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        boolean isPressed = false;
+        List<LikeCount> like = post.getLikeCount();
+        for (LikeCount count : like) {
+            if (count.getMember() == post.getPostWriter()) {
+                isPressed = true;
+            } else {
+                isPressed = false;
+            }
+        }
+
+        if (clicked == false) {
+            if (isPressed) {
+                throw new IllegalArgumentException(ErrorCode.ALREADY_PRESSED.getMessage());
+            } else {
+                likeCountRepository.save(new LikeCount(post, member));
+                log.info("username : {}, 게시글 : {} 좋아요 누름", username, post.getId());
+                return new ResponseResult<>(HttpStatus.CREATED.value(), post.getId());
+            }
+        } else {
+            LikeCount likeCount = likeCountRepository.findByPost(post)
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_LIKE_PRESSED.getMessage()));
+
+            likeCountRepository.deleteByPost(post);
+            post.getLikeCount().remove(likeCount);
+            member.getLikeCount().remove(likeCount);
+            log.info("username : {}, 게시글 : {} 좋아요 취소", username, post.getId());
+            return new ResponseResult<>(HttpStatus.OK.value(), post.getId());
+        }
     }
 }

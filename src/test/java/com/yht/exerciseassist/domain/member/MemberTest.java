@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.member;
 
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
+import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -39,9 +40,11 @@ class MemberTest {
                 .field("서울시")
                 .build();
 
+        RefreshToken refreshToken = new RefreshToken("testRefreshToken1!");
+
         //when
-        member.updateRefreshToken("testRefreshToken1!");
+        member.updateRefreshToken(refreshToken);
         //then
-        assertThat(member.getRefreshToken()).isEqualTo("testRefreshToken1!");
+        assertThat(member.getRefreshToken().getRefreshToken()).isEqualTo("testRefreshToken1!");
     }
 }

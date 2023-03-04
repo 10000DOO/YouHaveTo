@@ -3,8 +3,10 @@ package com.yht.exerciseassist.domain.member;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.diary.Diary;
+import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.post.Post;
+import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,14 +45,19 @@ public class Member implements UserDetails {
 
     private String field; //유저 활동 지역
 
-
-    private String refreshToken;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "token_id")
+    private RefreshToken refreshToken;
 
     @Enumerated(EnumType.STRING)
     private MemberType role;
 
     @OneToMany(mappedBy = "postWriter")
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<LikeCount> likeCount = new ArrayList<>();
+
     @Embedded //생성일 수정일 삭제일
     private DateTime dateTime;
 
@@ -60,7 +67,7 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "commentWriter")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id")
     private Media media;
 
@@ -75,12 +82,17 @@ public class Member implements UserDetails {
         this.dateTime = dateTime;
     }
 
-    public void updateRefreshToken(String refreshToken) {
+    public void ChangeMedia(Media media) {
+        this.media = media;
+    }
+
+    public void updateRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public void ChangeMedia(Media media) {
-        this.media = media;
+    public void updateLikeCount(LikeCount likeCount) {
+        this.likeCount.remove(likeCount);
+        this.likeCount.add(likeCount);
     }
 
     @Override
