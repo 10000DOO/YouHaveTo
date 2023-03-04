@@ -7,6 +7,7 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
 import com.yht.exerciseassist.exception.error.AuthenticationException;
 import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
@@ -44,7 +45,6 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
-
     private final MediaService mediaService;
 
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
@@ -91,7 +91,11 @@ public class MemberService implements UserDetailsService {
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
             log.info(authentication.getName() + " 로그인");
             Member member = memberRepository.findByLoginId(loginId).get();
-            member.updateRefreshToken(tokenInfo.getRefreshToken());
+
+            RefreshToken refreshToken = Optional.ofNullable(member.getRefreshToken())
+                    .orElse(new RefreshToken(tokenInfo.getRefreshToken()));
+            refreshToken.updateRefreshToken(tokenInfo.getRefreshToken());
+            member.updateRefreshToken(refreshToken);
 
             return new ResponseResult<>(HttpStatus.OK.value(), tokenInfo);
         }
@@ -132,6 +136,6 @@ public class MemberService implements UserDetailsService {
         member.getDateTime().canceledAtUpdate();
 
         log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
-        return new ResponseResult<>(HttpStatus.OK.value(),member.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
     }
 }

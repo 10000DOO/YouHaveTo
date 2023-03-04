@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.post;
 
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.member.Member;
 import jakarta.persistence.*;
@@ -38,7 +39,8 @@ public class Post {
 
     private Long views;
 
-    private int likeCount;
+    @OneToMany(mappedBy = "post")
+    private List<LikeCount> likeCount = new ArrayList<>();
 
     @Embedded //생성일 수정일 삭제일
     private DateTime dateTime;
@@ -53,12 +55,11 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(String title, String content, Member postWriter, Long views, int likeCount, DateTime dateTime, PostType postType, WorkOutCategory workOutCategory) {
+    public Post(String title, String content, Member postWriter, Long views, DateTime dateTime, PostType postType, WorkOutCategory workOutCategory) {
         this.title = title;
         this.content = content;
         this.postWriter = postWriter;
         this.views = views;
-        this.likeCount = likeCount;
         this.dateTime = dateTime;
         this.postType = postType;
         this.workOutCategory = workOutCategory;
@@ -71,6 +72,11 @@ public class Post {
         }
     }
 
+    public void updateLikeCount(LikeCount likeCount) {
+        this.likeCount.remove(likeCount);
+        this.likeCount.add(likeCount);
+    }
+
     public void editPost(String title, String content, PostType postType, WorkOutCategory workOutCategory) {
         this.title = title;
         this.content = content;
@@ -78,8 +84,8 @@ public class Post {
         this.workOutCategory = workOutCategory;
     }
 
-    public void pulsViews(Long views) {
-        this.views = views;
+    public void pulsViews() {
+        views += 1;
     }
 
     public void setPostIdUsedOnlyTest(Long id) {

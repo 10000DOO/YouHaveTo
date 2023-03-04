@@ -30,13 +30,6 @@ public class DiaryExceptionController {
         return commonExceptionHandler.exceptionArrayRes(exception, log);
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse findMemberException(IllegalArgumentException exception) {
-
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.UNAUTHORIZED.value());
-    }
-
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IOException.class)
     public ExceptionResponse ioExceptionHandle(IOException exception) {

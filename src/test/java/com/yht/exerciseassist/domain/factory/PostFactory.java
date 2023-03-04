@@ -15,7 +15,6 @@ public class PostFactory {
                 .content("테스트 내용")
                 .postWriter(member)
                 .views(0L)
-                .likeCount(0)
                 .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .postType(PostType.KNOWLEDGE)
                 .workOutCategory(WorkOutCategory.HEALTH)

@@ -76,7 +76,7 @@ public class DiaryService {
 
     public ResponseResult<String> saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         List<ExerciseInfo> exInfo = getExInfo(writeDiaryDto);
 
@@ -140,7 +140,7 @@ public class DiaryService {
 
     public ResponseResult<String> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
         Diary diaryById = diaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         List<ExerciseInfo> exInfo = getExInfo(writeDiaryDto);
 
@@ -160,7 +160,7 @@ public class DiaryService {
 
     public ResponseResult<Long> deleteDiary(Long diaryId) throws IOException {
         Diary diaryById = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         mediaService.deleteDiaryImage(diaryById.getId());
         diaryById.getDateTime().canceledAtUpdate();
