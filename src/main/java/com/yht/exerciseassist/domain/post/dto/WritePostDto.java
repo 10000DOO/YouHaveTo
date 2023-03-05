@@ -14,17 +14,17 @@ import lombok.Data;
 @Data
 public class WritePostDto {
 
-    @NotEmpty
+    @NotEmpty(message = "제목을 입력해주세요.")
     private String title;
 
-    @NotEmpty
+    @NotEmpty(message = "내용을 입력해주세요.")
     private String content;
 
-    @NotNull
+    @NotNull(message = "게시글 카테고리를 선택해주세요.")
     @Enumerated(EnumType.STRING)
     private PostType postType;
 
-    @NotNull
+    @NotNull(message = "운동 종류를 선택해주세요.")
     @Enumerated(EnumType.STRING)
     private WorkOutCategory workOutCategory;
 
