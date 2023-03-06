@@ -4,11 +4,13 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yht.exerciseassist.domain.post.Post;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,10 +35,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return role.equals("USER") ? post.dateTime.canceledAt.isNull() : null;
     }
 
-    public Slice<Post> postAsSearchType(String role, List<String> postTypeList, List<String> WorkOutCategories, Pageable pageable) {
+    public Slice<Post> postAsSearchType(String role, List<String> postTypeList, List<String> WorkOutCategories, String username, Pageable pageable) {
         List<Post> posts = queryFactory
                 .selectFrom(post)
-                .where(memberRoleEq(role), postTypeEq(postTypeList), workOutCategoriesEq(WorkOutCategories))
+                .where(memberRoleEq(role), postTypeEq(postTypeList), workOutCategoriesEq(WorkOutCategories), usernameEq(username))
                 .orderBy(post.dateTime.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
@@ -51,37 +53,65 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         if (postTypeList == null || postTypeList.isEmpty()) {
             return null;
         } else {
-            return Expressions.anyOf(postTypeList.stream().map(this::isSearchPostType).toArray(BooleanExpression[]::new));
+            BooleanExpression[] result = postTypeList.stream().map(this::isSearchPostType).toArray(BooleanExpression[]::new);
+            if (Arrays.equals(result, new BooleanExpression[0])) {
+                return null;
+            } else {
+                return Expressions.anyOf(result);
+            }
         }
     }
 
     private BooleanExpression isSearchPostType(String postType) {
-        return switch (postType) {
-            case "Q_AND_A" -> post.postType.eq(Q_AND_A);
-            case "KNOWLEDGE" -> post.postType.eq(KNOWLEDGE);
-            case "SHOW_OFF" -> post.postType.eq(SHOW_OFF);
-            case "COMPETITION" -> post.postType.eq(COMPETITION);
-            case "FREE" -> post.postType.eq(FREE);
-            default -> null;
-        };
+        if (postType.equals("Q_AND_A")) {
+            return post.postType.eq(Q_AND_A);
+        } else if (postType.equals("KNOWLEDGE")) {
+            return post.postType.eq(KNOWLEDGE);
+        } else if (postType.equals("SHOW_OFF")) {
+            return post.postType.eq(SHOW_OFF);
+        } else if (postType.equals("COMPETITION")) {
+            return post.postType.eq(COMPETITION);
+        } else if (postType.equals("FREE")) {
+            return post.postType.eq(FREE);
+        } else if (postType.isEmpty()) {
+            return null;
+        } else {
+            throw new IllegalArgumentException(ErrorCode.NO_MATCHED_POST_TYPE.getMessage());
+        }
     }
 
     private BooleanExpression workOutCategoriesEq(List<String> workOutCategories) {
         if (workOutCategories == null || workOutCategories.isEmpty()) {
             return null;
         } else {
-            return Expressions.anyOf(workOutCategories.stream().map(this::isSearchWorkOutCategories).toArray(BooleanExpression[]::new));
+            BooleanExpression[] result = workOutCategories.stream().map(this::isSearchWorkOutCategories).toArray(BooleanExpression[]::new);
+            if (Arrays.equals(result, new BooleanExpression[0])) {
+                return null;
+            } else {
+                return Expressions.anyOf(result);
+            }
         }
     }
 
     private BooleanExpression isSearchWorkOutCategories(String workOutCategories) {
-        return switch (workOutCategories) {
-            case "HEALTH" -> post.workOutCategory.eq(HEALTH);
-            case "PILATES" -> post.workOutCategory.eq(PILATES);
-            case "YOGA" -> post.workOutCategory.eq(YOGA);
-            case "JOGGING" -> post.workOutCategory.eq(JOGGING);
-            case "ETC" -> post.workOutCategory.eq(ETC);
-            default -> null;
-        };
+        if (workOutCategories.equals("HEALTH")) {
+            return post.workOutCategory.eq(HEALTH);
+        } else if (workOutCategories.equals("PILATES")) {
+            return post.workOutCategory.eq(PILATES);
+        } else if (workOutCategories.equals("YOGA")) {
+            return post.workOutCategory.eq(YOGA);
+        } else if (workOutCategories.equals("JOGGING")) {
+            return post.workOutCategory.eq(JOGGING);
+        } else if (workOutCategories.equals("ETC")) {
+            return post.workOutCategory.eq(ETC);
+        } else if (workOutCategories.isEmpty()) {
+            return null;
+        } else {
+            throw new IllegalArgumentException(ErrorCode.NO_MATCHED_EXERCISE_CATEGORY.getMessage());
+        }
+    }
+
+    private BooleanExpression usernameEq(String username) {
+        return username == null ? null : post.postWriter.username.eq(username);
     }
 }

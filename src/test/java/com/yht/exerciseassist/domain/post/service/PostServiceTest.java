@@ -231,12 +231,13 @@ class PostServiceTest {
         postList.add(testPost3);
 
         Slice<Post> posts = new SliceImpl<>(postList);
+        String username = "윤주";
 
         Pageable pageable = PageRequest.of(0, 2);
-        Mockito.when(postRepository.postAsSearchType(SecurityUtil.getMemberRole(), postType, category, pageable)).thenReturn(posts);
+        Mockito.when(postRepository.postAsSearchType(SecurityUtil.getMemberRole(), postType, category, username, pageable)).thenReturn(posts);
 
         //when
-        ResponseResult<PostListWithSliceDto> result = postService.getPostList(postType, category, pageable);
+        ResponseResult<PostListWithSliceDto> result = postService.getPostList(postType, category, username, pageable);
 
         //then
         assertThat(result.getData().getPostListDto().get(0).getPostId()).isEqualTo(postList.get(0).getId());
