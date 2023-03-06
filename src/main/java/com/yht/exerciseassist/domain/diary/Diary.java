@@ -67,7 +67,6 @@ public class Diary {
         this.exerciseInfo = exerciseInfo;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

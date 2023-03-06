@@ -3,17 +3,20 @@ package com.yht.exerciseassist.domain.post.controller;
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
 import com.yht.exerciseassist.domain.post.dto.PostEditList;
+import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.service.PostService;
 import io.jsonwebtoken.io.IOException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -50,15 +53,22 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(writePostDto, files, postId));
     }
 
-    @PatchMapping("post/delete/{postId}")
+    @PatchMapping("/post/delete/{postId}")
     public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
 
-    @PatchMapping("post/like")
+    @PatchMapping("/post/like")
     public ResponseEntity<ResponseResult<Long>> plusLikeCount(@RequestParam("post_id") Long postId, @RequestParam("clicked") boolean clicked) {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.updateLike(postId, clicked));
+    }
+
+    @GetMapping("/post")
+    public ResponseEntity<ResponseResult<PostListWithSliceDto>> getPostList(@RequestParam(value = "postType", required = false) List<String> postType,
+                                                                            @RequestParam(value = "woryOutCategory", required = false) List<String> workOutCategories,
+                                                                            @RequestParam(value = "username", required = false) String username, Pageable pageable) throws IOException, ParseException {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostList(postType, workOutCategories, username, pageable));
     }
 }

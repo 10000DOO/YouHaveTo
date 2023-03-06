@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = PostController.class)
@@ -66,4 +67,13 @@ public class PostExceptionController {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ParseException.class)
+    public ExceptionResponse parseExceptionHandle(ParseException exception) {
+
+        log.error("{} // {}", exception.getMessage(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
+        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
+    }
+
 }

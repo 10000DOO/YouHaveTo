@@ -11,7 +11,7 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
-import com.yht.exerciseassist.jwt.SecurityUtil;
+import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

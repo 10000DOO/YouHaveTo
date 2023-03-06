@@ -115,9 +115,54 @@ class PostControllerTest {
     @Test
     @WithMockUser
     public void deletePost() throws Exception {
-
+        //given
         //when
         mockMvc.perform(MockMvcRequestBuilders.patch("/post/delete/{postId}", 1)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void pressLike() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/post/like")
+                        .param("post_id", "1")
+                        .param("clicked", "false")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void unlike() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/post/like")
+                        .param("post_id", "1")
+                        .param("clicked", "true")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
+
+
+    @Test
+    @WithMockUser
+    public void getPostList() throws Exception {
+        //given
+        MockHttpServletRequestBuilder builder = get("/post")
+                .param("postType", "FREE")
+                .param("workOutCategory", "YOGA,ETC")
+                .param("page", "0")
+                .param("size", "2");
+        //when
+        mockMvc.perform((builder)
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
