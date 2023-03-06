@@ -11,7 +11,6 @@ import lombok.Data;
 public class PostListDto {
 
     private String username;
-    private String profileImage;
     @Enumerated(EnumType.STRING)
     private PostType postType;
     @Enumerated(EnumType.STRING)
@@ -21,19 +20,20 @@ public class PostListDto {
     private Long postId;
     private int mediaListCount;
     private int likeCount;
+    private Long views;
     private Long commentCount;
 
     @Builder
-    public PostListDto(String username, String profileImage, PostType postType, WorkOutCategory workOutCategory,
-                       String createdAt, String title, int mediaListCount, int likeCount, Long commentCount, Long postId) {
+    public PostListDto(String username, PostType postType, WorkOutCategory workOutCategory, String createdAt,
+                       String title, int mediaListCount, int likeCount, Long views, Long commentCount, Long postId) {
         this.username = username;
-        this.profileImage = profileImage;
         this.postType = postType;
         this.workOutCategory = workOutCategory;
         this.createdAt = createdAt;
         this.title = title;
         this.mediaListCount = mediaListCount;
         this.likeCount = likeCount;
+        this.views = views;
         this.commentCount = commentCount;
         this.postId = postId;
     }
