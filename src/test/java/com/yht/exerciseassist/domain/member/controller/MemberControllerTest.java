@@ -91,4 +91,17 @@ class MemberControllerTest {
         //then
 
     }
+
+    @Test
+    @WithMockUser()
+    public void memberPage() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/member/info")
+                        .param("username", "10000DOO")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
 }

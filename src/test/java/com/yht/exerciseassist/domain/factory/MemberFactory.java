@@ -3,6 +3,8 @@ package com.yht.exerciseassist.domain.factory;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
+import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
+import com.yht.exerciseassist.domain.member.dto.OtherMemberPage;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
@@ -43,5 +45,26 @@ public class MemberFactory {
         TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
 
         return tokenInfo;
+    }
+
+    public static MyMemberPage createMyMemberPage() {
+        return MyMemberPage.builder()
+                .username("member1")
+                .email("test@test.com")
+                .field("서울시")
+                .createdAt("2023-02-11 11:11")
+                .profileImage(null)
+                .postCount(0)
+                .build();
+    }
+
+    public static OtherMemberPage createOtherMemberPage() {
+        return OtherMemberPage.builder()
+                .username("member2")
+                .field("서울시")
+                .createdAt("2023-02-22")
+                .profileImage("http://localhost:8080/media/1")
+                .postCount(2)
+                .build();
     }
 }
