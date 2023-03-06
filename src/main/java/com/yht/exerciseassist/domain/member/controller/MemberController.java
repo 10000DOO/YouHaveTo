@@ -33,4 +33,9 @@ public class MemberController {
     public ResponseEntity<ResponseResult<Long>> memberDelete() throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember());
     }
+
+    @GetMapping("/member/info")
+    public ResponseEntity<ResponseResult> memberPage(@RequestParam String username) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberPage(username));
+    }
 }

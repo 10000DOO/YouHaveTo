@@ -53,22 +53,22 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(writePostDto, files, postId));
     }
 
-    @PatchMapping("post/delete/{postId}")
+    @PatchMapping("/post/delete/{postId}")
     public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
 
-    @PatchMapping("post/like")
+    @PatchMapping("/post/like")
     public ResponseEntity<ResponseResult<Long>> plusLikeCount(@RequestParam("post_id") Long postId, @RequestParam("clicked") boolean clicked) {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.updateLike(postId, clicked));
     }
 
-    @GetMapping("post")
+    @GetMapping("/post")
     public ResponseEntity<ResponseResult<PostListWithSliceDto>> getPostList(@RequestParam(value = "postType", required = false) List<String> postType,
                                                                             @RequestParam(value = "woryOutCategory", required = false) List<String> workOutCategories,
-                                                                            Pageable pageable) throws IOException, ParseException {
-        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostList(postType, workOutCategories, pageable));
+                                                                            @RequestParam(value = "username", required = false) String username, Pageable pageable) throws IOException, ParseException {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostList(postType, workOutCategories, username, pageable));
     }
 }

@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.post.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,9 +9,7 @@ import java.util.List;
 public class PostListWithSliceDto {
 
     private List<PostListDto> postListDto;
-    @NotEmpty
     private Boolean hasNext;
-    @NotEmpty
     private Boolean isFirst;
 
     @Builder

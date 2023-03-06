@@ -5,6 +5,8 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
+import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
+import com.yht.exerciseassist.domain.member.dto.OtherMemberPage;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
@@ -16,6 +18,7 @@ import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -46,6 +49,8 @@ public class MemberService implements UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MediaService mediaService;
+    @Value("${base.url}")
+    private String baseUrl;
 
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
         Member member = Member.builder()
@@ -137,5 +142,40 @@ public class MemberService implements UserDetailsService {
 
         log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
+    }
+
+    public ResponseResult getMemberPage(String username) {
+        Member findMember = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        String profileImage;
+        try {
+            profileImage = baseUrl + "/media/" + findMember.getMedia().getId();
+        } catch (NullPointerException e) {
+            profileImage = null;
+        }
+
+        if (username.equals(SecurityUtil.getCurrentUsername())) {
+            MyMemberPage myMemberPage = MyMemberPage.builder()
+                    .username(findMember.getUsername())
+                    .email(findMember.getEmail())
+                    .field(findMember.getField())
+                    .createdAt(findMember.getDateTime().getCreatedAt())
+                    .profileImage(profileImage)
+                    .postCount(findMember.getPosts().size())
+                    .build();
+
+            return new ResponseResult<>(HttpStatus.OK.value(), myMemberPage);
+        } else {
+            OtherMemberPage otherMemberPage = OtherMemberPage.builder()
+                    .username(findMember.getUsername())
+                    .field(findMember.getField())
+                    .createdAt(findMember.getDateTime().getCreatedAt())
+                    .profileImage(profileImage)
+                    .postCount(findMember.getPosts().size())
+                    .build();
+
+            return new ResponseResult<>(HttpStatus.OK.value(), otherMemberPage);
+        }
     }
 }

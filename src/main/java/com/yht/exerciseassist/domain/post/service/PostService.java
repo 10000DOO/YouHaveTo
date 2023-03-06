@@ -214,10 +214,10 @@ public class PostService {
         }
     }
 
-    public ResponseResult<PostListWithSliceDto> getPostList(List<String> postTypeList, List<String> workOutCategories, Pageable pageable) throws ParseException {
+    public ResponseResult<PostListWithSliceDto> getPostList(List<String> postTypeList, List<String> workOutCategories, String username, Pageable pageable) throws ParseException {
         String memberRole = SecurityUtil.getMemberRole();
 
-        Slice<Post> postList = postRepository.postAsSearchType(memberRole, postTypeList, workOutCategories, pageable);
+        Slice<Post> postList = postRepository.postAsSearchType(memberRole, postTypeList, workOutCategories, username, pageable);
         List<Post> posts = postList.getContent();
         boolean hasNext = postList.hasNext();
         boolean isFirst = postList.isFirst();

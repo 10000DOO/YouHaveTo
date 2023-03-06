@@ -1,0 +1,38 @@
+spring:
+  config:
+    active:
+      on-profile: prod
+  datasource:
+    url: ENC(iV/QwTOkKECEtu1GPo+npbZMxh2sPVytSKaIqEomXV9P4qzt8ERBJiFtRYDH9qPB3rtJIyzCVHE=)
+    username: ENC(5g7QwLq0KlEt1EjjanVtVvVYcyiXq+Lo)
+    password: ENC(tPiBP8C0yCIluTb2x0d+ibvyp99IC3Ek)
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        #show_sql: true
+        #format_sql: true
+        default_batch_fetch_size: 100
+  #logging.level:
+  #org.hibernate.SQL: debug
+  #org.hibernate.type: trace
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+file:
+  dir: /app/
+
+logging:
+  config: classpath:log4j2-prod.xml
+
+base:
+  url: ENC(UpPv/Vcdlw6MzD2697sdTa+SUMXgt0CtbtQIlD5ymxNVS7mgKnUKeA==)

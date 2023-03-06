@@ -11,5 +11,5 @@ public interface PostRepositoryCustom {
 
     Optional<Post> findByIdWithRole(Long id, String role);
 
-    Slice<Post> postAsSearchType(String role, List<String> postType, List<String> WorkOutCategory, Pageable pageable);
+    Slice<Post> postAsSearchType(String role, List<String> postType, List<String> WorkOutCategory, String username, Pageable pageable);
 }

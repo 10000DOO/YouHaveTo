@@ -109,15 +109,15 @@ class PostRepositoryTest {
         List<String> workOutCategoryTest = new ArrayList<>();
         workOutCategoryTest.add("HEALTH");
         workOutCategoryTest.add("YOGA");
-
+        String username = "member1";
         //when
         PageRequest pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "created_at"));
         PageRequest pageRequest2 = PageRequest.of(1, 2, Sort.by(Sort.Direction.DESC, "created_at"));
         PageRequest pageRequest3 = PageRequest.of(2, 2, Sort.by(Sort.Direction.DESC, "created_at"));
 
-        Slice<Post> posts = postRepository.postAsSearchType("USER", postTypeTest, workOutCategoryTest, pageRequest);
-        Slice<Post> posts2 = postRepository.postAsSearchType("USER", postTypeTest, workOutCategoryTest, pageRequest2);
-        Slice<Post> posts3 = postRepository.postAsSearchType("USER", postTypeTest, workOutCategoryTest, pageRequest3);
+        Slice<Post> posts = postRepository.postAsSearchType("USER", postTypeTest, workOutCategoryTest, username, pageRequest);
+        Slice<Post> posts2 = postRepository.postAsSearchType("USER", postTypeTest, workOutCategoryTest, username, pageRequest2);
+        Slice<Post> posts3 = postRepository.postAsSearchType("USER", postTypeTest, workOutCategoryTest, username, pageRequest3);
 
         //then
         List<Post> content = posts.getContent();
