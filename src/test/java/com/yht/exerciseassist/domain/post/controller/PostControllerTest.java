@@ -150,4 +150,21 @@ class PostControllerTest {
                 .andExpect(status().isOk());
         //then
     }
+
+
+    @Test
+    @WithMockUser
+    public void getPostList() throws Exception {
+        //given
+        MockHttpServletRequestBuilder builder = get("/post")
+                .param("postType", "FREE")
+                .param("workOutCategory", "YOGA,ETC")
+                .param("page", "0")
+                .param("size", "2");
+        //when
+        mockMvc.perform((builder)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
 }

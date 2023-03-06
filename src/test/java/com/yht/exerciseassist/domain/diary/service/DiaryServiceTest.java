@@ -11,7 +11,7 @@ import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
-import com.yht.exerciseassist.jwt.SecurityUtil;
+import com.yht.exerciseassist.util.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

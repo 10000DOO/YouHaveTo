@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.jwt;
+package com.yht.exerciseassist.util;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

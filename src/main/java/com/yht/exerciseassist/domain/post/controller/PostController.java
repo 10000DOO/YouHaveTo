@@ -3,17 +3,20 @@ package com.yht.exerciseassist.domain.post.controller;
 import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
 import com.yht.exerciseassist.domain.post.dto.PostEditList;
+import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.service.PostService;
 import io.jsonwebtoken.io.IOException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -60,5 +63,12 @@ public class PostController {
     public ResponseEntity<ResponseResult<Long>> plusLikeCount(@RequestParam("post_id") Long postId, @RequestParam("clicked") boolean clicked) {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.updateLike(postId, clicked));
+    }
+
+    @GetMapping("post")
+    public ResponseEntity<ResponseResult<PostListWithSliceDto>> getPostList(@RequestParam(value = "postType", required = false) List<String> postType,
+                                                                            @RequestParam(value = "woryOutCategory", required = false) List<String> workOutCategories,
+                                                                            Pageable pageable) throws IOException, ParseException {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPostList(postType, workOutCategories, pageable));
     }
 }

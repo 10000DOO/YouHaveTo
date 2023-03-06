@@ -12,7 +12,7 @@ import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
-import com.yht.exerciseassist.jwt.SecurityUtil;
+import com.yht.exerciseassist.util.SecurityUtil;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

@@ -12,9 +12,10 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.dto.PostEditList;
+import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
-import com.yht.exerciseassist.jwt.SecurityUtil;
+import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
@@ -35,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -199,5 +205,47 @@ class PostServiceTest {
         //then
         assertThat(result).isEqualTo(unlike);
         assertThat(result).isEqualTo(like);
+    }
+
+    @Test
+    public void getPostList() throws ParseException {
+        //given
+        given(SecurityUtil.getMemberRole()).willReturn("USER");
+
+        List<String> postType = new ArrayList<>();
+        postType.add("FREE");
+
+        List<String> category = new ArrayList<>();
+        category.add("YOGA");
+
+        Member testMember = MemberFactory.createTestMember();
+
+        List<Post> postList = new ArrayList<>();
+
+        Post testPost = PostFactory.createTestPost(testMember);
+        Post testPost2 = PostFactory.createTestPostQA(testMember);
+        Post testPost3 = PostFactory.createTestPostQB(testMember);
+
+        postList.add(testPost);
+        postList.add(testPost2);
+        postList.add(testPost3);
+
+        Slice<Post> posts = new SliceImpl<>(postList);
+
+        Pageable pageable = PageRequest.of(0, 2);
+        Mockito.when(postRepository.postAsSearchType(SecurityUtil.getMemberRole(), postType, category, pageable)).thenReturn(posts);
+
+        //when
+        ResponseResult<PostListWithSliceDto> result = postService.getPostList(postType, category, pageable);
+
+        //then
+        assertThat(result.getData().getPostListDto().get(0).getPostId()).isEqualTo(postList.get(0).getId());
+        assertThat(result.getData().getPostListDto().get(0).getUsername()).isEqualTo(postList.get(0).getPostWriter().getUsername());
+        assertThat(result.getData().getPostListDto().get(0).getCreatedAt()).isEqualTo(postList.get(0).getDateTime().getCreatedAt().split(" ")[0]);
+        assertThat(result.getData().getPostListDto().get(0).getPostType()).isEqualTo(postList.get(0).getPostType());
+        assertThat(result.getData().getPostListDto().get(0).getWorkOutCategory()).isEqualTo(postList.get(0).getWorkOutCategory());
+        assertThat(result.getData().getPostListDto().get(0).getTitle()).isEqualTo(postList.get(0).getTitle());
+        assertThat(result.getData().getPostListDto().get(0).getLikeCount()).isEqualTo(0);
+        assertThat(result.getData().getPostListDto().size()).isEqualTo(3);
     }
 }

@@ -9,25 +9,29 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.Post;
-import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
-import com.yht.exerciseassist.domain.post.dto.PostEditList;
-import com.yht.exerciseassist.domain.post.dto.WritePostDto;
+import com.yht.exerciseassist.domain.post.dto.*;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
-import com.yht.exerciseassist.jwt.SecurityUtil;
+import com.yht.exerciseassist.util.SecurityUtil;
+import com.yht.exerciseassist.util.TimeConvertUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -208,5 +212,64 @@ public class PostService {
             log.info("username : {}, 게시글 : {} 좋아요 취소", username, post.getId());
             return new ResponseResult<>(HttpStatus.OK.value(), post.getId());
         }
+    }
+
+    public ResponseResult<PostListWithSliceDto> getPostList(List<String> postTypeList, List<String> workOutCategories, Pageable pageable) throws ParseException {
+        String memberRole = SecurityUtil.getMemberRole();
+
+        Slice<Post> postList = postRepository.postAsSearchType(memberRole, postTypeList, workOutCategories, pageable);
+        List<Post> posts = postList.getContent();
+        boolean hasNext = postList.hasNext();
+        boolean isFirst = postList.isFirst();
+
+        List<PostListDto> postListDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            String profileImage;
+            try {
+                profileImage = baseUrl + "/media/" + post.getPostWriter().getMedia().getId();
+            } catch (NullPointerException e) {
+                profileImage = null;
+            }
+
+            SimpleDateFormat formatterDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            String dateString = post.getDateTime().getCreatedAt();
+            Date date;
+            try {
+                date = formatterDateTime.parse(dateString);
+            } catch (ParseException e) {
+                throw new ParseException(ErrorCode.DATE_FORMAT_EXCEPTION.getMessage(), e.getErrorOffset());
+            }
+
+            String calculateTime = TimeConvertUtil.calculateTime(date);
+
+            if (calculateTime == null) {
+                String[] splitString = post.getDateTime().getCreatedAt().split(" ");
+                calculateTime = splitString[0];
+            }
+
+            PostListDto postListDto = PostListDto.builder()
+                    .username(post.getPostWriter().getUsername())
+                    .profileImage(profileImage)
+                    .postType(post.getPostType())
+                    .workOutCategory(post.getWorkOutCategory())
+                    .createdAt(calculateTime)
+                    .title(post.getTitle())
+                    .postId(post.getId())
+                    .mediaListCount(post.getMediaList().size())
+                    .likeCount(post.getLikeCount().size())
+                    //commentCount()
+                    .build();
+
+            postListDtos.add(postListDto);
+        }
+
+        PostListWithSliceDto postListWithSliceDto = PostListWithSliceDto.builder()
+                .postListDto(postListDtos)
+                .hasNext(hasNext)
+                .isFirst(isFirst)
+                .build();
+
+        return new ResponseResult<>(HttpStatus.OK.value(), postListWithSliceDto);
     }
 }
