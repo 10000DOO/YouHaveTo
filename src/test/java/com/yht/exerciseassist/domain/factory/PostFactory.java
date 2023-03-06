@@ -22,6 +22,45 @@ public class PostFactory {
         return post;
     }
 
+    public static Post createTestPostQA(Member member) {
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .postWriter(member)
+                .views(0L)
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .postType(PostType.Q_AND_A)
+                .workOutCategory(WorkOutCategory.JOGGING)
+                .build();
+        return post;
+    }
+
+    public static Post createTestPostQB(Member member) {
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .postWriter(member)
+                .views(0L)
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .postType(PostType.FREE)
+                .workOutCategory(WorkOutCategory.YOGA)
+                .build();
+        return post;
+    }
+
+    public static Post createTestPostQC(Member member) {
+        Post post = Post.builder()
+                .title("테스트 제목")
+                .content("테스트 내용")
+                .postWriter(member)
+                .views(0L)
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .postType(PostType.COMPETITION)
+                .workOutCategory(WorkOutCategory.PILATES)
+                .build();
+        return post;
+    }
+
     public static WritePostDto writePostDto() {
 
         return WritePostDto.builder()

@@ -10,7 +10,7 @@ import com.yht.exerciseassist.domain.factory.PostFactory;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
-import com.yht.exerciseassist.jwt.SecurityUtil;
+import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
