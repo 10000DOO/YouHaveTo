@@ -7,3 +7,19 @@ jwt:
 jasypt:
   encryptor:
     password: ${jasypt_encryptor_password}
+
+mail:
+  smtp:
+    auth: true
+    starttls:
+      required: true
+      enable: true
+    socketFactory:
+      class: jakarta.net.ssl.SSLSocketFactory
+      fallback: false
+      port: 465
+    port: 465
+# admin 구글 계정
+AdminMail:
+  id: ENC(4WFbGs/Cpq6R0agwL5KcTwjaSjiAj70VDXZz5NuuYBKNMvP5xK1p4Q==)
+  password: ENC(JO0PmvGxfFhiC2MoGXQhf8F0qzYlAz1oa+RBWM/4J3Y=)
