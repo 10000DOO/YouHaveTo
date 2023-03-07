@@ -225,12 +225,6 @@ public class PostService {
         List<PostListDto> postListDtos = new ArrayList<>();
 
         for (Post post : posts) {
-            String profileImage;
-            try {
-                profileImage = baseUrl + "/media/" + post.getPostWriter().getMedia().getId();
-            } catch (NullPointerException e) {
-                profileImage = null;
-            }
 
             SimpleDateFormat formatterDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             String dateString = post.getDateTime().getCreatedAt();
@@ -250,7 +244,6 @@ public class PostService {
 
             PostListDto postListDto = PostListDto.builder()
                     .username(post.getPostWriter().getUsername())
-                    .profileImage(profileImage)
                     .postType(post.getPostType())
                     .workOutCategory(post.getWorkOutCategory())
                     .createdAt(calculateTime)
@@ -259,6 +252,7 @@ public class PostService {
                     .mediaListCount(post.getMediaList().size())
                     .likeCount(post.getLikeCount().size())
                     //commentCount()
+                    .views(post.getViews())
                     .build();
 
             postListDtos.add(postListDto);

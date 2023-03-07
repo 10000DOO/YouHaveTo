@@ -61,8 +61,10 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
     //test
     testImplementation 'org.mockito:mockito-inline:3.12.4'
-
+    //평문 암호화
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+    //이메일 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

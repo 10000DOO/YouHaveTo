@@ -21,6 +21,7 @@ bin/
 
 ### IntelliJ IDEA ###
 *.log
+*.xml
 /src/main/resources/log4j2.xml
 /src/main/resources/application-test.yml
 /src/main/resources/application-local.yml

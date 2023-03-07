@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/email").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/signin").permitAll()
                 .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
