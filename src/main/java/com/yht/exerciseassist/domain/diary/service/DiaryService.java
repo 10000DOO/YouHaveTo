@@ -177,7 +177,7 @@ public class DiaryService {
         return mediaList;
     }
 
-    public List<ExerciseInfoDto> getExInfoDto(Diary diary) {
+    private List<ExerciseInfoDto> getExInfoDto(Diary diary) {
         return diary.getExerciseInfo().stream()
                 .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
                         .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
@@ -185,7 +185,7 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    public List<ExerciseInfo> getExInfo(WriteDiaryDto writeDiaryDto) {
+    private List<ExerciseInfo> getExInfo(WriteDiaryDto writeDiaryDto) {
         return writeDiaryDto.getExerciseInfo().stream()
                 .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
                         .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
