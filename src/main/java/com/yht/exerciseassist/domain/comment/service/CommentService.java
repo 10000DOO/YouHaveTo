@@ -1,10 +1,26 @@
 package com.yht.exerciseassist.domain.comment.service;
 
 import com.yht.exerciseassist.ResponseResult;
+import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.comment.dto.WriteCommentDto;
+import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
+import com.yht.exerciseassist.domain.member.Member;
+import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.domain.post.Post;
+import com.yht.exerciseassist.domain.post.repository.PostRepository;
+import com.yht.exerciseassist.exception.error.ErrorCode;
+import com.yht.exerciseassist.util.SecurityUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -12,7 +28,37 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CommentService {
 
-    public ResponseResult<String> saveComment() {
-        return null;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
+
+    public ResponseResult<String> saveComment(WriteCommentDto writeCommentDto) {
+        Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        Post findPost = postRepository.findNotDeletedById(writeCommentDto.getPostId())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+        Comment comment = Comment.builder()
+                .post(findPost)
+                .commentWriter(findMember)
+                .commentContent(writeCommentDto.getCommentContent())
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .build();
+
+        if (writeCommentDto.getParentId() != null) {
+            Comment parentComment = commentRepository.findByParentComment(writeCommentDto.getParentId())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
+            if (Objects.equals(writeCommentDto.getPostId(), parentComment.getPost().getId())) {
+                comment.connectChildParent(parentComment);
+            } else {
+                throw new EntityNotFoundException(ErrorCode.WRONG_JSON.getMessage());
+            }
+        }
+
+        commentRepository.save(comment);
+        log.info("사용자명 : {}, {}번 게시글에 대한 댓글 등록 완료", findMember.getUsername(), writeCommentDto.getPostId());
+        return new ResponseResult<>(HttpStatus.CREATED.value(), writeCommentDto.getCommentContent());
     }
 }
