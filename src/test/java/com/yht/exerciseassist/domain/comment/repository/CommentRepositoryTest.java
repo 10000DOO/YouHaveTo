@@ -86,7 +86,7 @@ class CommentRepositoryTest {
         commentRepository.save(comment);
 
         //when
-        Optional<Comment> findComment = commentRepository.findByParentComment(comment.getId());
+        Optional<Comment> findComment = commentRepository.findParentCommentByParentId(comment.getId());
 
         //then
         assertThat(findComment.get()).isEqualTo(comment);

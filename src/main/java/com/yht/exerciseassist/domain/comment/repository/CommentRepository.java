@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value = "select c from Comment c where c.id = :parentId and c.dateTime.canceledAt = null")
-    Optional<Comment> findByParentComment(Long parentId);
+    Optional<Comment> findParentCommentByParentId(Long parentId);
 }

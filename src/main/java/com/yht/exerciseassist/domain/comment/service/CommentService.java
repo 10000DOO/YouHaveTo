@@ -48,12 +48,12 @@ public class CommentService {
                 .build();
 
         if (writeCommentDto.getParentId() != null) {
-            Comment parentComment = commentRepository.findByParentComment(writeCommentDto.getParentId())
+            Comment parentComment = commentRepository.findParentCommentByParentId(writeCommentDto.getParentId())
                     .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
             if (Objects.equals(writeCommentDto.getPostId(), parentComment.getPost().getId())) {
                 comment.connectChildParent(parentComment);
             } else {
-                throw new EntityNotFoundException(ErrorCode.WRONG_JSON.getMessage());
+                throw new EntityNotFoundException(ErrorCode.NOT_EXIST_SAME_POST_IN_PARENT_AND_CHILD_COMMENT.getMessage());
             }
         }
 

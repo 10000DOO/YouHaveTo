@@ -17,7 +17,7 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_COMMENT("존재하지 않는 댓글입니다."),
     IO_FAIL_EXCEOPTION("파일 I/O 서버 오류입니다."),
     WRONG_CONTENT_TYPE("잘못된 Content-Type입니다."),
-    WRONG_JSON("잘못된 형식의 입력입니다."),
+    NOT_EXIST_SAME_POST_IN_PARENT_AND_CHILD_COMMENT("원댓글과 같은 게시글에 존재하지 않습니다."),
     WRONG_TOKEN("잘못된 토큰입니다. 토큰 재발급이 불가능하니 다시 로그인 부탁드립니다."),
     NO_EXIST_TOKEN("존재하지 않는 토큰입니다. 토큰 재발급이 불가능하니 다시 로그인 부탁드립니다."),
     EXPIRED_TOKEN("토큰이 만료 되었습니다. 다시 로그인 해주세요."),
