@@ -1,9 +1,9 @@
 package com.yht.exerciseassist.email.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.email.dto.EmailReqDto;
 import com.yht.exerciseassist.email.dto.EmailResDto;
 import com.yht.exerciseassist.email.service.EmailService;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

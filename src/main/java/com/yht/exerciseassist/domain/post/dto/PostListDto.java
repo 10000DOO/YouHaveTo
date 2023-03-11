@@ -2,8 +2,6 @@ package com.yht.exerciseassist.domain.post.dto;
 
 import com.yht.exerciseassist.domain.post.PostType;
 import com.yht.exerciseassist.domain.post.WorkOutCategory;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,9 +9,7 @@ import lombok.Data;
 public class PostListDto {
 
     private String username;
-    @Enumerated(EnumType.STRING)
     private PostType postType;
-    @Enumerated(EnumType.STRING)
     private WorkOutCategory workOutCategory;
     private String createdAt;
     private String title;

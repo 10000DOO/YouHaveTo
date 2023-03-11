@@ -1,9 +1,9 @@
 package com.yht.exerciseassist.email.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.email.dto.EmailReqDto;
 import com.yht.exerciseassist.email.dto.EmailResDto;
 import com.yht.exerciseassist.exception.error.MailSendFailException;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

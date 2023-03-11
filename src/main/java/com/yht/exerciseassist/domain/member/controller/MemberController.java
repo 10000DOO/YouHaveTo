@@ -1,10 +1,10 @@
 package com.yht.exerciseassist.domain.member.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

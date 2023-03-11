@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.comment.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.comment.dto.WriteCommentDto;
 import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.factory.CommentFactory;
@@ -10,6 +9,7 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

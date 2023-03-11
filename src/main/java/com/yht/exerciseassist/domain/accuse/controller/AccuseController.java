@@ -1,8 +1,8 @@
 package com.yht.exerciseassist.domain.accuse.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.accuse.dto.AccuseReq;
 import com.yht.exerciseassist.domain.accuse.service.AccuseService;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

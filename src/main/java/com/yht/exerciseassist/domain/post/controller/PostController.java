@@ -1,11 +1,11 @@
 package com.yht.exerciseassist.domain.post.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
 import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.service.PostService;
+import com.yht.exerciseassist.util.ResponseResult;
 import io.jsonwebtoken.io.IOException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

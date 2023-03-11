@@ -1,8 +1,8 @@
 package com.yht.exerciseassist.domain.comment.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.comment.dto.WriteCommentDto;
 import com.yht.exerciseassist.domain.comment.service.CommentService;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

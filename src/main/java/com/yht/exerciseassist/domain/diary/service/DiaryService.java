@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.diary.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
@@ -11,6 +10,7 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

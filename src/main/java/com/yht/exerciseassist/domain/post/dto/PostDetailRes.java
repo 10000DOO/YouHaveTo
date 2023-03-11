@@ -3,8 +3,6 @@ package com.yht.exerciseassist.domain.post.dto;
 import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.post.PostType;
 import com.yht.exerciseassist.domain.post.WorkOutCategory;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,9 +20,7 @@ public class PostDetailRes {
     private int likeCount;
     private boolean likePressed;
     private String createdAt;
-    @Enumerated(EnumType.STRING)
     private PostType postType;
-    @Enumerated(EnumType.STRING)
     private WorkOutCategory workOutCategory;
     private List<Comment> comments;
     private boolean isMine;

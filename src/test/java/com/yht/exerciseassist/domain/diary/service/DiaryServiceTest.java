@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.diary.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.dto.*;
 import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
@@ -11,6 +10,7 @@ import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.member.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
@@ -14,6 +13,7 @@ import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

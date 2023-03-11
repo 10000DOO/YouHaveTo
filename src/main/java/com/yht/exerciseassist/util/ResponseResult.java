@@ -1,4 +1,4 @@
-package com.yht.exerciseassist;
+package com.yht.exerciseassist.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

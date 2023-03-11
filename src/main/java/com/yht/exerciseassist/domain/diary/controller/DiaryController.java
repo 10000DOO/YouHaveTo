@@ -1,11 +1,11 @@
 package com.yht.exerciseassist.domain.diary.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
 import com.yht.exerciseassist.domain.diary.dto.DiaryEditData;
 import com.yht.exerciseassist.domain.diary.dto.DiaryListDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.diary.service.DiaryService;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;

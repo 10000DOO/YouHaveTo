@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.post.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
@@ -15,6 +14,7 @@ import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;

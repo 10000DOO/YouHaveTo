@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.post.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
@@ -12,6 +11,7 @@ import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.dto.*;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import com.yht.exerciseassist.util.TimeConvertUtil;
 import jakarta.persistence.EntityNotFoundException;
