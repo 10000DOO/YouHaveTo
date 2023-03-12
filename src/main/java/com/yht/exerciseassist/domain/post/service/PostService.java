@@ -244,8 +244,8 @@ public class PostService {
 
             PostListDto postListDto = PostListDto.builder()
                     .username(post.getPostWriter().getUsername())
-                    .postType(post.getPostType())
-                    .workOutCategory(post.getWorkOutCategory())
+                    .postType(post.getPostType().getMessage())
+                    .workOutCategory(post.getWorkOutCategory().getMessage())
                     .createdAt(calculateTime)
                     .title(post.getTitle())
                     .postId(post.getId())

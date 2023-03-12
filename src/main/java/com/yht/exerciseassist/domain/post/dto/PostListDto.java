@@ -1,7 +1,5 @@
 package com.yht.exerciseassist.domain.post.dto;
 
-import com.yht.exerciseassist.domain.post.PostType;
-import com.yht.exerciseassist.domain.post.WorkOutCategory;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,8 +7,8 @@ import lombok.Data;
 public class PostListDto {
 
     private String username;
-    private PostType postType;
-    private WorkOutCategory workOutCategory;
+    private String postType;
+    private String workOutCategory;
     private String createdAt;
     private String title;
     private Long postId;
@@ -20,7 +18,7 @@ public class PostListDto {
     private Long commentCount;
 
     @Builder
-    public PostListDto(String username, PostType postType, WorkOutCategory workOutCategory, String createdAt,
+    public PostListDto(String username, String postType, String workOutCategory, String createdAt,
                        String title, int mediaListCount, int likeCount, Long views, Long commentCount, Long postId) {
         this.username = username;
         this.postType = postType;

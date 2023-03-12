@@ -148,7 +148,9 @@ class DiaryServiceTest {
         ResponseResult diary = diaryService.getdiaryDetail("2023-01-30");
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
+        //diary.getData()의 기대값과 똑같은 객체를 하나 만들어!! 그래서 비교해
         assertThat(diary.getData()).isEqualTo(diaryDetailDto);
+
     }
 
     @Test
@@ -159,7 +161,7 @@ class DiaryServiceTest {
         Diary testDiary = DiaryFactory.createTestDiary(testMember);
         Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.ofNullable(testDiary));
 
-        List<ExerciseInfoDto> exerciseInfoDto = DiaryFactory.getExerciseInfoDto();
+        List<ExerciseInfoResDto> exerciseInfoDto = DiaryFactory.getExerciseInfoDto();
         DiaryEditData diaryEditData = DiaryEditData.builder()
                 .review(testDiary.getReview())
                 .exerciseInfo(exerciseInfoDto)
