@@ -244,7 +244,7 @@ class PostServiceTest {
         assertThat(result.getData().getPostListDto().get(0).getUsername()).isEqualTo(postList.get(0).getPostWriter().getUsername());
         assertThat(result.getData().getPostListDto().get(0).getCreatedAt()).isEqualTo(postList.get(0).getDateTime().getCreatedAt().split(" ")[0]);
         assertThat(result.getData().getPostListDto().get(0).getPostType()).isEqualTo(postList.get(0).getPostType().getMessage());
-        assertThat(result.getData().getPostListDto().get(0).getWorkOutCategory()).isEqualTo(postList.get(0).getWorkOutCategory());
+        assertThat(result.getData().getPostListDto().get(0).getWorkOutCategory()).isEqualTo(postList.get(0).getWorkOutCategory().getMessage());
         assertThat(result.getData().getPostListDto().get(0).getTitle()).isEqualTo(postList.get(0).getTitle());
         assertThat(result.getData().getPostListDto().get(0).getLikeCount()).isEqualTo(0);
         assertThat(result.getData().getPostListDto().size()).isEqualTo(3);

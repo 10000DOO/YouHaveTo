@@ -103,7 +103,7 @@ public class DiaryService {
         Diary findDiary = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        List<ExerciseInfoDto> exInfoDto = getExInfoDto(findDiary);
+        List<ExerciseInfoResDto> exInfoDto = getExInfoResDto(findDiary);
 
         List<String> mediaId = getMediaList(findDiary);
 
@@ -111,7 +111,7 @@ public class DiaryService {
                 .exerciseDate(findDiary.getExerciseDate())
                 .review(findDiary.getReview())
                 .exerciseInfo(exInfoDto)
-                .dateTime(findDiary.getDateTime())
+                .createdAt(findDiary.getDateTime().getCreatedAt())
                 .mediaList(mediaId)
                 .build();
 
@@ -124,7 +124,7 @@ public class DiaryService {
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        List<ExerciseInfoDto> exInfoDto = getExInfoDto(diary);
+        List<ExerciseInfoResDto> exInfoDto = getExInfoResDto(diary);
 
         List<String> mediaList = getMediaList(diary);
 
@@ -177,9 +177,9 @@ public class DiaryService {
         return mediaList;
     }
 
-    private List<ExerciseInfoDto> getExInfoDto(Diary diary) {
+    private List<ExerciseInfoResDto> getExInfoResDto(Diary diary) {
         return diary.getExerciseInfo().stream()
-                .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
+                .map(e -> ExerciseInfoResDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart().getMessage())
                         .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
                 .collect(Collectors.toList());
