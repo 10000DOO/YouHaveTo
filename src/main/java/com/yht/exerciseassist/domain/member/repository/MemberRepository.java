@@ -17,5 +17,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query(value = "select m from Member m where m.refreshToken.refreshToken = :refreshToken and m.dateTime.canceledAt = null")
     Optional<Member> findByRefreshToken(String refreshToken);
 
-
+    @Query(value = "select m from Member m where m.email = :email and m.dateTime.canceledAt = null")
+    Optional<Member> findByEmail(String email);
 }

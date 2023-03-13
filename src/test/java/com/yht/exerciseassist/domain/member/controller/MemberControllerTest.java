@@ -43,13 +43,14 @@ class MemberControllerTest {
     public void signUp() throws Exception {
         //given
         SignUpRequestDto signUpRequestDto = MemberFactory.createTestSignUpRequestDto();
-
+        String code = "123456789ABC";
         ResponseResult result = new ResponseResult(HttpStatus.CREATED.value(), signUpRequestDto.getUsername());
 
-        given(memberService.join(signUpRequestDto)).willReturn(result);
+        given(memberService.join(signUpRequestDto, code)).willReturn(result);
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/signup")
                         .content(objectMapper.writeValueAsString(signUpRequestDto))
+                        .param("code", code)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isCreated());
@@ -103,5 +104,32 @@ class MemberControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
+    }
+
+    @Test
+    @WithMockUser
+    public void findId() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/find/id")
+                        .param("code", "2eflijlsef")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+    }
+
+    @Test
+    @WithMockUser()
+    public void findPW() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/find/pw")
+                        .param("code", "2eflijlsef")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+
     }
 }

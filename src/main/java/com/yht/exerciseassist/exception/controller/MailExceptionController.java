@@ -1,6 +1,6 @@
 package com.yht.exerciseassist.exception.controller;
 
-import com.yht.exerciseassist.email.controller.EmailController;
+import com.yht.exerciseassist.domain.emailCode.controller.EmailController;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import com.yht.exerciseassist.exception.dto.ExceptionResponse;
 import com.yht.exerciseassist.exception.error.MailSendFailException;

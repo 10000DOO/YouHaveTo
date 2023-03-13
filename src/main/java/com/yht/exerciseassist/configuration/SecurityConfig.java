@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/email").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/signin").permitAll()
+                .requestMatchers("/find/**").permitAll()
                 .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/media/**").hasAnyRole("USER", "ADMIN")

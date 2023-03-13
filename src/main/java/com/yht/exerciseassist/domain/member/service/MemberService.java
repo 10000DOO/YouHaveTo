@@ -1,6 +1,8 @@
 package com.yht.exerciseassist.domain.member.service;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.emailCode.EmailCode;
+import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
@@ -15,6 +17,7 @@ import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
+import com.yht.exerciseassist.util.TempPassword;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,16 +49,19 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailCodeRepository emailCodeRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MediaService mediaService;
     @Value("${base.url}")
     private String baseUrl;
 
-    public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
+    public ResponseResult<String> join(SignUpRequestDto signUpRequestDto, String code) {
+        EmailCode emailCode = emailCodeRepository.findByCode(code)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage()));
         Member member = Member.builder()
                 .username(signUpRequestDto.getUsername())
-                .email(signUpRequestDto.getEmail())
+                .email(emailCode.getEmail())
                 .loginId(signUpRequestDto.getLoginId())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .field(signUpRequestDto.getField())
@@ -176,6 +182,36 @@ public class MemberService implements UserDetailsService {
                     .build();
 
             return new ResponseResult<>(HttpStatus.OK.value(), otherMemberPage);
+        }
+    }
+
+    public ResponseResult<String> findId(String code) {
+        Optional<EmailCode> optionalEmailCode = emailCodeRepository.findByCode(code);
+
+        if (optionalEmailCode.isPresent()) {
+            Member findMember = memberRepository.findByEmail(optionalEmailCode.get().getEmail())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+            String loginId = findMember.getLoginId();
+            String encodedId = loginId.substring(0, 2) + "***" + loginId.substring(5);
+            log.info("{} 아이디 찾기 성공", findMember.getUsername());
+            return new ResponseResult<>(HttpStatus.OK.value(), encodedId);
+        } else {
+            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
+        }
+    }
+
+    public ResponseResult<String> findPw(String code) {
+        Optional<EmailCode> optionalEmailCode = emailCodeRepository.findByCode(code);
+
+        if (optionalEmailCode.isPresent()) {
+            Member findMember = memberRepository.findByEmail(optionalEmailCode.get().getEmail())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+            String tempPassword = TempPassword.tempPassword(10);
+            findMember.changeMemberData(findMember.getUsername(), findMember.getEmail(), passwordEncoder.encode(tempPassword), findMember.getField());
+            log.info("{} 임시 비밀번호 생성", findMember.getUsername());
+            return new ResponseResult<>(HttpStatus.OK.value(), tempPassword);
+        } else {
+            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
         }
     }
 }
