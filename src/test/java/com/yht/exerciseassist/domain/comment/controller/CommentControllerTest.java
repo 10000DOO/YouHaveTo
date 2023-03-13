@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,6 +51,20 @@ class CommentControllerTest {
                 .andExpect(status().isCreated());
 
         //then
+    }
+
+    @Test
+    @WithMockUser
+    public void deleteComment() throws Exception {
+        //given
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/comment/delete/{commentId}", 1)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+
+        //then
+
     }
 
 }

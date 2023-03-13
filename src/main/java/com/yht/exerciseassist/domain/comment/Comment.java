@@ -52,4 +52,9 @@ public class Comment {
         this.parent = parent;
         parent.child.add(this);
     }
+
+    public void setCommentIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
 }
