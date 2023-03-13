@@ -135,7 +135,7 @@ public class PostService {
             log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 데이터 조회 성공");
             return new ResponseResult<>(HttpStatus.OK.value(), postEditList);
         } else {
-            throw new IllegalAccessException("본인 게시글이 아닙니다.");
+            throw new IllegalAccessException(ErrorCode.NOT_MINE_POST.getMessage());
         }
     }
 

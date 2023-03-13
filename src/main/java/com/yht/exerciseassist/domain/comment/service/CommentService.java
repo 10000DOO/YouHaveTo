@@ -50,15 +50,31 @@ public class CommentService {
         if (writeCommentDto.getParentId() != null) {
             Comment parentComment = commentRepository.findParentCommentByParentId(writeCommentDto.getParentId())
                     .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
-            if (Objects.equals(writeCommentDto.getPostId(), parentComment.getPost().getId())) {
-                comment.connectChildParent(parentComment);
-            } else {
+            if (!Objects.equals(writeCommentDto.getPostId(), parentComment.getPost().getId())) {
                 throw new EntityNotFoundException(ErrorCode.NOT_EXIST_SAME_POST_IN_PARENT_AND_CHILD_COMMENT.getMessage());
+            } else if (parentComment.getParent() != null) {
+                throw new EntityNotFoundException(ErrorCode.ALREADY_HAVE_PARENTCOMMENT.getMessage());
+            } else {
+                comment.connectChildParent(parentComment);
             }
         }
 
         commentRepository.save(comment);
         log.info("사용자명 : {}, {}번 게시글에 대한 댓글 등록 완료", findMember.getUsername(), writeCommentDto.getPostId());
         return new ResponseResult<>(HttpStatus.CREATED.value(), writeCommentDto.getCommentContent());
+    }
+
+    public ResponseResult<Long> deleteComment(Long commentId) throws IllegalAccessException {
+        Comment commentById = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
+
+        if (Objects.equals(commentById.getCommentWriter().getUsername(), SecurityUtil.getCurrentUsername())) {
+            commentById.getDateTime().canceledAtUpdate();
+        } else {
+            throw new IllegalAccessException(ErrorCode.NO_MATCHED_COMMENTID.getMessage());
+        }
+
+        log.info("username : {}, {}번 댓글 삭제 완료", SecurityUtil.getCurrentUsername(), commentById.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(), commentById.getId());
     }
 }

@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.comment.service;
 
+import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.comment.dto.WriteCommentDto;
 import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.factory.CommentFactory;
@@ -73,6 +74,29 @@ class CommentServiceTest {
 
         //when
         ResponseResult responseResult1 = commentService.saveComment(writeCommentDto);
+
+        //then
+        assertThat(responseResult1).isEqualTo(responseResult);
+    }
+
+    @Test
+    public void deleteComment() throws IllegalAccessException {
+        //given
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
+
+        Member member = MemberFactory.createTestMember();
+
+        Post post = PostFactory.createTestPost(member);
+
+        Comment comment = CommentFactory.createTestComment(member, post);
+        comment.setCommentIdUsedOnlyTest(1L);
+
+        Mockito.when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+
+        ResponseResult<Long> responseResult = new ResponseResult(HttpStatus.OK.value(), 1L);
+
+        //when
+        ResponseResult<Long> responseResult1 = commentService.deleteComment(1L);
 
         //then
         assertThat(responseResult1).isEqualTo(responseResult);

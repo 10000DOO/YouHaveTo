@@ -32,4 +32,11 @@ public class CommentExceptionController {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IllegalAccessException.class)
+    public ExceptionResponse notYourPost(IllegalAccessException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
+    }
 }

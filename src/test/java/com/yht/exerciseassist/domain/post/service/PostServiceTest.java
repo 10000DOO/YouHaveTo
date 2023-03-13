@@ -176,9 +176,9 @@ class PostServiceTest {
         Mockito.when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
         ResponseResult<Long> mockResult = new ResponseResult<>(HttpStatus.OK.value(), postId);
         //when
-        ResponseResult<Long> ResponseResult = postService.deletePost(postId);
+        ResponseResult<Long> responseResult = postService.deletePost(postId);
         //then
-        assertThat(ResponseResult).isEqualTo(mockResult);
+        assertThat(responseResult).isEqualTo(mockResult);
     }
 
     @Test
