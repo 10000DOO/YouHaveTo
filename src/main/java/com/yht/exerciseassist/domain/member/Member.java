@@ -95,6 +95,13 @@ public class Member implements UserDetails {
         this.likeCount.add(likeCount);
     }
 
+    public void changeMemberData(String username, String email, String password, String field) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.field = field;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
