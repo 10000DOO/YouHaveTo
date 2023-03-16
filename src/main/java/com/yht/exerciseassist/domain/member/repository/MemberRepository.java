@@ -2,21 +2,27 @@ package com.yht.exerciseassist.domain.member.repository;
 
 import com.yht.exerciseassist.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query(value = "select m from Member m where m.loginId = :loginId and m.dateTime.canceledAt = null")
-    Optional<Member> findByLoginId(String loginId);
+    Optional<Member> findByLoginId(@Param("loginId") String loginId);
 
     @Query(value = "select m from Member m where m.username = :username and m.dateTime.canceledAt = null")
-    Optional<Member> findByUsername(String username);
+    Optional<Member> findByUsername(@Param("username") String username);
 
     @Query(value = "select m from Member m where m.refreshToken.refreshToken = :refreshToken and m.dateTime.canceledAt = null")
-    Optional<Member> findByRefreshToken(String refreshToken);
+    Optional<Member> findByRefreshToken(@Param("refreshToken") String refreshToken);
 
     @Query(value = "select m from Member m where m.email = :email and m.dateTime.canceledAt = null")
-    Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmail(@Param("email") String email);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "delete from Member m where m.dateTime.canceledAt < :minusMonths")
+    void deleteByCreatedAtBefore(@Param("minusMonths") String minusMonths);
 }

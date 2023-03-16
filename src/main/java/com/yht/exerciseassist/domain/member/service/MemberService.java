@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -213,5 +215,12 @@ public class MemberService implements UserDetailsService {
         } else {
             throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
         }
+    }
+
+    @Scheduled(cron = "0 0 4 * * *")
+    public void deleteOldMemberData() {
+        String minusMonths = LocalDate.parse(LocalDateTime.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toString();
+        memberRepository.deleteByCreatedAtBefore(minusMonths);
+        log.info("탈퇴한지 30일 지난 멤버 데이터 삭제");
     }
 }
