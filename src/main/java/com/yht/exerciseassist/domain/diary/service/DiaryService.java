@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.diary.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
@@ -11,6 +10,7 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -103,7 +103,7 @@ public class DiaryService {
         Diary findDiary = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        List<ExerciseInfoDto> exInfoDto = getExInfoDto(findDiary);
+        List<ExerciseInfoResDto> exInfoDto = getExInfoResDto(findDiary);
 
         List<String> mediaId = getMediaList(findDiary);
 
@@ -111,7 +111,7 @@ public class DiaryService {
                 .exerciseDate(findDiary.getExerciseDate())
                 .review(findDiary.getReview())
                 .exerciseInfo(exInfoDto)
-                .dateTime(findDiary.getDateTime())
+                .createdAt(findDiary.getDateTime().getCreatedAt())
                 .mediaList(mediaId)
                 .build();
 
@@ -124,7 +124,7 @@ public class DiaryService {
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        List<ExerciseInfoDto> exInfoDto = getExInfoDto(diary);
+        List<ExerciseInfoResDto> exInfoDto = getExInfoResDto(diary);
 
         List<String> mediaList = getMediaList(diary);
 
@@ -177,15 +177,15 @@ public class DiaryService {
         return mediaList;
     }
 
-    public List<ExerciseInfoDto> getExInfoDto(Diary diary) {
+    private List<ExerciseInfoResDto> getExInfoResDto(Diary diary) {
         return diary.getExerciseInfo().stream()
-                .map(e -> ExerciseInfoDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
+                .map(e -> ExerciseInfoResDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart().getMessage())
                         .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
                 .collect(Collectors.toList());
     }
 
-    public List<ExerciseInfo> getExInfo(WriteDiaryDto writeDiaryDto) {
+    private List<ExerciseInfo> getExInfo(WriteDiaryDto writeDiaryDto) {
         return writeDiaryDto.getExerciseInfo().stream()
                 .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
                         .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())

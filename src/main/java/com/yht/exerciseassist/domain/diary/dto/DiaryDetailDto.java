@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.diary.dto;
 
-import com.yht.exerciseassist.domain.DateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,16 +9,16 @@ import java.util.List;
 public class DiaryDetailDto {
     private String exerciseDate;
     private String review;
-    private List<ExerciseInfoDto> exerciseInfo;
-    private DateTime dateTime;
+    private List<ExerciseInfoResDto> exerciseInfo;
+    private String createdAt;
     private List<String> mediaList;
 
     @Builder
-    public DiaryDetailDto(String exerciseDate, String review, List<ExerciseInfoDto> exerciseInfo, DateTime dateTime, List<String> mediaList) {
+    public DiaryDetailDto(String exerciseDate, String review, List<ExerciseInfoResDto> exerciseInfo, String createdAt, List<String> mediaList) {
         this.exerciseDate = exerciseDate;
         this.review = review;
         this.exerciseInfo = exerciseInfo;
-        this.dateTime = dateTime;
+        this.createdAt = createdAt;
         this.mediaList = mediaList;
     }
 }

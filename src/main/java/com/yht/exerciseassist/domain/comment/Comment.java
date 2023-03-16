@@ -4,14 +4,14 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
 
     @Id
@@ -37,13 +37,24 @@ public class Comment {
 
     private String commentContent;
 
-    private String likeAndHate;
-
     @Embedded
     private DateTime dateTime;
 
-    public void addChildCategory(Comment child) {
-        this.child.add(child);
-        child.setParent(this);
+    @Builder
+    public Comment(Post post, Member commentWriter, String commentContent, DateTime dateTime) {
+        this.post = post;
+        this.commentWriter = commentWriter;
+        this.commentContent = commentContent;
+        this.dateTime = dateTime;
     }
+
+    public void connectChildParent(Comment parent) {
+        this.parent = parent;
+        parent.child.add(this);
+    }
+
+    public void setCommentIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
 }

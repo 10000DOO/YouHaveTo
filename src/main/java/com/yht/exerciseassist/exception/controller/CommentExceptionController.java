@@ -1,9 +1,9 @@
 package com.yht.exerciseassist.exception.controller;
 
-import com.yht.exerciseassist.domain.emailCode.controller.EmailController;
+import com.yht.exerciseassist.domain.comment.controller.CommentController;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import com.yht.exerciseassist.exception.dto.ExceptionResponse;
-import com.yht.exerciseassist.exception.error.MailSendFailException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice(assignableTypes = EmailController.class)
+@RestControllerAdvice(assignableTypes = CommentController.class)
 @RequiredArgsConstructor
-public class MailExceptionController {
+public class CommentExceptionController {
 
     private final CommonExceptionHandler commonExceptionHandler;
 
@@ -26,10 +26,17 @@ public class MailExceptionController {
         return commonExceptionHandler.exceptionArrayRes(exception, log);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(MailSendFailException.class)
-    public ExceptionResponse emailExceptionHandle(MailSendFailException exception) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ExceptionResponse NotFoundEntity(EntityNotFoundException exception) {
 
-        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IllegalAccessException.class)
+    public ExceptionResponse notYourPost(IllegalAccessException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
     }
 }

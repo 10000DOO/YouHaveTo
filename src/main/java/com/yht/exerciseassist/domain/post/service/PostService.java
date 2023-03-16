@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.post.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
@@ -12,6 +11,7 @@ import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.dto.*;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import com.yht.exerciseassist.util.TimeConvertUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -135,7 +135,7 @@ public class PostService {
             log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 데이터 조회 성공");
             return new ResponseResult<>(HttpStatus.OK.value(), postEditList);
         } else {
-            throw new IllegalAccessException("본인 게시글이 아닙니다.");
+            throw new IllegalAccessException(ErrorCode.NOT_MINE_POST.getMessage());
         }
     }
 
@@ -244,8 +244,8 @@ public class PostService {
 
             PostListDto postListDto = PostListDto.builder()
                     .username(post.getPostWriter().getUsername())
-                    .postType(post.getPostType())
-                    .workOutCategory(post.getWorkOutCategory())
+                    .postType(post.getPostType().getMessage())
+                    .workOutCategory(post.getWorkOutCategory().getMessage())
                     .createdAt(calculateTime)
                     .title(post.getTitle())
                     .postId(post.getId())

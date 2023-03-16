@@ -1,11 +1,11 @@
 package com.yht.exerciseassist.domain.post.controller;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.post.dto.PostDetailRes;
 import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.service.PostService;
+import com.yht.exerciseassist.util.ResponseResult;
 import io.jsonwebtoken.io.IOException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +68,7 @@ public class PostController {
     @GetMapping("/post")
     public ResponseEntity<ResponseResult<PostListWithSliceDto>> getPostList(@RequestParam(value = "postType", required = false) List<String> postType,
                                                                             @RequestParam(value = "woryOutCategory", required = false) List<String> workOutCategories,
-                                                                            @RequestParam(value = "username", required = false) String username, Pageable pageable) throws IOException, ParseException {
+                                                                            @RequestParam(value = "username", required = false) String username, Pageable pageable) throws ParseException {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostList(postType, workOutCategories, username, pageable));
     }
 }

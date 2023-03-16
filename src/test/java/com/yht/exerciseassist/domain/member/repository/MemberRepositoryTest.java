@@ -51,9 +51,11 @@ class MemberRepositoryTest {
         //when
         Optional<Member> byLoginId = memberRepository.findByLoginId(member.getLoginId());
         Optional<Member> byUsername = memberRepository.findByUsername(member.getUsername());
+        Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
         Optional<Member> byRefreshToken = memberRepository.findByRefreshToken(member.getRefreshToken().getRefreshToken());
         //then
         assertThat(byLoginId.get()).isEqualTo(saveMember);
+        assertThat(byEmail.get()).isEqualTo(saveMember);
         assertThat(byUsername.get()).isEqualTo(saveMember);
         assertThat(byRefreshToken.get()).isEqualTo(saveMember);
     }

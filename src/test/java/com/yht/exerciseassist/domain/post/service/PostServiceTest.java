@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.post.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
@@ -15,6 +14,7 @@ import com.yht.exerciseassist.domain.post.dto.PostEditList;
 import com.yht.exerciseassist.domain.post.dto.PostListWithSliceDto;
 import com.yht.exerciseassist.domain.post.dto.WritePostDto;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
@@ -176,9 +176,9 @@ class PostServiceTest {
         Mockito.when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
         ResponseResult<Long> mockResult = new ResponseResult<>(HttpStatus.OK.value(), postId);
         //when
-        ResponseResult<Long> ResponseResult = postService.deletePost(postId);
+        ResponseResult<Long> responseResult = postService.deletePost(postId);
         //then
-        assertThat(ResponseResult).isEqualTo(mockResult);
+        assertThat(responseResult).isEqualTo(mockResult);
     }
 
     @Test
@@ -243,8 +243,8 @@ class PostServiceTest {
         assertThat(result.getData().getPostListDto().get(0).getPostId()).isEqualTo(postList.get(0).getId());
         assertThat(result.getData().getPostListDto().get(0).getUsername()).isEqualTo(postList.get(0).getPostWriter().getUsername());
         assertThat(result.getData().getPostListDto().get(0).getCreatedAt()).isEqualTo(postList.get(0).getDateTime().getCreatedAt().split(" ")[0]);
-        assertThat(result.getData().getPostListDto().get(0).getPostType()).isEqualTo(postList.get(0).getPostType());
-        assertThat(result.getData().getPostListDto().get(0).getWorkOutCategory()).isEqualTo(postList.get(0).getWorkOutCategory());
+        assertThat(result.getData().getPostListDto().get(0).getPostType()).isEqualTo(postList.get(0).getPostType().getMessage());
+        assertThat(result.getData().getPostListDto().get(0).getWorkOutCategory()).isEqualTo(postList.get(0).getWorkOutCategory().getMessage());
         assertThat(result.getData().getPostListDto().get(0).getTitle()).isEqualTo(postList.get(0).getTitle());
         assertThat(result.getData().getPostListDto().get(0).getLikeCount()).isEqualTo(0);
         assertThat(result.getData().getPostListDto().size()).isEqualTo(3);

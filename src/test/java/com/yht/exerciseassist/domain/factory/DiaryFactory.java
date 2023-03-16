@@ -6,6 +6,7 @@ import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
 import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
 import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoDto;
+import com.yht.exerciseassist.domain.diary.dto.ExerciseInfoResDto;
 import com.yht.exerciseassist.domain.diary.dto.WriteDiaryDto;
 import com.yht.exerciseassist.domain.member.Member;
 
@@ -23,6 +24,7 @@ public class DiaryFactory {
                 .cardio(true)
                 .cardioTime(30)
                 .finished(true)
+                .bodyPart(BodyPart.TRICEP)
                 .build();
 
         List<ExerciseInfo> exInfoList = new ArrayList<>();
@@ -64,40 +66,40 @@ public class DiaryFactory {
         List<String> mediaIdList = new ArrayList<>();
         mediaIdList.add("null" + "/media/" + 1);
 
-        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto(); //내가 기대한 Dto반환값
+        ExerciseInfoResDto exerciseInfoDto = new ExerciseInfoResDto(); //내가 기대한 Dto반환값
         exerciseInfoDto.setExerciseName("pushUp");
         exerciseInfoDto.setReps(10);
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart(null);
+        exerciseInfoDto.setBodyPart("삼두");
         exerciseInfoDto.setFinished(true);
 
-        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
+        List<ExerciseInfoResDto> exerciseInfoDtoList = new ArrayList<>();
         exerciseInfoDtoList.add(exerciseInfoDto);
 
         DiaryDetailDto diaryDetailDto = DiaryDetailDto.builder()
                 .exerciseDate("2023-01-30")
                 .review("열심히 했다 오운완")
                 .exerciseInfo(exerciseInfoDtoList)
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .createdAt("2023-02-11 11:11")
                 .mediaList(mediaIdList)
                 .build();
 
         return diaryDetailDto;
     }
 
-    public static List<ExerciseInfoDto> getExerciseInfoDto() {
-        ExerciseInfoDto exerciseInfoDto = new ExerciseInfoDto(); //내가 기대한 Dto반환값
+    public static List<ExerciseInfoResDto> getExerciseInfoDto() {
+        ExerciseInfoResDto exerciseInfoDto = new ExerciseInfoResDto(); //내가 기대한 Dto반환값
         exerciseInfoDto.setExerciseName("pushUp");
         exerciseInfoDto.setReps(10);
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart(null);
+        exerciseInfoDto.setBodyPart("삼두");
         exerciseInfoDto.setFinished(true);
 
-        List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
+        List<ExerciseInfoResDto> exerciseInfoDtoList = new ArrayList<>();
         exerciseInfoDtoList.add(exerciseInfoDto);
 
         return exerciseInfoDtoList;

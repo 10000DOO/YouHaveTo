@@ -1,13 +1,12 @@
 package com.yht.exerciseassist.domain.diary.dto;
 
-import com.yht.exerciseassist.domain.diary.BodyPart;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ExerciseInfoDto {
+public class ExerciseInfoResDto {
 
     private String exerciseName;
 
@@ -19,12 +18,12 @@ public class ExerciseInfoDto {
 
     private int cardioTime; //유산소 운동 시간
 
-    private BodyPart bodyPart;
+    private String bodyPart;
 
     private boolean finished; //완료 여부
 
     @Builder
-    public ExerciseInfoDto(String exerciseName, int reps, int exSetCount, boolean cardio, int cardioTime, BodyPart bodyPart, boolean finished) {
+    public ExerciseInfoResDto(String exerciseName, int reps, int exSetCount, boolean cardio, int cardioTime, String bodyPart, boolean finished) {
         this.exerciseName = exerciseName;
         this.reps = reps;
         this.exSetCount = exSetCount;

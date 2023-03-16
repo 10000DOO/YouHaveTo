@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.email.dto;
+package com.yht.exerciseassist.domain.emailCode.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,8 @@
 package com.yht.exerciseassist.domain.member.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.emailCode.EmailCode;
+import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
@@ -14,12 +15,15 @@ import com.yht.exerciseassist.exception.error.AuthenticationException;
 import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
+import com.yht.exerciseassist.util.TempPassword;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -46,16 +51,19 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailCodeRepository emailCodeRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MediaService mediaService;
     @Value("${base.url}")
     private String baseUrl;
 
-    public ResponseResult<String> join(SignUpRequestDto signUpRequestDto) {
+    public ResponseResult<String> join(SignUpRequestDto signUpRequestDto, String code) {
+        EmailCode emailCode = emailCodeRepository.findByCode(code)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage()));
         Member member = Member.builder()
                 .username(signUpRequestDto.getUsername())
-                .email(signUpRequestDto.getEmail())
+                .email(emailCode.getEmail())
                 .loginId(signUpRequestDto.getLoginId())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .field(signUpRequestDto.getField())
@@ -177,5 +185,42 @@ public class MemberService implements UserDetailsService {
 
             return new ResponseResult<>(HttpStatus.OK.value(), otherMemberPage);
         }
+    }
+
+    public ResponseResult<String> findId(String code) {
+        Optional<EmailCode> optionalEmailCode = emailCodeRepository.findByCode(code);
+
+        if (optionalEmailCode.isPresent()) {
+            Member findMember = memberRepository.findByEmail(optionalEmailCode.get().getEmail())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+            String loginId = findMember.getLoginId();
+            String encodedId = loginId.substring(0, 2) + "***" + loginId.substring(5);
+            log.info("{} 아이디 찾기 성공", findMember.getUsername());
+            return new ResponseResult<>(HttpStatus.OK.value(), encodedId);
+        } else {
+            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
+        }
+    }
+
+    public ResponseResult<String> findPw(String code) {
+        Optional<EmailCode> optionalEmailCode = emailCodeRepository.findByCode(code);
+
+        if (optionalEmailCode.isPresent()) {
+            Member findMember = memberRepository.findByEmail(optionalEmailCode.get().getEmail())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+            String tempPassword = TempPassword.tempPassword(10);
+            findMember.changeMemberData(findMember.getUsername(), findMember.getEmail(), passwordEncoder.encode(tempPassword), findMember.getField());
+            log.info("{} 임시 비밀번호 생성", findMember.getUsername());
+            return new ResponseResult<>(HttpStatus.OK.value(), tempPassword);
+        } else {
+            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
+        }
+    }
+
+    @Scheduled(cron = "0 0 4 * * *")
+    public void deleteOldMemberData() {
+        String minusMonths = LocalDate.parse(LocalDateTime.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toString();
+        memberRepository.deleteByCreatedAtBefore(minusMonths);
+        log.info("탈퇴한지 30일 지난 멤버 데이터 삭제");
     }
 }

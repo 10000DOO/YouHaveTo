@@ -1,7 +1,5 @@
 package com.yht.exerciseassist.domain.accuse;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
@@ -29,10 +27,8 @@ public class Accuse {
     @Embedded //생성일 수정일 삭제일
     private DateTime dateTime;
 
-    @JsonCreator
     @Builder
-    public Accuse(@JsonProperty("accuseType") AccuseType accuseType, @JsonProperty("content") String content,
-                  @JsonProperty("post") Post post, @JsonProperty("dateTime") DateTime dateTime) {
+    public Accuse(AccuseType accuseType, String content, Post post, DateTime dateTime) {
         this.accuseType = accuseType;
         this.content = content;
         this.post = post;

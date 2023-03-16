@@ -1,7 +1,8 @@
 package com.yht.exerciseassist.domain.member.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
+import com.yht.exerciseassist.domain.factory.EmailCodeFactory;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.media.Media;
@@ -14,7 +15,9 @@ import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
+import com.yht.exerciseassist.util.TempPassword;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +54,7 @@ import static org.mockito.Mockito.mockStatic;
 @ActiveProfiles("test")
 class MemberServiceTest {
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
+    private static MockedStatic<TempPassword> tempPasswordMockedStatic;
     MemberService memberService;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -58,6 +62,8 @@ class MemberServiceTest {
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     @MockBean
     private MemberRepository memberRepository;
+    @MockBean
+    private EmailCodeRepository emailCodeRepository;
 
     @MockBean
     private MediaService mediaService;
@@ -69,24 +75,27 @@ class MemberServiceTest {
     @AfterEach
     public void afterAll() {
         securityUtilMockedStatic.close();
+        tempPasswordMockedStatic.close();
     }
 
     @BeforeEach
     void setup() {
-        memberService = new MemberService(memberRepository, passwordEncoder, authenticationManagerBuilder, jwtTokenProvider, mediaService);
+        memberService = new MemberService(memberRepository, passwordEncoder, emailCodeRepository, authenticationManagerBuilder, jwtTokenProvider, mediaService);
         securityUtilMockedStatic = mockStatic(SecurityUtil.class);
+        tempPasswordMockedStatic = mockStatic(TempPassword.class);
     }
 
     @Test
     public void signUp() {
         //given
         SignUpRequestDto signUpRequestDto = MemberFactory.createTestSignUpRequestDto();
-
+        String code = "123456789ABC";
         Member member = MemberFactory.createTestMember();
 
         Mockito.when(memberRepository.save(member)).thenReturn(member);
+        Mockito.when(emailCodeRepository.findByCode(code)).thenReturn(Optional.of(EmailCodeFactory.createEmailCode()));
         //when
-        ResponseResult response = memberService.join(signUpRequestDto);
+        ResponseResult response = memberService.join(signUpRequestDto, code);
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getData()).isEqualTo(member.getUsername());
@@ -161,5 +170,34 @@ class MemberServiceTest {
         ResponseResult result = memberService.getMemberPage(username);
         //then
         assertThat(result).isEqualTo(mypage);
+    }
+
+    @Test
+    public void findId() {
+        //given
+        String code = "2DG7yGylFhQW";
+        Mockito.when(emailCodeRepository.findByCode(code)).thenReturn(Optional.of(EmailCodeFactory.createEmailCode()));
+        Mockito.when(memberRepository.findByEmail(EmailCodeFactory.createEmailCode().getEmail())).thenReturn(Optional.ofNullable(MemberFactory.createTestMember()));
+
+        ResponseResult<String> responseResult = new ResponseResult<>(200, "te***d1");
+        //when
+        ResponseResult<String> result = memberService.findId(code);
+        //then
+        assertThat(result).isEqualTo(responseResult);
+    }
+
+    @Test
+    public void findPW() {
+        //given
+        String code = "2DG7yGylFhQW";
+        Mockito.when(emailCodeRepository.findByCode(code)).thenReturn(Optional.of(EmailCodeFactory.createEmailCode()));
+        Mockito.when(memberRepository.findByEmail(EmailCodeFactory.createEmailCode().getEmail())).thenReturn(Optional.ofNullable(MemberFactory.createTestMember()));
+        given(TempPassword.tempPassword(10)).willReturn("abcdefjhijtpw1!");
+
+        ResponseResult<String> responseResult = new ResponseResult<>(200, "abcdefjhijtpw1!");
+        //when
+        ResponseResult<String> result = memberService.findPw(code);
+        //then
+        assertThat(result).isEqualTo(responseResult);
     }
 }

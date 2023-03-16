@@ -1,6 +1,5 @@
 package com.yht.exerciseassist.domain.accuse.service;
 
-import com.yht.exerciseassist.ResponseResult;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.accuse.Accuse;
 import com.yht.exerciseassist.domain.accuse.dto.AccuseReq;
@@ -8,6 +7,7 @@ import com.yht.exerciseassist.domain.accuse.repository.AccuseRepository;
 import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
+import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

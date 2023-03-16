@@ -1,20 +1,23 @@
-package com.yht.exerciseassist.email.service;
+package com.yht.exerciseassist.domain.emailCode.service;
 
-import com.yht.exerciseassist.ResponseResult;
-import com.yht.exerciseassist.email.dto.EmailReqDto;
-import com.yht.exerciseassist.email.dto.EmailResDto;
+import com.yht.exerciseassist.domain.emailCode.EmailCode;
+import com.yht.exerciseassist.domain.emailCode.dto.EmailReqDto;
+import com.yht.exerciseassist.domain.emailCode.dto.EmailResDto;
+import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
 import com.yht.exerciseassist.exception.error.MailSendFailException;
+import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -24,8 +27,8 @@ import java.util.Random;
 public class EmailService {
 
     public static final String ePw = createKey();
-    @Autowired
-    JavaMailSender emailSender;
+    private final EmailCodeRepository emailCodeRepository;
+    private final JavaMailSender emailSender;
 
     public static String createKey() {
         StringBuffer key = new StringBuffer();
@@ -57,6 +60,7 @@ public class EmailService {
         MimeMessage message = createMessage(target);
         try {//예외처리
             emailSender.send(message);
+            emailCodeRepository.save(new EmailCode(target, ePw));
         } catch (MailException es) {
             es.printStackTrace();
             throw new MailSendFailException("이메일 전송이 실패했습니다.");
@@ -90,5 +94,12 @@ public class EmailService {
         message.setFrom(new InternetAddress("yhthealthassist@gmail.com", "YouHaveTo"));//보내는 사람
 
         return message;
+    }
+
+    @Scheduled(cron = "0 */1 * * * *")
+    public void deleteOldMailCode() {
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
+        emailCodeRepository.deleteByCreatedAtBefore(fiveMinutesAgo);
+        log.info("5분 지난 인증 코드 삭제");
     }
 }
