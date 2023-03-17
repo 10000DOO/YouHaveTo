@@ -15,11 +15,11 @@ public class PostListDto {
     private int mediaListCount;
     private int likeCount;
     private Long views;
-    private Long commentCount;
+    private int commentCount;
 
     @Builder
     public PostListDto(String username, String postType, String workOutCategory, String createdAt,
-                       String title, int mediaListCount, int likeCount, Long views, Long commentCount, Long postId) {
+                       String title, int mediaListCount, int likeCount, Long views, int commentCount, Long postId) {
         this.username = username;
         this.postType = postType;
         this.workOutCategory = workOutCategory;

@@ -101,6 +101,4 @@ class CommentServiceTest {
         //then
         assertThat(responseResult1).isEqualTo(responseResult);
     }
-
-
 }

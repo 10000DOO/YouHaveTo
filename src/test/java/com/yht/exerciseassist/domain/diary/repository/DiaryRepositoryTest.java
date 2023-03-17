@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.diary.repository;
 
+import com.yht.exerciseassist.domain.comment.repository.CommentRepositoryImpl;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.factory.DiaryFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
@@ -27,6 +28,8 @@ class DiaryRepositoryTest {
     private DiaryRepository diaryRepository;
     @MockBean
     private PostRepositoryImpl postRepositoryImpl;
+    @MockBean
+    private CommentRepositoryImpl commentRepositoryImpl;
 
     @Autowired
     private EntityManager em;

@@ -8,14 +8,23 @@ import com.yht.exerciseassist.domain.post.Post;
 
 public class CommentFactory {
     public static Comment createTestComment(Member member, Post post) {
-        Comment comment = Comment.builder()
+
+        return Comment.builder()
                 .post(post)
                 .commentWriter(member)
                 .commentContent("테스트 댓글")
                 .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
+    }
 
-        return comment;
+    public static Comment createTestChildComment(Member member, Post post) {
+
+        return Comment.builder()
+                .post(post)
+                .commentWriter(member)
+                .commentContent("테스트 대댓글")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .build();
     }
 
     public static WriteCommentDto writeCommentDto() {

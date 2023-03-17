@@ -11,3 +11,4 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query(value = "select p from Post p where p.id = :postId and p.dateTime.canceledAt = null")
     Optional<Post> findNotDeletedById(@Param("postId") Long postId);
 }
+

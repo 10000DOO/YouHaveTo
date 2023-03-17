@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.post.service;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
 import com.yht.exerciseassist.domain.media.Media;
@@ -44,6 +45,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
     private final LikeCountRepository likeCountRepository;
+    private final CommentRepository commentRepository;
     @Value("${base.url}")
     private String baseUrl;
 
@@ -107,6 +109,7 @@ public class PostService {
                 .createdAt(postById.getDateTime().getCreatedAt())
                 .postType(postById.getPostType())
                 .workOutCategory(postById.getWorkOutCategory())
+
                 .isMine(SecurityUtil.getCurrentUsername().equals(postById.getPostWriter().getUsername()))
                 .build();
 
@@ -160,6 +163,10 @@ public class PostService {
     public ResponseResult<Long> deletePost(Long postId) throws IOException {
         Post postById = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+//        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+//
+//        commentRepository.deleteCommentByPostId(localTime, postById.getId());
 
         mediaService.deletePostImage(postById.getId());
         postById.getDateTime().canceledAtUpdate();
@@ -251,7 +258,7 @@ public class PostService {
                     .postId(post.getId())
                     .mediaListCount(post.getMediaList().size())
                     .likeCount(post.getLikeCount().size())
-                    //commentCount()
+                    .commentCount(post.getComments().size())
                     .views(post.getViews())
                     .build();
 

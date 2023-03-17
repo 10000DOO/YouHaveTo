@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,7 +65,24 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
         //then
+    }
 
+    @Test
+    @WithMockUser
+    public void getComment() throws Exception {
+        //given
+        MockHttpServletRequestBuilder builder = get("/comment")
+                .param("postId", "1")
+                .param("parentId", "1")
+                .param("page", "0")
+                .param("size", "2");
+
+        //when
+        mockMvc.perform((builder)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+
+        //then
     }
 
 }
