@@ -91,9 +91,9 @@ public class MemberService implements UserDetailsService {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
-                throw new BadCredentialsException(ErrorCode.BAD_CREDENTIALS_EXCEPTION.getMessage());
+                throw new BadCredentialsException(ErrorCode.AUTHENTICATION_EXCEPTION.getMessage());
             } else if (e instanceof InternalAuthenticationServiceException) {
-                throw new InternalAuthenticationServiceException(ErrorCode.INTERNAL_AUTHENTICATION_SERVICE_EXCEPTION.getMessage());
+                throw new InternalAuthenticationServiceException(ErrorCode.AUTHENTICATION_EXCEPTION.getMessage());
             }
         }
 
