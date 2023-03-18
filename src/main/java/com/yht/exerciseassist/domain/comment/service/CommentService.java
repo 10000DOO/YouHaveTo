@@ -100,7 +100,7 @@ public class CommentService {
         String memberRole = SecurityUtil.getMemberRole();
 
         Slice<Comment> commentList = null;
-        if (Objects.equals(username, SecurityUtil.getCurrentUsername()) || username == null) {
+        if (username.equals(SecurityUtil.getCurrentUsername()) || username == null) {
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
         } else if (username.isEmpty() && !username.equals(SecurityUtil.getCurrentUsername())) {
             throw new IllegalAccessException(ErrorCode.NOT_MINE_COMMENT.getMessage());
@@ -166,6 +166,8 @@ public class CommentService {
                     .build();
 
             return new ResponseResult<>(HttpStatus.OK.value(), commentListWithSliceDto);
-        } else throw new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage());
+        } else {
+            throw new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage());
+        }
     }
 }
