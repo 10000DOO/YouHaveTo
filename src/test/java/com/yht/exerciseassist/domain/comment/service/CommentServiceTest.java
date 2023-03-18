@@ -1,6 +1,8 @@
 package com.yht.exerciseassist.domain.comment.service;
 
 import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.comment.dto.CommentListDto;
+import com.yht.exerciseassist.domain.comment.dto.CommentListwithSliceDto;
 import com.yht.exerciseassist.domain.comment.dto.WriteCommentDto;
 import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.factory.CommentFactory;
@@ -19,11 +21,18 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,5 +109,34 @@ class CommentServiceTest {
 
         //then
         assertThat(responseResult1).isEqualTo(responseResult);
+    }
+
+    @Test
+    public void getComment() throws ParseException, IllegalAccessException {
+        //given
+        given(SecurityUtil.getMemberRole()).willReturn("USER");
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
+        Long postId = 1L;
+        Long parentId = null;
+        String username = "member1";
+        Pageable pageable = PageRequest.of(0, 1);
+
+        Member testMember = MemberFactory.createTestMember();
+        Post testPost = PostFactory.createTestPost(testMember);
+        Comment testComment = CommentFactory.createTestComment(testMember, testPost);
+        List<Comment> commentList = new ArrayList<>();
+        commentList.add(testComment);
+        Slice<Comment> slice = new SliceImpl<>(commentList);
+
+        Mockito.when(commentRepository.findParentAndChildComment(SecurityUtil.getMemberRole(), postId, parentId, username, pageable)).thenReturn(slice);
+
+        CommentListDto commentListDto = CommentFactory.getCommentListDto();
+        List<CommentListDto> commentListDtos = new ArrayList<>();
+        commentListDtos.add(commentListDto);
+        //when
+        ResponseResult<CommentListwithSliceDto> comment = commentService.getComment(postId, parentId, username, pageable);
+        //then
+        assertThat(comment.getStatus()).isEqualTo(200);
+        assertThat(comment.getData().getCommentListDto()).isEqualTo(commentListDtos);
     }
 }
