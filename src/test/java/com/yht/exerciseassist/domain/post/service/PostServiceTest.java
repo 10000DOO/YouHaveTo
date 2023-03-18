@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.post.service;
 
+import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
@@ -69,6 +70,8 @@ class PostServiceTest {
     private MemberRepository memberRepository;
     @MockBean
     private MediaService mediaService;
+    @MockBean
+    private CommentRepository commentRepository;
     @Value("${test.address}")
     private String testAddress;
 
@@ -79,7 +82,7 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        postService = new PostService(postRepository, memberRepository, mediaService, likeCountRepository);
+        postService = new PostService(postRepository, memberRepository, mediaService, likeCountRepository, commentRepository);
         securityUtilMockedStatic = mockStatic(SecurityUtil.class);
     }
 
@@ -248,5 +251,7 @@ class PostServiceTest {
         assertThat(result.getData().getPostListDto().get(0).getTitle()).isEqualTo(postList.get(0).getTitle());
         assertThat(result.getData().getPostListDto().get(0).getLikeCount()).isEqualTo(0);
         assertThat(result.getData().getPostListDto().size()).isEqualTo(3);
+        assertThat(result.getData().getIsFirst()).isTrue();
+        assertThat(result.getData().getHasNext()).isFalse();
     }
 }

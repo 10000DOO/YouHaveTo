@@ -171,6 +171,7 @@ public class MemberService implements UserDetailsService {
                     .createdAt(findMember.getDateTime().getCreatedAt())
                     .profileImage(profileImage)
                     .postCount(findMember.getPosts().size())
+                    .commentCount(findMember.getComments().size())
                     .build();
 
             return new ResponseResult<>(HttpStatus.OK.value(), myMemberPage);

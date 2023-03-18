@@ -26,6 +26,8 @@ class CommentRepositoryTest {
     @Autowired
     private CommentRepository commentRepository;
     @MockBean
+    private CommentRepositoryImpl commentRepositoryImpl;
+    @MockBean
     private PostRepositoryImpl postRepositoryImpl;
     @Autowired
     private EntityManager em;
@@ -91,4 +93,5 @@ class CommentRepositoryTest {
         //then
         assertThat(findComment.get()).isEqualTo(comment);
     }
+
 }

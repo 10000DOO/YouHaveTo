@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.likeCount.repository;
 
+import com.yht.exerciseassist.domain.comment.repository.CommentRepositoryImpl;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
 import com.yht.exerciseassist.domain.likeCount.LikeCount;
@@ -26,6 +27,8 @@ class LikeCountRepositoryTest {
     private LikeCountRepository likeCountRepository;
     @MockBean
     private PostRepositoryImpl postRepositoryImpl;
+    @MockBean
+    private CommentRepositoryImpl commentRepositoryImpl;
     @Autowired
     private EntityManager em;
 

@@ -27,5 +27,6 @@ public class EmailCode {
         this.email = email;
         this.code = code;
         this.createdAt = LocalDateTime.now();
+
     }
 }
