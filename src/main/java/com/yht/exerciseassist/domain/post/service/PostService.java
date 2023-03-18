@@ -164,12 +164,11 @@ public class PostService {
         Post postById = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
-//        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-//
-//        commentRepository.deleteCommentByPostId(localTime, postById.getId());
+        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
+        commentRepository.deleteCommentByPostId(localTime, postById.getId());
         mediaService.deletePostImage(postById.getId());
-        postById.getDateTime().canceledAtUpdate();
+        postRepository.deletePostById(localTime, postById.getId());
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postById.getId());
