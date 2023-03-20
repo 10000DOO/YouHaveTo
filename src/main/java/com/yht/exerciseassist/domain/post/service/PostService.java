@@ -34,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -110,7 +111,7 @@ public class PostService {
                 .postType(postById.getPostType())
                 .workOutCategory(postById.getWorkOutCategory())
 
-                .isMine(SecurityUtil.getCurrentUsername().equals(postById.getPostWriter().getUsername()))
+                .isMine(Objects.equals(SecurityUtil.getCurrentUsername(), postById.getPostWriter().getUsername()))
                 .build();
 
         postById.pulsViews();
@@ -123,7 +124,7 @@ public class PostService {
         Post post = postRepository.findByIdWithRole(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
-        if (post.getPostWriter().getUsername().equals(SecurityUtil.getCurrentUsername())) {
+        if (Objects.equals(post.getPostWriter().getUsername(), SecurityUtil.getCurrentUsername())) {
 
             List<String> mediaList = getMediaList(post);
 

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -38,7 +39,7 @@ public class JWTService {
             if (byRefreshToken.isPresent()) {
                 Member findMember = byRefreshToken.get();
                 String token = findMember.getRefreshToken().getRefreshToken();
-                if (token.equals(inputToken)) {
+                if (Objects.equals(token, inputToken)) {
                     long now = (new Date()).getTime();
                     // Access Token 생성
                     Date accessTokenExpiresIn = new Date(now + 30 * 60 * 1000);

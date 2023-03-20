@@ -36,3 +36,10 @@ logging:
 
 base:
   url: ENC(UpPv/Vcdlw6MzD2697sdTa+SUMXgt0CtbtQIlD5ymxNVS7mgKnUKeA==)
+
+server:
+  port: 443
+  ssl:
+    key-store: classpath:ssl/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: ENC(Wes8r4kIFAJt8f/sGpOQDH1o0TtjpTZq)
