@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -61,21 +62,26 @@ public class MemberService implements UserDetailsService {
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto, String code) {
         EmailCode emailCode = emailCodeRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage()));
-        Member member = Member.builder()
-                .username(signUpRequestDto.getUsername())
-                .email(emailCode.getEmail())
-                .loginId(signUpRequestDto.getLoginId())
-                .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
-                .field(signUpRequestDto.getField())
-                .role(MemberType.USER)
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
-                .build();
 
-        memberRepository.save(member);
-        log.info(member.getUsername() + " 회원가입 완료");
+        if (Objects.equals(emailCode.getEmail(), signUpRequestDto.getEmail())) {
+            Member member = Member.builder()
+                    .username(signUpRequestDto.getUsername())
+                    .email(emailCode.getEmail())
+                    .loginId(signUpRequestDto.getLoginId())
+                    .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
+                    .field(signUpRequestDto.getField())
+                    .role(MemberType.USER)
+                    .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                    .build();
 
-        return new ResponseResult<>(HttpStatus.CREATED.value(), member.getUsername());
+            memberRepository.save(member);
+            log.info(member.getUsername() + " 회원가입 완료");
+
+            return new ResponseResult<>(HttpStatus.CREATED.value(), member.getUsername());
+        } else {
+            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL.getMessage());
+        }
     }
 
     public ResponseResult<TokenInfo> signIn(String loginId, String password) {
@@ -96,7 +102,6 @@ public class MemberService implements UserDetailsService {
                 throw new InternalAuthenticationServiceException(ErrorCode.AUTHENTICATION_EXCEPTION.getMessage());
             }
         }
-
         if (authentication == null) {
             throw new AuthenticationException(ErrorCode.AUTHENTICATION_EXCEPTION.getMessage());
         } else {
@@ -163,7 +168,7 @@ public class MemberService implements UserDetailsService {
             profileImage = null;
         }
 
-        if (username.equals(SecurityUtil.getCurrentUsername())) {
+        if (Objects.equals(username, SecurityUtil.getCurrentUsername())) {
             MyMemberPage myMemberPage = MyMemberPage.builder()
                     .username(findMember.getUsername())
                     .email(findMember.getEmail())

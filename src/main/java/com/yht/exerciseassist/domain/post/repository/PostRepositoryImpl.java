@@ -12,6 +12,7 @@ import org.springframework.data.domain.SliceImpl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.yht.exerciseassist.domain.post.PostType.*;
@@ -32,7 +33,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     private BooleanExpression memberRoleEq(String role) {
-        return role.equals("USER") ? post.dateTime.canceledAt.isNull() : null;
+        return Objects.equals(role, "USER") ? post.dateTime.canceledAt.isNull() : null;
     }
 
     public Slice<Post> postAsSearchType(String role, List<String> postTypeList, List<String> WorkOutCategories, String username, Pageable pageable) {
@@ -63,15 +64,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     private BooleanExpression isSearchPostType(String postType) {
-        if (postType.equals("Q_AND_A")) {
+        if (Objects.equals(postType, "Q_AND_A")) {
             return post.postType.eq(Q_AND_A);
-        } else if (postType.equals("KNOWLEDGE")) {
+        } else if (Objects.equals(postType, "KNOWLEDGE")) {
             return post.postType.eq(KNOWLEDGE);
-        } else if (postType.equals("SHOW_OFF")) {
+        } else if (Objects.equals(postType, "SHOW_OFF")) {
             return post.postType.eq(SHOW_OFF);
-        } else if (postType.equals("COMPETITION")) {
+        } else if (Objects.equals(postType, "COMPETITION")) {
             return post.postType.eq(COMPETITION);
-        } else if (postType.equals("FREE")) {
+        } else if (Objects.equals(postType, "FREE")) {
             return post.postType.eq(FREE);
         } else if (postType.isEmpty()) {
             return null;
@@ -94,15 +95,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     private BooleanExpression isSearchWorkOutCategories(String workOutCategories) {
-        if (workOutCategories.equals("HEALTH")) {
+        if (Objects.equals(workOutCategories, "HEALTH")) {
             return post.workOutCategory.eq(HEALTH);
-        } else if (workOutCategories.equals("PILATES")) {
+        } else if (Objects.equals(workOutCategories, "PILATES")) {
             return post.workOutCategory.eq(PILATES);
-        } else if (workOutCategories.equals("YOGA")) {
+        } else if (Objects.equals(workOutCategories, "YOGA")) {
             return post.workOutCategory.eq(YOGA);
-        } else if (workOutCategories.equals("JOGGING")) {
+        } else if (Objects.equals(workOutCategories, "JOGGING")) {
             return post.workOutCategory.eq(JOGGING);
-        } else if (workOutCategories.equals("ETC")) {
+        } else if (Objects.equals(workOutCategories, "ETC")) {
             return post.workOutCategory.eq(ETC);
         } else if (workOutCategories.isEmpty()) {
             return null;

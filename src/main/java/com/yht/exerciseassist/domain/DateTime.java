@@ -36,7 +36,7 @@ public class DateTime {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DateTime dateTime)) return false;
-        return getCreatedAt().equals(dateTime.getCreatedAt()) && Objects.equals(getCanceledAt(), dateTime.getCanceledAt()) && getUpdatedAt().equals(dateTime.getUpdatedAt());
+        return Objects.equals(getCreatedAt(), dateTime.getCreatedAt()) && Objects.equals(getCanceledAt(), dateTime.getCanceledAt()) && getUpdatedAt().equals(dateTime.getUpdatedAt());
     }
 
     @Override

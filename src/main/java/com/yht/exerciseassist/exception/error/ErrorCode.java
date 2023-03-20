@@ -23,12 +23,13 @@ public enum ErrorCode {
     ALREADY_PRESSED("이미 좋아요를 누르셨습니다."),
     DATE_FORMAT_EXCEPTION("날짜 형식 변환에 실패하였습니다."),
     NO_MATCHED_POST_TYPE("잘못된 게시글 타입입니다."),
-    WRONG_EMAIL_CODE("잘못된 인증코드 입니다."),
+    WRONG_EMAIL_CODE("인증 코드가 틀렸거나 시간이 초과되었습니다."),
     NOT_MINE_POST("본인 게시글이 아닙니다."),
     NOT_MINE_COMMENT("본인 댓글이 아닙니다."),
     NO_MATCHED_EXERCISE_CATEGORY("잘못된 운동 카테고리입니다."),
     NO_MATCHED_COMMENTID("본인이 작성한 댓글만 삭제할 수 있습니다."),
-    ALREADY_HAVE_PARENTCOMMENT("해당 댓글에는 대댓글을 작성하실 수 없습니다.");
+    ALREADY_HAVE_PARENTCOMMENT("해당 댓글에는 대댓글을 작성하실 수 없습니다."),
+    WRONG_EMAIL("이메일을 다시 확인해주세요.");
     private final String message;
 
     ErrorCode(String message) {
