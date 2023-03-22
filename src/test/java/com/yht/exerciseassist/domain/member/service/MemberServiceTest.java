@@ -192,9 +192,9 @@ class MemberServiceTest {
         String code = "2DG7yGylFhQW";
         Mockito.when(emailCodeRepository.findByCode(code)).thenReturn(Optional.of(EmailCodeFactory.createEmailCode()));
         Mockito.when(memberRepository.findByEmail(EmailCodeFactory.createEmailCode().getEmail())).thenReturn(Optional.ofNullable(MemberFactory.createTestMember()));
-        given(TempPassword.tempPassword(10)).willReturn("abcdefjhijtpw1!");
+        given(TempPassword.generateRandomString(15)).willReturn("abcdefjhi12345jtpw1!");
 
-        ResponseResult<String> responseResult = new ResponseResult<>(200, "abcdefjhijtpw1!");
+        ResponseResult<String> responseResult = new ResponseResult<>(200, "abcdefjhi12345jtpw1!");
         //when
         ResponseResult<String> result = memberService.findPw(code);
         //then
