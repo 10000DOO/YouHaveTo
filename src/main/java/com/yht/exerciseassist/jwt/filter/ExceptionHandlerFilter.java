@@ -44,7 +44,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer")) {
                 String token = refreshToken.substring(7);
-                ResponseResult result = jwtService.refreshToken(token.substring(0, token.length() - 1));
+                ResponseResult result = jwtService.refreshToken(token);
                 response.setStatus(HttpStatus.OK.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setCharacterEncoding("UTF-8");

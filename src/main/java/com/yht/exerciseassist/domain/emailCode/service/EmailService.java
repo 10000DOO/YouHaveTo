@@ -6,6 +6,7 @@ import com.yht.exerciseassist.domain.emailCode.dto.EmailResDto;
 import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
 import com.yht.exerciseassist.exception.error.MailSendFailException;
 import com.yht.exerciseassist.util.ResponseResult;
+import com.yht.exerciseassist.util.TempPassword;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -26,51 +26,26 @@ import java.util.Random;
 @Slf4j
 public class EmailService {
 
-    public static final String ePw = createKey();
     private final EmailCodeRepository emailCodeRepository;
     private final JavaMailSender emailSender;
 
-    public static String createKey() {
-        StringBuffer key = new StringBuffer();
-        Random rnd = new Random();
-
-        for (int i = 0; i < 12; i++) { // 인증코드 8자리
-            int index = rnd.nextInt(3); // 0~2 까지 랜덤
-
-            switch (index) {
-                case 0:
-                    key.append((char) (rnd.nextInt(26) + 97));
-                    //  a~z  (ex. 1+97=98 => (char)98 = 'b')
-                    break;
-                case 1:
-                    key.append((char) (rnd.nextInt(26) + 65));
-                    //  A~Z
-                    break;
-                case 2:
-                    key.append((rnd.nextInt(10)));
-                    // 0~9
-                    break;
-            }
-        }
-        return key.toString();
-    }
-
     public ResponseResult<EmailResDto> sendSimpleMessage(EmailReqDto emailReqDto) throws Exception {
         String target = emailReqDto.getEmail();
-        MimeMessage message = createMessage(target);
+        String secretKey = TempPassword.generateRandomString(10);
+        MimeMessage message = createMessage(target, secretKey);
         try {//예외처리
             emailSender.send(message);
-            emailCodeRepository.save(new EmailCode(target, ePw));
+            emailCodeRepository.save(new EmailCode(target, secretKey));
         } catch (MailException es) {
             es.printStackTrace();
             throw new MailSendFailException("이메일 전송이 실패했습니다.");
         }
-        return new ResponseResult<>(HttpStatus.OK.value(), new EmailResDto(target, ePw));
+        return new ResponseResult<>(HttpStatus.OK.value(), new EmailResDto(target, secretKey));
     }
 
-    private MimeMessage createMessage(String target) throws Exception {
+    private MimeMessage createMessage(String target, String secretKey) throws Exception {
         log.info("보내는 대상 : " + target);
-        log.info("인증 번호 : " + ePw);
+        log.info("인증 번호 : " + secretKey);
         MimeMessage message = emailSender.createMimeMessage();
 
         message.addRecipients(MimeMessage.RecipientType.TO, target);//보내는 대상
@@ -88,7 +63,7 @@ public class EmailService {
         msgg += "<h3 style='color:blue;'>인증 코드입니다.</h3>";
         msgg += "<div style='font-size:130%'>";
         msgg += "CODE : <strong>";
-        msgg += ePw + "</strong><div><br/> ";
+        msgg += secretKey + "</strong><div><br/> ";
         msgg += "</div>";
         message.setText(msgg, "utf-8", "html");//내용
         message.setFrom(new InternetAddress("yhthealthassist@gmail.com", "YouHaveTo"));//보내는 사람

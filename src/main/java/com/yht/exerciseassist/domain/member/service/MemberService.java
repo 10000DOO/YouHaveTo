@@ -214,7 +214,7 @@ public class MemberService implements UserDetailsService {
         if (optionalEmailCode.isPresent()) {
             Member findMember = memberRepository.findByEmail(optionalEmailCode.get().getEmail())
                     .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
-            String tempPassword = TempPassword.tempPassword(10);
+            String tempPassword = TempPassword.generateRandomString(15);
             findMember.changeMemberData(findMember.getUsername(), findMember.getEmail(), passwordEncoder.encode(tempPassword), findMember.getField());
             log.info("{} 임시 비밀번호 생성", findMember.getUsername());
             return new ResponseResult<>(HttpStatus.OK.value(), tempPassword);
