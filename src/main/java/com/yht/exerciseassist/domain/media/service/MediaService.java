@@ -109,19 +109,19 @@ public class MediaService {
     }
 
     public void deleteProfileImage(Long mediaId) throws IOException {
-        Media media = mediaRepository.findById(mediaId).orElseThrow(
-                () -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage())
-        );
+        Media media = mediaRepository.findById(mediaId)
+                .orElseThrow(() -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
         deleteFile(media);
     }
 
     private void deleteFile(Media media) throws IOException {
         File file = new File(media.getFilePath());
-        boolean deleteSuccess = file.delete();
         mediaRepository.deleteById(media.getId());
+        boolean deleteSuccess = file.delete();
         if (!deleteSuccess) {
             throw new IOException();
         }
+
         log.info(media.getFilename() + " 삭제 완료");
     }
 }

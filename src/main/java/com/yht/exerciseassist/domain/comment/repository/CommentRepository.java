@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.comment.repository;
 
 import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     @Modifying(clearAutomatically = true)
     @Query(value = "delete from Comment c where c.dateTime.canceledAt < :minusDays")
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update Comment c set c.commentWriter = null where c.commentWriter = :member")
+    void updateCommentWriterToNull(@Param("member") Member member);
 }

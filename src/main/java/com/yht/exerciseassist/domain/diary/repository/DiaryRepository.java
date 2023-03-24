@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.diary.repository;
 
 import com.yht.exerciseassist.domain.diary.Diary;
+import com.yht.exerciseassist.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,9 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "delete from Diary d where d.dateTime.canceledAt < :minusDays")
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE Diary d SET d.dateTime.canceledAt = :canceledAt WHERE d.member = :member")
+    void deleteByDiaryId(@Param("canceledAt") String canceledAt, @Param("member") Member member);
+
 }

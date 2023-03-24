@@ -1,8 +1,12 @@
 package com.yht.exerciseassist.domain.member.service;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
+import com.yht.exerciseassist.domain.diary.Diary;
+import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
 import com.yht.exerciseassist.domain.emailCode.EmailCode;
 import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
+import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
@@ -10,6 +14,7 @@ import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
 import com.yht.exerciseassist.domain.member.dto.OtherMemberPage;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
 import com.yht.exerciseassist.exception.error.AuthenticationException;
 import com.yht.exerciseassist.exception.error.ErrorCode;
@@ -39,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -54,6 +60,10 @@ public class MemberService implements UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MediaService mediaService;
+    private final DiaryRepository diaryRepository;
+    private final LikeCountRepository likeCountRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     @Value("${base.url}")
     private String baseUrl;
 
@@ -149,7 +159,19 @@ public class MemberService implements UserDetailsService {
             mediaService.deleteProfileImage(mediaId);
         }
 
-        member.getDateTime().canceledAtUpdate();
+        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        List<Diary> diaries = member.getDiaries();
+        if (diaries != null && !diaries.isEmpty()) {
+            for (Diary diary : diaries) {
+                mediaService.deleteDiaryImage(diary.getId());
+            }
+        }
+        likeCountRepository.deleteAllByMember(member);
+        postRepository.updatePostWriterToNull(member);
+        commentRepository.updateCommentWriterToNull(member);
+        diaryRepository.deleteByDiaryId(localTime, member);
+        memberRepository.deleteMemberById(localTime, member.getId());
+
 
         log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
@@ -220,11 +242,4 @@ public class MemberService implements UserDetailsService {
             throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
         }
     }
-
-//    @Scheduled(cron = "0 0 4 * * *")
-//    public void deleteOldMemberData() {
-//        String minusMonths = LocalDate.parse(LocalDateTime.now().minusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toString();
-//        memberRepository.deleteByCreatedAtBefore(minusMonths);
-//        log.info("탈퇴한지 30일 지난 멤버 데이터 삭제");
-//    }
 }

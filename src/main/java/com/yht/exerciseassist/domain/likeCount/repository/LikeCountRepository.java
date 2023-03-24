@@ -17,4 +17,8 @@ public interface LikeCountRepository extends JpaRepository<LikeCount, Long> {
     @Modifying(clearAutomatically = true)
     @Query("delete from LikeCount l where l.post = :post")
     void deleteAllByPost(Post post);
+
+    @Modifying(clearAutomatically = true)
+    @Query("delete from LikeCount l where l.member = :member")
+    void deleteAllByMember(Member member);
 }

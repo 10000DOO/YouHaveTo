@@ -30,4 +30,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "update Member m set m.refreshToken = null where m.refreshToken.id in :TokenId")
     void updateByRefreshToken(@Param("TokenId") List<Long> TokenId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "delete from Member m where m.dateTime.canceledAt < :minusDays")
+    void deleteByCancealedAt(@Param("minusDays") String minusDays);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update Member m set m.dateTime.canceledAt = :canceledAt where m.id = :memberId")
+    void deleteMemberById(@Param("canceledAt") String canceledAt, @Param("memberId") Long memberId);
 }
