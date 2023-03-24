@@ -1,4 +1,4 @@
-package com.yht.exerciseassist.domain.refreshToken.service;
+package com.yht.exerciseassist.cron.cronService;
 
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.refreshToken.repository.RefreshTokenRepository;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class RefreshTokenService {
+public class RefreshTokenCron {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
