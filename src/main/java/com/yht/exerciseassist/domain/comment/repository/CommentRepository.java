@@ -19,4 +19,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE Comment c SET c.dateTime.canceledAt = :canceledAt WHERE c.post.id = :postId and c.dateTime.canceledAt = null")
     void deleteCommentByPostId(String canceledAt, Long postId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "delete from Comment c where c.dateTime.canceledAt < :minusDays")
+    void deleteByCancealedAt(@Param("minusDays") String minusDays);
 }
