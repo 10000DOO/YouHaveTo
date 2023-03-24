@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +19,11 @@ public class AccuseController {
     public ResponseEntity<ResponseResult<Long>> accuse(@PathVariable Long postId, @Valid @RequestBody AccuseReq accuseReq) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(accuseService.saveAccuse(postId, accuseReq));
+    }
+
+    @PatchMapping("/accuse/delete/{accuseId}")
+    public ResponseEntity<ResponseResult<Long>> deleteAccuse(@PathVariable Long accuseId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(accuseService.deleteAccuse(accuseId));
     }
 }
