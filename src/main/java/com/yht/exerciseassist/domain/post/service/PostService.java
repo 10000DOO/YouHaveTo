@@ -169,6 +169,7 @@ public class PostService {
 
         commentRepository.deleteCommentByPostId(localTime, postById.getId());
         mediaService.deletePostImage(postById.getId());
+        likeCountRepository.deleteAllByPost(postById);
         postRepository.deletePostById(localTime, postById.getId());
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
@@ -210,10 +211,10 @@ public class PostService {
                 return new ResponseResult<>(HttpStatus.OK.value(), post.getId());
             }
         } else {
-            LikeCount likeCount = likeCountRepository.findByPost(post)
+            LikeCount likeCount = likeCountRepository.findNotDeletedByPostAndMember(post, member)
                     .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_LIKE_PRESSED.getMessage()));
 
-            likeCountRepository.deleteByPost(post);
+            likeCountRepository.deleteById(likeCount.getId());
             post.getLikeCount().remove(likeCount);
             member.getLikeCount().remove(likeCount);
             log.info("username : {}, 게시글 : {} 좋아요 취소", username, post.getId());
