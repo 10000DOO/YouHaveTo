@@ -28,10 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -149,7 +146,7 @@ public class CommentService {
                 }
 
                 CommentListDto commentListDto = CommentListDto.builder()
-                        .username(comment.getCommentWriter().getUsername())
+                        .username(Optional.ofNullable(comment.getCommentWriter().getUsername()).isPresent() ? comment.getCommentWriter().getUsername() : "알 수 없음")
                         .commentContext(comment.getCommentContent())
                         .createdAt(calculateTime)
                         .profileImage(profileImage)

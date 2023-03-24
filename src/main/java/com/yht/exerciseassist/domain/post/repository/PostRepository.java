@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.post.repository;
 
+import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,5 +20,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Modifying(clearAutomatically = true)
     @Query(value = "delete from Post p where p.dateTime.canceledAt < :minusDays")
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update Post p set p.postWriter = null where p.postWriter = :member")
+    void updatePostWriterToNull(@Param("member") Member member);
 }
 

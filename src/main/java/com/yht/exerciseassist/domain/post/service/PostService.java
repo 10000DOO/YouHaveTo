@@ -31,10 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +96,7 @@ public class PostService {
         }
 
         PostDetailRes postDetailRes = PostDetailRes.builder()
-                .username(postById.getPostWriter().getUsername())
+                .username(Optional.ofNullable(postById.getPostWriter().getUsername()).isPresent() ? postById.getPostWriter().getUsername() : "알 수 없음")
                 .profileImage(profileImage)
                 .title(postById.getTitle())
                 .content(postById.getContent())
@@ -251,7 +248,7 @@ public class PostService {
             }
 
             PostListDto postListDto = PostListDto.builder()
-                    .username(post.getPostWriter().getUsername())
+                    .username(Optional.ofNullable(post.getPostWriter().getUsername()).isPresent() ? post.getPostWriter().getUsername() : "알 수 없음")
                     .postType(post.getPostType().getMessage())
                     .workOutCategory(post.getWorkOutCategory().getMessage())
                     .createdAt(calculateTime)
