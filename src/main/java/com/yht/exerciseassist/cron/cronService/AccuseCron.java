@@ -19,8 +19,7 @@ public class AccuseCron {
 
     private final AccuseRepository accuseRepository;
 
-    //@Scheduled(cron = "0 0 4 * * *")
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     public void deleteOldMailCode() {
         String minusDays = LocalDate.parse(LocalDateTime.now().minusDays(14).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toString();
         accuseRepository.deleteByCreatedBefore(minusDays);
