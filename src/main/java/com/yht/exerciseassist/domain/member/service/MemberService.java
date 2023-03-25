@@ -145,7 +145,6 @@ public class MemberService implements UserDetailsService {
     public ResponseResult<Long> deleteMember() throws IOException {
         Member member = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
-
         Long mediaId = null;
 
         try {
@@ -166,11 +165,11 @@ public class MemberService implements UserDetailsService {
                 mediaService.deleteDiaryImage(diary.getId());
             }
         }
+        member.getDateTime().canceledAtUpdate();
         likeCountRepository.deleteAllByMember(member);
         postRepository.updatePostWriterToNull(member);
         commentRepository.updateCommentWriterToNull(member);
         diaryRepository.deleteByDiaryId(localTime, member);
-        memberRepository.deleteMemberById(localTime, member.getId());
 
 
         log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());

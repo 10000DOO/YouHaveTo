@@ -19,7 +19,7 @@ public class MemberCron {
 
     private final MemberRepository memberRepository;
 
-    @Scheduled(cron = "1 0 4 * * *")
+    @Scheduled(cron = "0 5 4 * * *")
     public void deleteOldMemberData() {
         String minusDays = LocalDate.parse(LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toString();
         memberRepository.deleteByCancealedAt(minusDays);

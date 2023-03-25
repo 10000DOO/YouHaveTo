@@ -23,19 +23,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query(value = "select m from Member m where m.email = :email and m.dateTime.canceledAt = null")
     Optional<Member> findByEmail(@Param("email") String email);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "delete from Member m where m.dateTime.canceledAt < :minusMonths")
     void deleteByCreatedAtBefore(@Param("minusMonths") String minusMonths);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "update Member m set m.refreshToken = null where m.refreshToken.id in :TokenId")
     void updateByRefreshToken(@Param("TokenId") List<Long> TokenId);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "delete from Member m where m.dateTime.canceledAt < :minusDays")
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
-
-    @Modifying(clearAutomatically = true)
-    @Query(value = "update Member m set m.dateTime.canceledAt = :canceledAt where m.id = :memberId")
-    void deleteMemberById(@Param("canceledAt") String canceledAt, @Param("memberId") Long memberId);
 }

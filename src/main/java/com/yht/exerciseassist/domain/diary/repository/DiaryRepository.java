@@ -18,11 +18,11 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query(value = "select d from Diary d join fetch d.member where d.member.username = :username and to_char(to_timestamp(d.exerciseDate, 'YYYY-MM-DD'),'YYYY-MM-DD') = :date and d.dateTime.canceledAt = null")
     Optional<Diary> findDiaryDetailsByUsername(@Param("username") String username, @Param("date") String date);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "delete from Diary d where d.dateTime.canceledAt < :minusDays")
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "UPDATE Diary d SET d.dateTime.canceledAt = :canceledAt WHERE d.member = :member")
     void deleteByDiaryId(@Param("canceledAt") String canceledAt, @Param("member") Member member);
 

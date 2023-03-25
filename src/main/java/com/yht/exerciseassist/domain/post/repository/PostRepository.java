@@ -13,15 +13,15 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query(value = "select p from Post p where p.id = :postId and p.dateTime.canceledAt = null")
     Optional<Post> findNotDeletedById(@Param("postId") Long postId);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "UPDATE Post p SET p.dateTime.canceledAt = :canceledAt WHERE p.id = :postId and p.dateTime.canceledAt = null")
     void deletePostById(String canceledAt, Long postId);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "delete from Post p where p.dateTime.canceledAt < :minusDays")
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "update Post p set p.postWriter = null where p.postWriter = :member")
     void updatePostWriterToNull(@Param("member") Member member);
 }
