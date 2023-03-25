@@ -164,10 +164,10 @@ public class PostService {
 
         String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
+        postById.getDateTime().canceledAtUpdate();
         commentRepository.deleteCommentByPostId(localTime, postById.getId());
         mediaService.deletePostImage(postById.getId());
         likeCountRepository.deleteAllByPost(postById);
-        postRepository.deletePostById(localTime, postById.getId());
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postById.getId());

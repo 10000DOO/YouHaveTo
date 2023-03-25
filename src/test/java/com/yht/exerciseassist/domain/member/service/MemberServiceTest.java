@@ -1,10 +1,13 @@
 package com.yht.exerciseassist.domain.member.service;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
+import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
 import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
 import com.yht.exerciseassist.domain.factory.EmailCodeFactory;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
+import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
@@ -13,11 +16,13 @@ import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
+import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
 import com.yht.exerciseassist.util.TempPassword;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +45,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,6 +60,8 @@ class MemberServiceTest {
     private static MockedStatic<TempPassword> tempPasswordMockedStatic;
     MemberService memberService;
     @Autowired
+    EntityManager em;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -64,11 +69,18 @@ class MemberServiceTest {
     private MemberRepository memberRepository;
     @MockBean
     private EmailCodeRepository emailCodeRepository;
-
     @MockBean
     private MediaService mediaService;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    private DiaryRepository diaryRepository;
+    @MockBean
+    private LikeCountRepository likeCountRepository;
+    @MockBean
+    private PostRepository postRepository;
+    @MockBean
+    private CommentRepository commentRepository;
     @Value("${file.dir}")
     private String fileDir;
 
@@ -80,7 +92,9 @@ class MemberServiceTest {
 
     @BeforeEach
     void setup() {
-        memberService = new MemberService(memberRepository, passwordEncoder, emailCodeRepository, authenticationManagerBuilder, jwtTokenProvider, mediaService);
+        memberService = new MemberService(memberRepository, passwordEncoder, emailCodeRepository,
+                authenticationManagerBuilder, jwtTokenProvider, mediaService, diaryRepository,
+                likeCountRepository, postRepository, commentRepository);
         securityUtilMockedStatic = mockStatic(SecurityUtil.class);
         tempPasswordMockedStatic = mockStatic(TempPassword.class);
     }
@@ -142,18 +156,22 @@ class MemberServiceTest {
         Member member = MemberFactory.createTestMember();
 
         Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
-        media.setMediaIdUsedOnlyTest(1L);
 
-        given(SecurityUtil.getCurrentUsername()).willReturn("username");
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
         Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
 
-        member.ChangeMedia(media);
-
+        em.persist(media);
+        Media findMedia = em.find(Media.class, media.getId());
+        member.ChangeMedia(findMedia);
+        em.persist(member);
         //when
         memberService.deleteMember();
+        em.flush();
+        em.clear();
         //then
-        assertThat(member.getDateTime().getCanceledAt()).isEqualTo(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        assertThat(member.getMedia()).isEqualTo(null);
+        Member findMember = em.find(Member.class, member.getId());
+        assertThat(findMember.getMedia()).isEqualTo(null);
+        assertThat(findMember.getDateTime().getCanceledAt()).isNotNull();
     }
 
     @Test

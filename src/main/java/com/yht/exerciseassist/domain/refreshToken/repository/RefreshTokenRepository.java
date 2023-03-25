@@ -13,7 +13,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     @Query(value = "select r.id from RefreshToken r where r.dateTime.updatedAt < :minusDays")
     List<Long> findByUpdatedAtBefore(@Param("minusDays") String minusDays);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "delete from RefreshToken r where r.dateTime.updatedAt < :minusDays")
     void deleteByUpdatedAtBefore(@Param("minusDays") String minusDays);
 }

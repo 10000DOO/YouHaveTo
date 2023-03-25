@@ -14,11 +14,11 @@ public interface LikeCountRepository extends JpaRepository<LikeCount, Long> {
     @Query("select l from LikeCount l where l.post = :post and l.member = :member")
     Optional<LikeCount> findNotDeletedByPostAndMember(Post post, Member member);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from LikeCount l where l.post = :post")
     void deleteAllByPost(Post post);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from LikeCount l where l.member = :member")
     void deleteAllByMember(Member member);
 }

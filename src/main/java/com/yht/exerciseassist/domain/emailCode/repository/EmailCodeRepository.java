@@ -12,6 +12,6 @@ public interface EmailCodeRepository extends JpaRepository<EmailCode, Long> {
 
     Optional<EmailCode> findByCode(String code);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     void deleteByCreatedAtBefore(@Param("fiveMinuteAgo") LocalDateTime fiveMinuteAgo);
 }
