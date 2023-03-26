@@ -24,6 +24,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "UPDATE Diary d SET d.dateTime.canceledAt = :canceledAt WHERE d.member = :member")
-    void deleteByDiaryId(@Param("canceledAt") String canceledAt, @Param("member") Member member);
+    void deleteByMemberId(@Param("canceledAt") String canceledAt, @Param("member") Member member);
 
 }

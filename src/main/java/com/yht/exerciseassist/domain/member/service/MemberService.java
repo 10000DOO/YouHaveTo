@@ -169,7 +169,7 @@ public class MemberService implements UserDetailsService {
         likeCountRepository.deleteAllByMember(member);
         postRepository.updatePostWriterToNull(member);
         commentRepository.updateCommentWriterToNull(member);
-        diaryRepository.deleteByDiaryId(localTime, member);
+        diaryRepository.deleteByMemberId(localTime, member);
 
 
         log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
