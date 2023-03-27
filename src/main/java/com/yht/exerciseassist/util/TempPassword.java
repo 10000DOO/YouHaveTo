@@ -8,7 +8,7 @@ public class TempPassword {
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowercase = "abcdefghijklmnopqrstuvwxyz";
         String numbers = "0123456789";
-        String specialChars = "!@#$%^&*()_+{}[]:;<>,.?/|";
+        String specialChars = "-_.~!@<>()$*?";
         String allChars = uppercase + lowercase + numbers + specialChars;
 
         Random random = new Random();

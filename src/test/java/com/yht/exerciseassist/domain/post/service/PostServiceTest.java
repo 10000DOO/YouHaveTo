@@ -203,7 +203,7 @@ class PostServiceTest {
         ResponseResult<Long> result = new ResponseResult<>(200, 1L);
         //when
         ResponseResult<Long> like = postService.updateLike(postId, false);
-        Mockito.when(likeCountRepository.findByPost(testPost)).thenReturn(Optional.of(new LikeCount(testPost, testMember)));
+        Mockito.when(likeCountRepository.findNotDeletedByPostAndMember(testPost, testMember)).thenReturn(Optional.of(new LikeCount(testPost, testMember)));
         ResponseResult<Long> unlike = postService.updateLike(postId, true);
         //then
         assertThat(result).isEqualTo(unlike);

@@ -31,10 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +96,7 @@ public class PostService {
         }
 
         PostDetailRes postDetailRes = PostDetailRes.builder()
-                .username(postById.getPostWriter().getUsername())
+                .username(Optional.ofNullable(postById.getPostWriter().getUsername()).isPresent() ? postById.getPostWriter().getUsername() : "알 수 없음")
                 .profileImage(profileImage)
                 .title(postById.getTitle())
                 .content(postById.getContent())
@@ -167,9 +164,10 @@ public class PostService {
 
         String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
+        postById.getDateTime().canceledAtUpdate();
         commentRepository.deleteCommentByPostId(localTime, postById.getId());
         mediaService.deletePostImage(postById.getId());
-        postRepository.deletePostById(localTime, postById.getId());
+        likeCountRepository.deleteAllByPost(postById);
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postById.getId());
@@ -210,10 +208,10 @@ public class PostService {
                 return new ResponseResult<>(HttpStatus.OK.value(), post.getId());
             }
         } else {
-            LikeCount likeCount = likeCountRepository.findByPost(post)
+            LikeCount likeCount = likeCountRepository.findNotDeletedByPostAndMember(post, member)
                     .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_LIKE_PRESSED.getMessage()));
 
-            likeCountRepository.deleteByPost(post);
+            likeCountRepository.deleteById(likeCount.getId());
             post.getLikeCount().remove(likeCount);
             member.getLikeCount().remove(likeCount);
             log.info("username : {}, 게시글 : {} 좋아요 취소", username, post.getId());
@@ -250,7 +248,7 @@ public class PostService {
             }
 
             PostListDto postListDto = PostListDto.builder()
-                    .username(post.getPostWriter().getUsername())
+                    .username(Optional.ofNullable(post.getPostWriter().getUsername()).isPresent() ? post.getPostWriter().getUsername() : "알 수 없음")
                     .postType(post.getPostType().getMessage())
                     .workOutCategory(post.getWorkOutCategory().getMessage())
                     .createdAt(calculateTime)

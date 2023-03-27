@@ -45,7 +45,7 @@ class LikeCountRepositoryTest {
         em.flush();
         em.clear();
         //when
-        Optional<LikeCount> byPost = likeCountRepository.findByPost(post);
+        Optional<LikeCount> byPost = likeCountRepository.findNotDeletedByPostAndMember(post, member);
         //then
         assertThat(byPost.get()).isEqualTo(likeCount);
 
@@ -64,7 +64,7 @@ class LikeCountRepositoryTest {
         em.flush();
         em.clear();
         //when
-        likeCountRepository.deleteByPost(post);
+        likeCountRepository.deleteById(likeCount.getId());
         //then
         Optional<LikeCount> likeCount1 = Optional.ofNullable(em.find(LikeCount.class, likeCount.getId()));
         assertThat(likeCount1.isPresent()).isFalse();

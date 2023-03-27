@@ -1,13 +1,17 @@
 package com.yht.exerciseassist.domain.accuse;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Accuse {
 
     @Id
@@ -24,6 +28,10 @@ public class Accuse {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
     @Embedded //생성일 수정일 삭제일
     private DateTime dateTime;
 
@@ -33,9 +41,5 @@ public class Accuse {
         this.content = content;
         this.post = post;
         this.dateTime = dateTime;
-    }
-
-    public void setIdForTest(Long id) {
-        this.id = id;
     }
 }
