@@ -100,7 +100,7 @@ class CommentServiceTest {
         Comment comment = CommentFactory.createTestComment(member, post);
         comment.setCommentIdUsedOnlyTest(1L);
 
-        Mockito.when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+        Mockito.when(commentRepository.findByNotDeleteId(1L)).thenReturn(Optional.of(comment));
 
         ResponseResult<Long> responseResult = new ResponseResult(HttpStatus.OK.value(), 1L);
 
