@@ -159,7 +159,7 @@ public class PostService {
     }
 
     public ResponseResult<Long> deletePost(Long postId) throws IOException {
-        Post postById = postRepository.findById(postId)
+        Post postById = postRepository.findNotDeletedById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
         String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
