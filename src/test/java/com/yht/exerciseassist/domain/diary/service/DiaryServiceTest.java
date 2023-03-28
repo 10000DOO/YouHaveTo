@@ -159,7 +159,7 @@ class DiaryServiceTest {
         Long diaryId = 1L;
         Member testMember = MemberFactory.createTestMember();
         Diary testDiary = DiaryFactory.createTestDiary(testMember);
-        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.ofNullable(testDiary));
+        Mockito.when(diaryRepository.findByNotDeleteId(diaryId)).thenReturn(Optional.ofNullable(testDiary));
 
         List<ExerciseInfoResDto> exerciseInfoDto = DiaryFactory.getExerciseInfoDto();
         DiaryEditData diaryEditData = DiaryEditData.builder()
@@ -196,7 +196,7 @@ class DiaryServiceTest {
         MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
         List<MultipartFile> fileList = new ArrayList<>();
         fileList.add(mediaFile);
-        Mockito.when(diaryRepository.findById(id)).thenReturn(Optional.of(diaryDetail));
+        Mockito.when(diaryRepository.findByNotDeleteId(id)).thenReturn(Optional.of(diaryDetail));
         Mockito.when(mediaService.uploadMediaToFileSystem(fileList)).thenReturn(mediaId);
         Mockito.when(diaryRepository.save(diaryDetail)).thenReturn(diaryDetail);
 
@@ -228,7 +228,7 @@ class DiaryServiceTest {
 
         diaryDetail.linkToMedia(mediaId);
 
-        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.of(diaryDetail));
+        Mockito.when(diaryRepository.findByNotDeleteId(diaryId)).thenReturn(Optional.of(diaryDetail));
         ResponseResult<Long> result = new ResponseResult<>(200, diaryId);
         //when
         ResponseResult<Long> longResponseResult = diaryService.deleteDiary(diaryId);

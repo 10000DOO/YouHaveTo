@@ -176,7 +176,7 @@ class PostServiceTest {
 
         testPost.linkToMedia(mediaId);
 
-        Mockito.when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        Mockito.when(postRepository.findNotDeletedById(postId)).thenReturn(Optional.of(testPost));
         ResponseResult<Long> mockResult = new ResponseResult<>(HttpStatus.OK.value(), postId);
         //when
         ResponseResult<Long> responseResult = postService.deletePost(postId);
