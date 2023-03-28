@@ -35,7 +35,7 @@ logging:
   config: classpath:log4j2-prod.xml
 
 base:
-  url: ENC(UpPv/Vcdlw6MzD2697sdTa+SUMXgt0CtbtQIlD5ymxNVS7mgKnUKeA==)
+  url: ENC(rt/8HMgZahfAIg+g7M0zkOqBS0SZ9UZDmR1sgoN9rP3GZnVosssaAg==)
 
 server:
   ssl:
