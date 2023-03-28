@@ -4,6 +4,7 @@ import com.yht.exerciseassist.domain.emailCode.EmailCode;
 import com.yht.exerciseassist.domain.emailCode.dto.EmailReqDto;
 import com.yht.exerciseassist.domain.emailCode.dto.EmailResDto;
 import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
+import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.exception.error.MailSendFailException;
 import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.TempPassword;
@@ -35,8 +36,9 @@ public class EmailService {
             emailCodeRepository.save(new EmailCode(target, secretKey));
         } catch (MailException es) {
             es.printStackTrace();
-            throw new MailSendFailException("이메일 전송이 실패했습니다.");
+            throw new MailSendFailException(ErrorCode.WRONG_SEND_EMAIL.getMessage());
         }
+        log.info("이메일 전송 성공");
         return new ResponseResult<>(HttpStatus.OK.value(), new EmailResDto(target, secretKey));
     }
 

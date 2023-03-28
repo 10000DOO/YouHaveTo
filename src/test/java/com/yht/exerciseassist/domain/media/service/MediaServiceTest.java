@@ -93,12 +93,12 @@ class MediaServiceTest {
         List<Media> mediaList = new ArrayList<Media>();
         mediaList.add(media);
 
-        Mockito.when(mediaRepository.findByDiaryId(1L)).thenReturn(mediaList);
+        Mockito.when(mediaRepository.findByNotDeletedDiaryId(1L)).thenReturn(mediaList);
 
         MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
         mediaFile.transferTo(new File(fileDir + media.getOriginalFilename()));
         //when
-        mediaService.deleteDiaryImage(1L);
+        mediaService.deleteDiaryMedia(1L);
         //then
     }
 }

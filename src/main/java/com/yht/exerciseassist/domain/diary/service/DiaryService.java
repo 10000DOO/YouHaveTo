@@ -75,7 +75,7 @@ public class DiaryService {
     }
 
     public ResponseResult<String> saveDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files) throws IOException {
-        Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         List<ExerciseInfo> exInfo = getExInfo(writeDiaryDto);
@@ -90,7 +90,7 @@ public class DiaryService {
                 .build();
 
         if (files != null && !(files.isEmpty())) {
-            List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
+            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
             diary.linkToMedia(mediaList);
         }
         diaryRepository.save(diary);
@@ -99,7 +99,7 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.CREATED.value(), writeDiaryDto.getExerciseDate());
     }
 
-    public ResponseResult<DiaryDetailDto> getdiaryDetail(String date) {
+    public ResponseResult<DiaryDetailDto> getDiaryDetail(String date) {
         Diary findDiary = diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), date)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
@@ -121,7 +121,7 @@ public class DiaryService {
     }
 
     public ResponseResult<DiaryEditData> getDiaryEditData(Long diaryId) {
-        Diary diary = diaryRepository.findById(diaryId)
+        Diary diary = diaryRepository.findByNotDeleteId(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         List<ExerciseInfoResDto> exInfoDto = getExInfoResDto(diary);
@@ -138,8 +138,8 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.OK.value(), diaryEditData);
     }
 
-    public ResponseResult<String> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long id) throws IOException {
-        Diary diaryById = diaryRepository.findById(id)
+    public ResponseResult<String> editDiary(WriteDiaryDto writeDiaryDto, List<MultipartFile> files, Long diaryId) throws IOException {
+        Diary diaryById = diaryRepository.findByNotDeleteId(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
         List<ExerciseInfo> exInfo = getExInfo(writeDiaryDto);
@@ -148,8 +148,8 @@ public class DiaryService {
         diaryById.getDateTime().updatedAtUpdate();
 
         if (files != null && !(files.isEmpty())) {
-            mediaService.deleteDiaryImage(id);
-            List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
+            mediaService.deleteDiaryMedia(diaryId);
+            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
             diaryById.linkToMedia(mediaList);
         }
         diaryRepository.save(diaryById);
@@ -159,10 +159,10 @@ public class DiaryService {
     }
 
     public ResponseResult<Long> deleteDiary(Long diaryId) throws IOException {
-        Diary diaryById = diaryRepository.findById(diaryId)
+        Diary diaryById = diaryRepository.findByNotDeleteId(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 
-        mediaService.deleteDiaryImage(diaryById.getId());
+        mediaService.deleteDiaryMedia(diaryById.getId());
         diaryById.getDateTime().canceledAtUpdate();
 
         log.info("username : {}, {}번 다이어리 삭제 완료", SecurityUtil.getCurrentUsername(), diaryById.getId());

@@ -43,7 +43,7 @@ public class CommentService {
     private String baseUrl;
 
     public ResponseResult<String> saveComment(WriteCommentDto writeCommentDto) {
-        Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         Post findPost = postRepository.findNotDeletedById(writeCommentDto.getPostId())
@@ -75,7 +75,7 @@ public class CommentService {
     }
 
     public ResponseResult<Long> deleteComment(Long commentId) throws IllegalAccessException {
-        Comment commentById = commentRepository.findById(commentId)
+        Comment commentById = commentRepository.findByNotDeleteId(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
 
         if (Objects.equals(commentById.getCommentWriter().getUsername(), SecurityUtil.getCurrentUsername())) {
@@ -162,6 +162,7 @@ public class CommentService {
                     .isFirst(isFirst)
                     .build();
 
+            log.info("username : {}, 댓글 조회 완료", SecurityUtil.getCurrentUsername());
             return new ResponseResult<>(HttpStatus.OK.value(), commentListWithSliceDto);
         } else {
             throw new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage());

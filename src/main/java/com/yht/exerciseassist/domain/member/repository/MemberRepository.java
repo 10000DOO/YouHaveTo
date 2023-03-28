@@ -15,7 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByLoginId(@Param("loginId") String loginId);
 
     @Query(value = "select m from Member m where m.username = :username and m.dateTime.canceledAt = null")
-    Optional<Member> findByUsername(@Param("username") String username);
+    Optional<Member> findByNotDeletedUsername(@Param("username") String username);
 
     @Query(value = "select m from Member m where m.refreshToken.refreshToken = :refreshToken and m.dateTime.canceledAt = null")
     Optional<Member> findByRefreshToken(@Param("refreshToken") String refreshToken);

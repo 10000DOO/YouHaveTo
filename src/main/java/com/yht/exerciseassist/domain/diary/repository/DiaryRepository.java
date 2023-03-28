@@ -12,6 +12,9 @@ import java.util.Optional;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
+    @Query(value = "select d from Diary d where d.id = :diaryId and d.dateTime.canceledAt = null")
+    Optional<Diary> findByNotDeleteId(@Param("diaryId") Long diaryId);
+
     @Query(value = "select d from Diary d join fetch d.member where d.member.username = :username and to_char(to_timestamp(d.exerciseDate, 'YYYY-MM'),'YYYY-MM') = :date and d.dateTime.canceledAt = null order by d.exerciseDate")
     List<Diary> findDiariesByUsername(@Param("username") String username, @Param("date") String date);
 
@@ -23,7 +26,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "UPDATE Diary d SET d.dateTime.canceledAt = :canceledAt WHERE d.member = :member")
+    @Query(value = "update Diary d set d.dateTime.canceledAt = :canceledAt where d.member = :member and d.dateTime.canceledAt = null")
     void deleteByMemberId(@Param("canceledAt") String canceledAt, @Param("member") Member member);
 
 }

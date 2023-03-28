@@ -75,7 +75,7 @@ class DiaryServiceTest {
         Member member = MemberFactory.createTestMember();
 
         given(SecurityUtil.getCurrentUsername()).willReturn("username");
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
 
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "2023-01-30");
 
@@ -145,7 +145,7 @@ class DiaryServiceTest {
 
         Mockito.when(diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), "2023-01-30")).thenReturn(opDiaryDetail);
         //when
-        ResponseResult diary = diaryService.getdiaryDetail("2023-01-30");
+        ResponseResult diary = diaryService.getDiaryDetail("2023-01-30");
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
         //diary.getData()의 기대값과 똑같은 객체를 하나 만들어!! 그래서 비교해
@@ -197,7 +197,7 @@ class DiaryServiceTest {
         List<MultipartFile> fileList = new ArrayList<>();
         fileList.add(mediaFile);
         Mockito.when(diaryRepository.findById(id)).thenReturn(Optional.of(diaryDetail));
-        Mockito.when(mediaService.uploadImageToFileSystem(fileList)).thenReturn(mediaId);
+        Mockito.when(mediaService.uploadMediaToFileSystem(fileList)).thenReturn(mediaId);
         Mockito.when(diaryRepository.save(diaryDetail)).thenReturn(diaryDetail);
 
         WriteDiaryDto writeDiaryDto = DiaryFactory.createTestWriteDiaryDto();

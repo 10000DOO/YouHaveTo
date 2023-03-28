@@ -48,7 +48,7 @@ public class AccuseService {
 
     public ResponseResult<Long> deleteAccuse(Long accuseId) {
 
-        Accuse findAccuse = accuseRepository.findNotDeletedById(accuseId)
+        Accuse findAccuse = accuseRepository.findByNotDeletedId(accuseId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_ACCUSE.getMessage()));
 
         findAccuse.getDateTime().canceledAtUpdate();

@@ -158,7 +158,7 @@ class MemberServiceTest {
         Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
 
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
 
         em.persist(media);
         Media findMedia = em.find(Media.class, media.getId());
@@ -180,7 +180,7 @@ class MemberServiceTest {
         Member member = MemberFactory.createTestMember();
         String username = "member1";
 
-        Mockito.when(memberRepository.findByUsername(username)).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(username)).thenReturn(Optional.ofNullable(member));
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
 
         ResponseResult<MyMemberPage> mypage = new ResponseResult<>(200, MemberFactory.createMyMemberPage());

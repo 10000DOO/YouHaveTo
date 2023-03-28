@@ -53,7 +53,7 @@ class MemberRepositoryTest {
         em.clear();
         //when
         Optional<Member> byLoginId = memberRepository.findByLoginId(member.getLoginId());
-        Optional<Member> byUsername = memberRepository.findByUsername(member.getUsername());
+        Optional<Member> byUsername = memberRepository.findByNotDeletedUsername(member.getUsername());
         Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
         Optional<Member> byRefreshToken = memberRepository.findByRefreshToken(member.getRefreshToken().getRefreshToken());
         //then
