@@ -18,7 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "update Post p set p.postWriter = null where p.postWriter = :member")
+    @Query(value = "update Post p set p.postWriter = null where p.postWriter = :member and p.dateTime.canceledAt = null")
     void updatePostWriterToNull(@Param("member") Member member);
 }
 

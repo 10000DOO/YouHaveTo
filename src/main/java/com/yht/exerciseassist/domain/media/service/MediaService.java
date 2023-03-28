@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class MediaService {
     @Value("${file.dir}")
     private String fileDir;
 
-    public List<Media> uploadImageToFileSystem(List<MultipartFile> files) throws IOException {
+    public List<Media> uploadMediaToFileSystem(List<MultipartFile> files) throws IOException {
 
         List<Media> mediaList = new ArrayList<>();
 
@@ -59,7 +58,6 @@ public class MediaService {
             mediaRepository.save(media);
             log.info(storeFileName + " 저장되었습니다.");
         }
-
         return mediaList;
     }
 
@@ -75,21 +73,22 @@ public class MediaService {
     }
 
     public ResponseEntity<FileSystemResource> getMediaFile(Long mediaId) throws IOException {
-        Optional<Media> findMedia = mediaRepository.findById(mediaId);
+        Media findMedia = mediaRepository.findByNotDeletedId(mediaId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
 
-        Media media = findMedia.orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
+        FileSystemResource fileSystemResource = new FileSystemResource(findMedia.getFilePath());
+        Path filePath = Paths.get(findMedia.getFilePath());
+
         HttpHeaders header = new HttpHeaders();
-
-        FileSystemResource fileSystemResource = new FileSystemResource(media.getFilePath());
-        Path filePath = Paths.get(media.getFilePath());
         header.add("Content-Type", Files.probeContentType(filePath));
-        log.info(media.getFilePath() + "출력 성공");
+
+        log.info(findMedia.getFilePath() + "출력 성공");
 
         return ResponseEntity.status(HttpStatus.OK).headers(header).body(fileSystemResource);
     }
 
-    public void deleteDiaryImage(Long diaryId) throws IOException {
-        List<Media> byDiaryId = mediaRepository.findByDiaryId(diaryId);
+    public void deleteDiaryMedia(Long diaryId) throws IOException {
+        List<Media> byDiaryId = mediaRepository.findByNotDeletedDiaryId(diaryId);
 
         if (byDiaryId != null && !byDiaryId.isEmpty()) {
             for (Media media : byDiaryId) {
@@ -98,8 +97,8 @@ public class MediaService {
         }
     }
 
-    public void deletePostImage(Long postId) throws IOException {
-        List<Media> byPostId = mediaRepository.findByPostId(postId);
+    public void deletePostMedia(Long postId) throws IOException {
+        List<Media> byPostId = mediaRepository.findByNotDeletedPostId(postId);
 
         if (byPostId != null && !byPostId.isEmpty()) {
             for (Media media : byPostId) {
@@ -109,7 +108,7 @@ public class MediaService {
     }
 
     public void deleteProfileImage(Long mediaId) throws IOException {
-        Media media = mediaRepository.findById(mediaId)
+        Media media = mediaRepository.findByNotDeletedId(mediaId)
                 .orElseThrow(() -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
         deleteFile(media);
     }
