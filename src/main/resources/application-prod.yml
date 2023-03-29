@@ -17,22 +17,23 @@ spring:
     properties:
       hibernate:
         #show_sql: true
-        #format_sql: true
+        format_sql: true
         default_batch_fetch_size: 100
-  #logging.level:
-  #org.hibernate.SQL: debug
-  #org.hibernate.type: trace
+
+logging:
+  config: classpath:log4j2-prod.xml
+  level:
+    org:
+      hibernate:
+        SQL: debug
 
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
+      enable-logging: false
 
 file:
   dir: /app/
-
-logging:
-  config: classpath:log4j2-prod.xml
 
 base:
   url: ENC(rt/8HMgZahfAIg+g7M0zkOqBS0SZ9UZDmR1sgoN9rP3GZnVosssaAg==)
