@@ -143,7 +143,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public ResponseResult<Long> deleteMember() throws IOException {
-        Member member = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+        Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
         Long mediaId = null;
 
@@ -162,7 +162,7 @@ public class MemberService implements UserDetailsService {
         List<Diary> diaries = member.getDiaries();
         if (diaries != null && !diaries.isEmpty()) {
             for (Diary diary : diaries) {
-                mediaService.deleteDiaryImage(diary.getId());
+                mediaService.deleteDiaryMedia(diary.getId());
             }
         }
         member.getDateTime().canceledAtUpdate();
@@ -177,7 +177,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public ResponseResult getMemberPage(String username) {
-        Member findMember = memberRepository.findByUsername(username)
+        Member findMember = memberRepository.findByNotDeletedUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         String profileImage;

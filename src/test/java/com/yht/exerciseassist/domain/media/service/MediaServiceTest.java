@@ -58,7 +58,7 @@ class MediaServiceTest {
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
-        List<Media> mediaList = mediaService.uploadImageToFileSystem(mediaFileList);
+        List<Media> mediaList = mediaService.uploadMediaToFileSystem(mediaFileList);
         File file = new File(mediaList.get(0).getFilePath());
         file.delete();
         //then
@@ -75,7 +75,7 @@ class MediaServiceTest {
         FileSystemResource fileSystemResource = new FileSystemResource(media.getFilePath());
 
         Optional<Media> opMedia = Optional.of(media);
-        when(mediaRepository.findById(1L)).thenReturn(opMedia);
+        when(mediaRepository.findByNotDeletedId(1L)).thenReturn(opMedia);
 
         //when
         ResponseEntity result = mediaService.getMediaFile(1L);
@@ -93,12 +93,12 @@ class MediaServiceTest {
         List<Media> mediaList = new ArrayList<Media>();
         mediaList.add(media);
 
-        Mockito.when(mediaRepository.findByDiaryId(1L)).thenReturn(mediaList);
+        Mockito.when(mediaRepository.findByNotDeletedDiaryId(1L)).thenReturn(mediaList);
 
         MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
         mediaFile.transferTo(new File(fileDir + media.getOriginalFilename()));
         //when
-        mediaService.deleteDiaryImage(1L);
+        mediaService.deleteDiaryMedia(1L);
         //then
     }
 }

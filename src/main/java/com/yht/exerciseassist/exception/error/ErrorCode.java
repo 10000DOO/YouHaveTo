@@ -29,6 +29,7 @@ public enum ErrorCode {
     NO_MATCHED_EXERCISE_CATEGORY("잘못된 운동 카테고리입니다."),
     NO_MATCHED_COMMENTID("본인이 작성한 댓글만 삭제할 수 있습니다."),
     ALREADY_HAVE_PARENTCOMMENT("해당 댓글에는 대댓글을 작성하실 수 없습니다."),
+    WRONG_SEND_EMAIL("이메일 전송에 실패했습니다."),
     WRONG_EMAIL("이메일을 다시 확인해주세요."),
     NOT_FOUND_EXCEPTION_ACCUSE("존재하지 않는 신고입니다.");
     private final String message;

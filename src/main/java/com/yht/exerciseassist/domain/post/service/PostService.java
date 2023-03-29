@@ -48,7 +48,7 @@ public class PostService {
     private String baseUrl;
 
     public ResponseResult<String> savePost(WritePostDto writePostDto, List<MultipartFile> files) throws IOException {
-        Member findMember = memberRepository.findByUsername(SecurityUtil.getCurrentUsername())
+        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         Post post = Post.builder()
@@ -63,7 +63,7 @@ public class PostService {
                 .build();
 
         if (files != null && !(files.isEmpty())) {
-            List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
+            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
             post.linkToMedia(mediaList);
         }
         postRepository.save(post);
@@ -149,8 +149,8 @@ public class PostService {
         post.getDateTime().updatedAtUpdate();
 
         if (files != null && !(files.isEmpty())) {
-            mediaService.deletePostImage(postId);
-            List<Media> mediaList = mediaService.uploadImageToFileSystem(files);
+            mediaService.deletePostMedia(postId);
+            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
             post.linkToMedia(mediaList);
         }
 
@@ -159,14 +159,14 @@ public class PostService {
     }
 
     public ResponseResult<Long> deletePost(Long postId) throws IOException {
-        Post postById = postRepository.findById(postId)
+        Post postById = postRepository.findNotDeletedById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
         String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         postById.getDateTime().canceledAtUpdate();
         commentRepository.deleteCommentByPostId(localTime, postById.getId());
-        mediaService.deletePostImage(postById.getId());
+        mediaService.deletePostMedia(postById.getId());
         likeCountRepository.deleteAllByPost(postById);
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
@@ -186,7 +186,7 @@ public class PostService {
         String username = SecurityUtil.getCurrentUsername();
         Post post = postRepository.findByIdWithRole(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
-        Member member = memberRepository.findByUsername(username)
+        Member member = memberRepository.findByNotDeletedUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         boolean isPressed = false;

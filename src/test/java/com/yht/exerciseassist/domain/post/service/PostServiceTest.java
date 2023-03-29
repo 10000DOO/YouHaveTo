@@ -94,7 +94,7 @@ class PostServiceTest {
         Member member = MemberFactory.createTestMember();
 
         given(SecurityUtil.getCurrentUsername()).willReturn("username");
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
 
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "테스트 제목");
 
@@ -176,7 +176,7 @@ class PostServiceTest {
 
         testPost.linkToMedia(mediaId);
 
-        Mockito.when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
+        Mockito.when(postRepository.findNotDeletedById(postId)).thenReturn(Optional.of(testPost));
         ResponseResult<Long> mockResult = new ResponseResult<>(HttpStatus.OK.value(), postId);
         //when
         ResponseResult<Long> responseResult = postService.deletePost(postId);
@@ -199,7 +199,7 @@ class PostServiceTest {
         em.clear();
 
         Mockito.when(postRepository.findByIdWithRole(postId, SecurityUtil.getMemberRole())).thenReturn(Optional.ofNullable(testPost));
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
         ResponseResult<Long> result = new ResponseResult<>(200, 1L);
         //when
         ResponseResult<Long> like = postService.updateLike(postId, false);

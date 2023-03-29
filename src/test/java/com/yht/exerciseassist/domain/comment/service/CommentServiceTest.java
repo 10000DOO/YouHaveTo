@@ -74,7 +74,7 @@ class CommentServiceTest {
         Member member = MemberFactory.createTestMember();
 
         given(SecurityUtil.getCurrentUsername()).willReturn("username");
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
 
         Post post = PostFactory.createTestPost(member);
         Mockito.when(postRepository.findNotDeletedById(writeCommentDto.getPostId())).thenReturn(Optional.ofNullable(post));
@@ -100,7 +100,7 @@ class CommentServiceTest {
         Comment comment = CommentFactory.createTestComment(member, post);
         comment.setCommentIdUsedOnlyTest(1L);
 
-        Mockito.when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+        Mockito.when(commentRepository.findByNotDeleteId(1L)).thenReturn(Optional.of(comment));
 
         ResponseResult<Long> responseResult = new ResponseResult(HttpStatus.OK.value(), 1L);
 

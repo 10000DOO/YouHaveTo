@@ -75,7 +75,7 @@ class DiaryServiceTest {
         Member member = MemberFactory.createTestMember();
 
         given(SecurityUtil.getCurrentUsername()).willReturn("username");
-        Mockito.when(memberRepository.findByUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
 
         ResponseResult responseResult = new ResponseResult(HttpStatus.CREATED.value(), "2023-01-30");
 
@@ -145,7 +145,7 @@ class DiaryServiceTest {
 
         Mockito.when(diaryRepository.findDiaryDetailsByUsername(SecurityUtil.getCurrentUsername(), "2023-01-30")).thenReturn(opDiaryDetail);
         //when
-        ResponseResult diary = diaryService.getdiaryDetail("2023-01-30");
+        ResponseResult diary = diaryService.getDiaryDetail("2023-01-30");
         //then
         assertThat(diary.getStatus()).isEqualTo(HttpStatus.OK.value());
         //diary.getData()의 기대값과 똑같은 객체를 하나 만들어!! 그래서 비교해
@@ -159,7 +159,7 @@ class DiaryServiceTest {
         Long diaryId = 1L;
         Member testMember = MemberFactory.createTestMember();
         Diary testDiary = DiaryFactory.createTestDiary(testMember);
-        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.ofNullable(testDiary));
+        Mockito.when(diaryRepository.findByNotDeleteId(diaryId)).thenReturn(Optional.ofNullable(testDiary));
 
         List<ExerciseInfoResDto> exerciseInfoDto = DiaryFactory.getExerciseInfoDto();
         DiaryEditData diaryEditData = DiaryEditData.builder()
@@ -196,8 +196,8 @@ class DiaryServiceTest {
         MockMultipartFile mediaFile = new MockMultipartFile("files", media.getOriginalFilename(), "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
         List<MultipartFile> fileList = new ArrayList<>();
         fileList.add(mediaFile);
-        Mockito.when(diaryRepository.findById(id)).thenReturn(Optional.of(diaryDetail));
-        Mockito.when(mediaService.uploadImageToFileSystem(fileList)).thenReturn(mediaId);
+        Mockito.when(diaryRepository.findByNotDeleteId(id)).thenReturn(Optional.of(diaryDetail));
+        Mockito.when(mediaService.uploadMediaToFileSystem(fileList)).thenReturn(mediaId);
         Mockito.when(diaryRepository.save(diaryDetail)).thenReturn(diaryDetail);
 
         WriteDiaryDto writeDiaryDto = DiaryFactory.createTestWriteDiaryDto();
@@ -228,7 +228,7 @@ class DiaryServiceTest {
 
         diaryDetail.linkToMedia(mediaId);
 
-        Mockito.when(diaryRepository.findById(diaryId)).thenReturn(Optional.of(diaryDetail));
+        Mockito.when(diaryRepository.findByNotDeleteId(diaryId)).thenReturn(Optional.of(diaryDetail));
         ResponseResult<Long> result = new ResponseResult<>(200, diaryId);
         //when
         ResponseResult<Long> longResponseResult = diaryService.deleteDiary(diaryId);

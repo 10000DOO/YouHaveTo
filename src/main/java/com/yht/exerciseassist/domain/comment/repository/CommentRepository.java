@@ -13,6 +13,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     @Query(value = "select c from Comment c where c.id = :parentId and c.dateTime.canceledAt = null")
     Optional<Comment> findParentCommentByParentId(@Param("parentId") Long parentId);
 
+    @Query(value = "select c from Comment c where c.id = :commentId and c.dateTime.canceledAt = null")
+    Optional<Comment> findByNotDeleteId(@Param("commentId") Long commentId);
+
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "UPDATE Comment c SET c.dateTime.canceledAt = :canceledAt WHERE c.parent.id = :parentId and c.dateTime.canceledAt = null")
     void deleteCommentByParentId(String canceledAt, Long parentId);
@@ -26,6 +29,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     void deleteByCancealedAt(@Param("minusDays") String minusDays);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "update Comment c set c.commentWriter = null where c.commentWriter = :member")
+    @Query(value = "update Comment c set c.commentWriter = null where c.commentWriter = :member and c.dateTime.canceledAt = null")
     void updateCommentWriterToNull(@Param("member") Member member);
 }
