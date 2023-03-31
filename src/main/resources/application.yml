@@ -23,3 +23,6 @@ mail:
 AdminMail:
   id: ENC(4WFbGs/Cpq6R0agwL5KcTwjaSjiAj70VDXZz5NuuYBKNMvP5xK1p4Q==)
   password: ENC(JO0PmvGxfFhiC2MoGXQhf8F0qzYlAz1oa+RBWM/4J3Y=)
+
+SeoulAPI:
+  key: ENC(+Mx7QTrmkA8/U/sVg17P5HZ/ZpBEU49acadiNGyBe2tnF4HgzUUVWQ==)
