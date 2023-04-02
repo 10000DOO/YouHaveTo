@@ -51,7 +51,7 @@ class MediaServiceTest {
     @Test
     public void imageUpload() throws IOException {
         //given
-        Media media = MediaFactory.createTeatMedia(testAddress + "storeFileName.jpg");
+        Media media = MediaFactory.createTeatMedia(testAddress + "tuxCoding.jpg");
 
         String fileName = "tuxCoding.jpg";
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
@@ -88,7 +88,6 @@ class MediaServiceTest {
     public void deleteFile() throws IOException {
         //given
         Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
-
         media.setMediaIdUsedOnlyTest(1L);
         List<Media> mediaList = new ArrayList<Media>();
         mediaList.add(media);
