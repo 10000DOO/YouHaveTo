@@ -9,7 +9,6 @@ import lombok.Data;
 public class AccuseReq {
 
     @NotNull(message = "신고 타입을 선택해주세요.")
-
     private AccuseType accuseType;
 
     @NotEmpty(message = "신고 내용을 입력해주세요.")
