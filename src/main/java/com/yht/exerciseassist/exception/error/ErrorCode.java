@@ -13,7 +13,7 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_MEDIA("존재하지 않는 미디어입니다."),
     NOT_FOUND_EXCEPTION_MEMBER("존재하지 않는 유저입니다."),
     NOT_FOUND_EXCEPTION_COMMENT("존재하지 않는 댓글입니다."),
-    IO_FAIL_EXCEOPTION("파일 I/O 서버 오류입니다."),
+    IO_FAIL_EXCEOPTION("I/O 서버 오류입니다."),
     WRONG_CONTENT_TYPE("잘못된 Content-Type입니다."),
     NOT_EXIST_SAME_POST_IN_PARENT_AND_CHILD_COMMENT("원댓글과 같은 게시글에 존재하지 않습니다."),
     WRONG_TOKEN("잘못된 토큰입니다. 토큰 재발급이 불가능하니 다시 로그인 부탁드립니다."),
@@ -31,7 +31,8 @@ public enum ErrorCode {
     ALREADY_HAVE_PARENTCOMMENT("해당 댓글에는 대댓글을 작성하실 수 없습니다."),
     WRONG_SEND_EMAIL("이메일 전송에 실패했습니다."),
     WRONG_EMAIL("이메일을 다시 확인해주세요."),
-    NOT_FOUND_EXCEPTION_ACCUSE("존재하지 않는 신고입니다.");
+    NOT_FOUND_EXCEPTION_ACCUSE("존재하지 않는 신고입니다."),
+    JSON_PARSE_EXCEPTION("JSON으로 변환 실패하였습니다.");
     private final String message;
 
     ErrorCode(String message) {
