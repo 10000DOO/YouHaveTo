@@ -6,15 +6,18 @@ import com.yht.exerciseassist.domain.member.service.MemberService;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import com.yht.exerciseassist.util.ResponseResult;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class MemberController {
 
     private final MemberService memberService;
@@ -40,12 +43,12 @@ public class MemberController {
     }
 
     @GetMapping("/find/id")
-    public ResponseEntity<ResponseResult<String>> findId(@RequestParam String code) {
+    public ResponseEntity<ResponseResult<String>> findId(@RequestParam @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findId(code));
     }
 
     @PatchMapping("/find/pw")
-    public ResponseEntity<ResponseResult<String>> findPw(@RequestParam String code) {
+    public ResponseEntity<ResponseResult<String>> findPw(@RequestParam @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findPw(code));
     }
 }

@@ -1,15 +1,15 @@
 package com.yht.exerciseassist.domain.comment.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 public class WriteCommentDto {
-    @NotEmpty(message = "내용을 입력해주세요.")
+    @NotBlank(message = "내용을 입력해주세요.")
+    @Size(max = 300, message = "댓글은 300자까지 작성 가능합니다.")
     private String commentContent;
-    @NotNull(message = "게시글 번호를 입력해주세요.")
     private Long postId;
     private Long parentId;
 

@@ -4,6 +4,7 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Accuse {
     @Enumerated(EnumType.STRING)
     private AccuseType accuseType;
 
+    @Size(max = 1000)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

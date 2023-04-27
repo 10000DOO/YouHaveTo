@@ -3,7 +3,6 @@ package com.yht.exerciseassist.exception.controller;
 import com.yht.exerciseassist.exception.dto.ExceptionResponse;
 import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.seoulAPI.controller.SeoulAPIController;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,7 +14,6 @@ import java.text.ParseException;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = SeoulAPIController.class)
-@RequiredArgsConstructor
 public class APIExceptionController {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

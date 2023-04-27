@@ -4,6 +4,7 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.post.Post;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Comment {
     @OneToMany(mappedBy = "parent")
     private List<Comment> child = new ArrayList<>();
 
+    @Size(max = 300)
     private String commentContent;
 
     @Embedded
