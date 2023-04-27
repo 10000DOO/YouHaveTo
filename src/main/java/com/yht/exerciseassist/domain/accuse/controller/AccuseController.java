@@ -16,7 +16,7 @@ public class AccuseController {
     private final AccuseService accuseService;
 
     @PostMapping("/accuse/save/{postId}")
-    public ResponseEntity<ResponseResult<Long>> accuse(@PathVariable Long postId, @Valid @RequestBody AccuseReq accuseReq) {
+    public ResponseEntity<ResponseResult<Long>> accuse(@PathVariable Long postId, @RequestBody @Valid AccuseReq accuseReq) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(accuseService.saveAccuse(postId, accuseReq));
     }

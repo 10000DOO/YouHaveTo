@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.emailCode;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class EmailCode {
     @Column(name = "email_code_id")
     private Long id;
 
+    @Email
     private String email;
 
     private String code;

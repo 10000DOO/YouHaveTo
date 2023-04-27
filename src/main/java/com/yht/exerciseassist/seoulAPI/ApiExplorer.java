@@ -26,11 +26,11 @@ public class ApiExplorer {
     public ResponseResult<JSONObject> getSportsFacility(District district, int offset, int limit) throws IOException, ParseException {
 
         StringBuilder urlBuilder = new StringBuilder("http://openapi.seoul.go.kr:8088"); /*URL*/
-        urlBuilder.append("/" + URLEncoder.encode(key, "UTF-8")); /*인증키 (sample사용시에는 호출시 제한됩니다.)*/
-        urlBuilder.append("/" + URLEncoder.encode("json", "UTF-8")); /*요청파일타입 (xml,xmlf,xls,json) */
-        urlBuilder.append("/" + URLEncoder.encode(String.valueOf(district), "UTF-8")); /*서비스명 (대소문자 구분 필수입니다.)*/
-        urlBuilder.append("/" + URLEncoder.encode(Integer.toString(offset), "UTF-8")); /*요청시작위치 (sample인증키 사용시 5이내 숫자)*/
-        urlBuilder.append("/" + URLEncoder.encode(Integer.toString(offset + limit - 1), "UTF-8")); /*요청종료위치(sample인증키 사용시 5이상 숫자 선택 안 됨)*/
+        urlBuilder.append("/").append(URLEncoder.encode(key, "UTF-8")); /*인증키 (sample사용시에는 호출시 제한됩니다.)*/
+        urlBuilder.append("/").append(URLEncoder.encode("json", "UTF-8")); /*요청파일타입 (xml,xmlf,xls,json) */
+        urlBuilder.append("/").append(URLEncoder.encode(String.valueOf(district), "UTF-8")); /*서비스명 (대소문자 구분 필수입니다.)*/
+        urlBuilder.append("/").append(URLEncoder.encode(Integer.toString(offset), "UTF-8")); /*요청시작위치 (sample인증키 사용시 5이내 숫자)*/
+        urlBuilder.append("/").append(URLEncoder.encode(Integer.toString(offset + limit - 1), "UTF-8")); /*요청종료위치(sample인증키 사용시 5이상 숫자 선택 안 됨)*/
         // 상위 5개는 필수적으로 순서바꾸지 않고 호출해야 합니다.
 
         URL url = new URL(urlBuilder.toString());
