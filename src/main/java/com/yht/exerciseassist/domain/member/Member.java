@@ -34,6 +34,7 @@ public class Member implements UserDetails {
     private Long id;
 
     @Column(unique = true)
+    @Size(max = 20)
     private String username;
 
     @Column(unique = true)

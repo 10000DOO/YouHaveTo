@@ -72,8 +72,7 @@ public class PostExceptionController {
     @ExceptionHandler(ParseException.class)
     public ExceptionResponse parseExceptionHandle(ParseException exception) {
 
-        log.error("{} // {}", exception.getMessage(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
-        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
+        return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
     }
 
 }

@@ -12,6 +12,7 @@ import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
 import com.yht.exerciseassist.domain.member.dto.OtherMemberPage;
+import com.yht.exerciseassist.domain.member.dto.PWDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
@@ -69,9 +70,9 @@ public class MemberService implements UserDetailsService {
 
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto, String code) {
         EmailCode emailCode = emailCodeRepository.findByCode(code)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WRONG_EMAIL_CODE.getMessage()));
 
-        if (Objects.equals(emailCode.getEmail(), signUpRequestDto.getEmail())) {
+        if (emailCode.getEmail().equals(signUpRequestDto.getEmail())) {
             Member member = Member.builder()
                     .username(signUpRequestDto.getUsername())
                     .email(emailCode.getEmail())
@@ -93,11 +94,9 @@ public class MemberService implements UserDetailsService {
     }
 
     public ResponseResult<TokenInfo> signIn(String loginId, String password) {
-
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, password);
-
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
         Authentication authentication = null;
@@ -142,38 +141,43 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
-    public ResponseResult<Long> deleteMember() throws IOException {
+    public ResponseResult<Long> deleteMember(PWDto pwDto) throws IOException {
         Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
-        Long mediaId = null;
 
-        try {
-            mediaId = member.getMedia().getId();
-        } catch (NullPointerException e) {
-            log.info("mediaId 없음");
-        }
+        if (passwordEncoder.matches(pwDto.getPassword(), member.getPassword())) {
+            Long mediaId = null;
 
-        if (mediaId != null) {
-            member.ChangeMedia(null);
-            mediaService.deleteProfileImage(mediaId);
-        }
-
-        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        List<Diary> diaries = member.getDiaries();
-        if (diaries != null && !diaries.isEmpty()) {
-            for (Diary diary : diaries) {
-                mediaService.deleteDiaryMedia(diary.getId());
+            try {
+                mediaId = member.getMedia().getId();
+            } catch (NullPointerException e) {
+                log.info("mediaId 없음");
             }
+
+            if (mediaId != null) {
+                member.ChangeMedia(null);
+                mediaService.deleteProfileImage(mediaId);
+            }
+
+            String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            List<Diary> diaries = member.getDiaries();
+            if (diaries != null && !diaries.isEmpty()) {
+                for (Diary diary : diaries) {
+                    mediaService.deleteDiaryMedia(diary.getId());
+                }
+            }
+            member.getDateTime().canceledAtUpdate();
+            likeCountRepository.deleteAllByMember(member);
+            postRepository.updatePostWriterToNull(member);
+            commentRepository.updateCommentWriterToNull(member);
+            diaryRepository.deleteByMemberId(localTime, member);
+
+
+            log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
+            return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
+        } else {
+            throw new IllegalArgumentException(ErrorCode.FAIL_PW_AUTHENTICATION.getMessage());
         }
-        member.getDateTime().canceledAtUpdate();
-        likeCountRepository.deleteAllByMember(member);
-        postRepository.updatePostWriterToNull(member);
-        commentRepository.updateCommentWriterToNull(member);
-        diaryRepository.deleteByMemberId(localTime, member);
-
-
-        log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
-        return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
     }
 
     public ResponseResult getMemberPage(String username) {
@@ -223,7 +227,7 @@ public class MemberService implements UserDetailsService {
             log.info("{} 아이디 찾기 성공", findMember.getUsername());
             return new ResponseResult<>(HttpStatus.OK.value(), encodedId);
         } else {
-            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
+            throw new EntityNotFoundException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
         }
     }
 
@@ -238,7 +242,7 @@ public class MemberService implements UserDetailsService {
             log.info("{} 임시 비밀번호 생성", findMember.getUsername());
             return new ResponseResult<>(HttpStatus.OK.value(), tempPassword);
         } else {
-            throw new IllegalArgumentException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
+            throw new EntityNotFoundException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
         }
     }
 }

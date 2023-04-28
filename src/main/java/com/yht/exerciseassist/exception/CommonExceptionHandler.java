@@ -32,4 +32,10 @@ public class CommonExceptionHandler {
         log.error(exception.getMessage());
         return new ExceptionResponse(statusCode, exception.getMessage());
     }
+
+    public ExceptionResponse customExceptionRes(Exception exception, Logger log, int statusCode, String message) {
+
+        log.error("{} // {}", exception.getMessage(), message);
+        return new ExceptionResponse(statusCode, message);
+    }
 }
