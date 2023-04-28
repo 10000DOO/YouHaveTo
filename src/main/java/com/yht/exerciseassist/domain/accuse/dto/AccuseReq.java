@@ -13,7 +13,7 @@ public class AccuseReq {
     private AccuseType accuseType;
 
     @NotBlank(message = "신고 내용을 입력해주세요.")
-    @Size(max = 1000, message = "신고 내용은 1000자까지 작성 가능합니다.")
+    @Size(max = 300, message = "신고 내용은 300자까지 작성 가능합니다.")
     private String content;
 
     public AccuseReq(AccuseType accuseType, String content) {
