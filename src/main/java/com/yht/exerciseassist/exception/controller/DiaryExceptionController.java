@@ -41,8 +41,7 @@ public class DiaryExceptionController {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ExceptionResponse wrongContentTpye(HttpMediaTypeNotSupportedException exception) {
 
-        log.error("{} // {}", exception.getMessage(), ErrorCode.WRONG_CONTENT_TYPE.getMessage());
-        return new ExceptionResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), ErrorCode.WRONG_CONTENT_TYPE.getMessage());
+        return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), ErrorCode.WRONG_CONTENT_TYPE.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
