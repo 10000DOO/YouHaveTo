@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.member.controller;
 
+import com.yht.exerciseassist.domain.member.dto.PWDto;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
@@ -33,8 +34,8 @@ public class MemberController {
     }
 
     @PatchMapping("/member/delete")
-    public ResponseEntity<ResponseResult<Long>> memberDelete() throws IOException {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember());
+    public ResponseEntity<ResponseResult<Long>> memberDelete(@RequestBody @Valid PWDto pwDto) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember(pwDto));
     }
 
     @GetMapping("/member/info")

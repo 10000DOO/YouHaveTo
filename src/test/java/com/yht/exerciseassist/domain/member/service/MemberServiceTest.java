@@ -13,6 +13,7 @@ import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
 import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
+import com.yht.exerciseassist.domain.member.dto.PWDto;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
@@ -164,8 +165,9 @@ class MemberServiceTest {
         Media findMedia = em.find(Media.class, media.getId());
         member.ChangeMedia(findMedia);
         em.persist(member);
+        PWDto pwDto = new PWDto("testPassword1!");
         //when
-        memberService.deleteMember();
+        memberService.deleteMember(pwDto);
         em.flush();
         em.clear();
         //then
