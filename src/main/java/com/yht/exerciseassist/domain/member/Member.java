@@ -8,6 +8,7 @@ import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.post.Post;
 import com.yht.exerciseassist.domain.refreshToken.RefreshToken;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,12 +34,14 @@ public class Member implements UserDetails {
     private Long id;
 
     @Column(unique = true)
+    @Size(max = 20)
     private String username;
 
     @Column(unique = true)
     private String email;
 
     @Column(unique = true)
+    @Size(min = 5, max = 20)
     private String loginId;
 
     private String password;

@@ -35,7 +35,7 @@ public class MemberExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionResponse signUpHandle(IllegalArgumentException exception) {
+    public ExceptionResponse wrongEmailHandle(IllegalArgumentException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
@@ -72,22 +72,18 @@ public class MemberExceptionController {
     @ExceptionHandler(IOException.class)
     public ExceptionResponse ioExceptionHandle(IOException exception) {
 
-        log.error("{} // {}", exception.getMessage(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
-        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
+        return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PSQLException.class)
     public ExceptionResponse uniqueException(PSQLException exception) {
         if (exception.getMessage().contains("email")) {
-            log.error(ErrorCode.NOT_FOUND_EMAIL.getMessage());
-            return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_EMAIL.getMessage());
+            return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_EMAIL.getMessage());
         } else if (exception.getMessage().contains("username")) {
-            log.error(ErrorCode.NOT_FOUND_USERNAME.getMessage());
-            return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_USERNAME.getMessage());
+            return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_USERNAME.getMessage());
         } else {
-            log.error(ErrorCode.NOT_FOUND_LOGIN_ID.getMessage());
-            return new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_LOGIN_ID.getMessage());
+            return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_LOGIN_ID.getMessage());
         }
     }
 }

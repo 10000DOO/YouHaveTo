@@ -32,7 +32,8 @@ public enum ErrorCode {
     WRONG_SEND_EMAIL("이메일 전송에 실패했습니다."),
     WRONG_EMAIL("이메일을 다시 확인해주세요."),
     NOT_FOUND_EXCEPTION_ACCUSE("존재하지 않는 신고입니다."),
-    JSON_PARSE_EXCEPTION("JSON으로 변환 실패하였습니다.");
+    JSON_PARSE_EXCEPTION("JSON으로 변환 실패하였습니다."),
+    FAIL_PW_AUTHENTICATION("비밀번호 인증에 실패하였습니다.");
     private final String message;
 
     ErrorCode(String message) {

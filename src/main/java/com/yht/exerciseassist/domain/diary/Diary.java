@@ -4,6 +4,7 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.member.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +29,9 @@ public class Diary {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String exerciseDate; //운동 날짜
+    private String exerciseDate;//운동 날짜
 
+    @Size(max = 1000)
     private String review;//후기 or 평가
 
     @ElementCollection

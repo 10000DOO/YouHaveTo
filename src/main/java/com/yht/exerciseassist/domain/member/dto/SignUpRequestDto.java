@@ -3,14 +3,14 @@ package com.yht.exerciseassist.domain.member.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 @Data
 public class SignUpRequestDto {
 
     @NotBlank(message = "아이디는 필수 입니다.")
-    @Length(min = 5, max = 20, message = "아이디는 5~20자 입니다.")
+    @Size(min = 5, max = 20, message = "아이디는 5~20자 입니다.")
     private String loginId;
 
     @NotBlank(message = "비밀번호는 필수 입니다.")
@@ -19,6 +19,7 @@ public class SignUpRequestDto {
     private String password;
 
     @NotBlank(message = "유저 이름은 필수입니다.")
+    @Size(max = 20, message = "유저 이름은 20글자까지 작성 가능합니다.")
     private String username;
 
     @NotBlank(message = "이메일은 필수 입니다.")

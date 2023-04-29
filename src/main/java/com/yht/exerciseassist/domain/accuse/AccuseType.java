@@ -1,6 +1,9 @@
 package com.yht.exerciseassist.domain.accuse;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
+
+import java.util.stream.Stream;
 
 @Getter
 public enum AccuseType {
@@ -15,5 +18,13 @@ public enum AccuseType {
 
     AccuseType(String message) {
         this.message = message;
+    }
+
+    @JsonCreator
+    public static AccuseType parsing(String inputValue) {
+        return Stream.of(AccuseType.values())
+                .filter(accuseType -> accuseType.toString().equals(inputValue.toUpperCase()))
+                .findFirst()
+                .orElse(null);
     }
 }

@@ -6,6 +6,7 @@ import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.member.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,8 +27,10 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
+    @Size(max = 100)
     private String title;
 
+    @Size(max = 1000)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
