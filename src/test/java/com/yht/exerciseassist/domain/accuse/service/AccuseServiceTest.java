@@ -3,7 +3,10 @@ package com.yht.exerciseassist.domain.accuse.service;
 import com.yht.exerciseassist.domain.accuse.Accuse;
 import com.yht.exerciseassist.domain.accuse.dto.AccuseReq;
 import com.yht.exerciseassist.domain.accuse.repository.AccuseRepository;
+import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.factory.AccuseFactory;
+import com.yht.exerciseassist.domain.factory.CommentFactory;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.factory.PostFactory;
 import com.yht.exerciseassist.domain.member.Member;
@@ -44,6 +47,8 @@ class AccuseServiceTest {
     private AccuseRepository accuseRepository;
     @MockBean
     private PostRepository postRepository;
+    @MockBean
+    private CommentRepository commentRepository;
 
     @AfterEach
     public void afterAll() {
@@ -52,12 +57,12 @@ class AccuseServiceTest {
 
     @BeforeEach
     void setUp() {
-        accuseService = new AccuseService(accuseRepository, postRepository);
+        accuseService = new AccuseService(accuseRepository, postRepository, commentRepository);
         securityUtilMockedStatic = mockStatic(SecurityUtil.class);
     }
 
     @Test
-    public void saveAccuse() {
+    public void savePostAccuse() {
         //given
         given(SecurityUtil.getMemberRole()).willReturn("USER");
         Member testMember = MemberFactory.createTestMember();
@@ -65,11 +70,30 @@ class AccuseServiceTest {
         Mockito.when(postRepository.findByIdWithRole(1L, SecurityUtil.getMemberRole()))
                 .thenReturn(Optional.ofNullable(testPost));
         AccuseReq accuseReq = AccuseFactory.createAccuseReq();
-        Accuse accuse = AccuseFactory.createAccuse(testPost);
+        Accuse accuse = AccuseFactory.createPostAccuse(testPost);
 
         ResponseResult<Long> result = new ResponseResult<>(201, null);
         //when
-        ResponseResult<Long> accuseResult = accuseService.saveAccuse(1L, accuseReq);
+        ResponseResult<Long> accuseResult = accuseService.savePostAccuse(1L, accuseReq);
+        //then
+        Assertions.assertThat(accuseResult).isEqualTo(result);
+    }
+
+    @Test
+    public void saveCommentAccuse() {
+        //given
+        given(SecurityUtil.getMemberRole()).willReturn("USER");
+        Member testMember = MemberFactory.createTestMember();
+        Post testPost = PostFactory.createTestPost(testMember);
+        Comment testComment = CommentFactory.createTestComment(testMember, testPost);
+        Mockito.when(commentRepository.findByIdWithRole(1L, SecurityUtil.getMemberRole()))
+                .thenReturn(Optional.ofNullable(testComment));
+        AccuseReq accuseReq = AccuseFactory.createAccuseReq();
+        Accuse accuse = AccuseFactory.createCommentAccuse(testComment);
+
+        ResponseResult<Long> result = new ResponseResult<>(201, null);
+        //when
+        ResponseResult<Long> accuseResult = accuseService.saveCommentAccuse(1L, accuseReq);
         //then
         Assertions.assertThat(accuseResult).isEqualTo(result);
     }
