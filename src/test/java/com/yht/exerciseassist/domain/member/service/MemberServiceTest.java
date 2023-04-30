@@ -154,7 +154,15 @@ class MemberServiceTest {
     @Test
     public void deleteMember() throws IOException {
         //given
-        Member member = MemberFactory.createTestMember();
+        Member member = Member.builder()
+                .username("member1")
+                .email("test@test.com")
+                .loginId("testId1")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password(passwordEncoder.encode("testPassword1!"))
+                .field("서울시")
+                .build();
 
         Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
 
