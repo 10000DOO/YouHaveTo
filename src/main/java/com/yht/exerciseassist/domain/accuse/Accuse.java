@@ -38,10 +38,11 @@ public class Accuse {
     private DateTime dateTime;
 
     @Builder
-    public Accuse(AccuseType accuseType, String content, Post post, DateTime dateTime) {
+    public Accuse(AccuseType accuseType, String content, Post post, Comment comment, DateTime dateTime) {
         this.accuseType = accuseType;
         this.content = content;
         this.post = post;
+        this.comment = comment;
         this.dateTime = dateTime;
     }
 }

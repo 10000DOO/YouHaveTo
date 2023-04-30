@@ -15,10 +15,16 @@ public class AccuseController {
 
     private final AccuseService accuseService;
 
-    @PostMapping("/accuse/save/{postId}")
-    public ResponseEntity<ResponseResult<Long>> accuse(@PathVariable Long postId, @RequestBody @Valid AccuseReq accuseReq) {
+    @PostMapping("/accuse/post/save/{postId}")
+    public ResponseEntity<ResponseResult<Long>> postAccuse(@PathVariable Long postId, @RequestBody @Valid AccuseReq accuseReq) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(accuseService.saveAccuse(postId, accuseReq));
+        return ResponseEntity.status(HttpStatus.CREATED).body(accuseService.savePostAccuse(postId, accuseReq));
+    }
+
+    @PostMapping("/accuse/comment/save/{commentId}")
+    public ResponseEntity<ResponseResult<Long>> commentAccuse(@PathVariable Long commentId, @RequestBody @Valid AccuseReq accuseReq) {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(accuseService.saveCommentAccuse(commentId, accuseReq));
     }
 
     @PatchMapping("/accuse/delete/{accuseId}")
