@@ -75,7 +75,7 @@ public class CommentService {
     }
 
     public ResponseResult<Long> deleteComment(Long commentId) throws IllegalAccessException {
-        Comment commentById = commentRepository.findByIdWithRole(commentId, SecurityUtil.getMemberRole())
+        Comment commentById = commentRepository.findByNotDeleteId(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
 
         if (Objects.equals(commentById.getCommentWriter().getUsername(), SecurityUtil.getCurrentUsername())) {
