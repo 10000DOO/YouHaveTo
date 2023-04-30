@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.member.controller;
 
+import com.yht.exerciseassist.domain.member.dto.EditMemberDto;
 import com.yht.exerciseassist.domain.member.dto.PWDto;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
@@ -39,19 +40,22 @@ public class MemberController {
     }
 
     @GetMapping("/member/info")
-    public ResponseEntity<ResponseResult> memberPage(@RequestParam String username) {
+    public ResponseEntity<ResponseResult> memberPage(@RequestParam("username") String username) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getMemberPage(username));
     }
 
     @GetMapping("/find/id")
-    public ResponseEntity<ResponseResult<String>> findId(@RequestParam @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
+    public ResponseEntity<ResponseResult<String>> findId(@RequestParam("code") @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findId(code));
     }
 
     @PatchMapping("/find/pw")
-    public ResponseEntity<ResponseResult<String>> findPw(@RequestParam @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
+    public ResponseEntity<ResponseResult<String>> findPw(@RequestParam("code") @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findPw(code));
     }
 
-    //@PatchMapping()
+    @PatchMapping("member/edit")
+    public ResponseEntity<ResponseResult<String>> editMember(@RequestBody EditMemberDto editMemberDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.editMemberData(editMemberDto));
+    }
 }

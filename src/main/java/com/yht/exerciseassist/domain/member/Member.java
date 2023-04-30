@@ -103,6 +103,7 @@ public class Member implements UserDetails {
         this.email = email;
         this.password = password;
         this.field = field;
+        this.dateTime.updatedAtUpdate();
     }
 
     @Override
