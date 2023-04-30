@@ -52,4 +52,6 @@ public class MemberController {
     public ResponseEntity<ResponseResult<String>> findPw(@RequestParam @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findPw(code));
     }
+
+    //@PatchMapping()
 }

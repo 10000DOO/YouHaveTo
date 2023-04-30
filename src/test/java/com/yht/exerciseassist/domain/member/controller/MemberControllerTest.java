@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
+import com.yht.exerciseassist.domain.member.dto.PWDto;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
 import com.yht.exerciseassist.domain.member.service.MemberService;
@@ -84,9 +85,11 @@ class MemberControllerTest {
     @WithMockUser()
     public void deleteMember() throws Exception {
         //given
-
+        PWDto pwDto = new PWDto("testPassword1!");
         //when
         mockMvc.perform(MockMvcRequestBuilders.patch("/member/delete")
+                        .content(objectMapper.writeValueAsString(pwDto))
+                        .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
