@@ -31,12 +31,27 @@ class AccuseControllerTest {
 
     @Test
     @WithMockUser
-    public void saveAccuse() throws Exception {
+    public void savePostAccuse() throws Exception {
         //given
         AccuseReq accuseReq = AccuseFactory.createAccuseReq();
         String accuserReqJson = objectMapper.writeValueAsString(accuseReq);
         //when
-        mockMvc.perform(post("/accuse/save/{postId}", 1)
+        mockMvc.perform(post("/accuse/post/save/{postId}", 1)
+                        .contentType("application/json")
+                        .content(accuserReqJson)
+                        .with(csrf()))
+                .andExpect(status().isCreated());
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void saveCommentAccuse() throws Exception {
+        //given
+        AccuseReq accuseReq = AccuseFactory.createAccuseReq();
+        String accuserReqJson = objectMapper.writeValueAsString(accuseReq);
+        //when
+        mockMvc.perform(post("/accuse/comment/save/{commentId}", 1)
                         .contentType("application/json")
                         .content(accuserReqJson)
                         .with(csrf()))

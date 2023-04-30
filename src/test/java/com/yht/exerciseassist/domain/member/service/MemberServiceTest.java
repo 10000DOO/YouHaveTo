@@ -12,10 +12,7 @@ import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
-import com.yht.exerciseassist.domain.member.dto.MyMemberPage;
-import com.yht.exerciseassist.domain.member.dto.PWDto;
-import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
-import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
+import com.yht.exerciseassist.domain.member.dto.*;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
 import com.yht.exerciseassist.domain.post.repository.PostRepository;
 import com.yht.exerciseassist.jwt.JwtTokenProvider;
@@ -227,5 +224,30 @@ class MemberServiceTest {
         ResponseResult<String> result = memberService.findPw(code);
         //then
         assertThat(result).isEqualTo(responseResult);
+    }
+
+    @Test
+    public void editMember() {
+        //given
+        EditMemberDto editMemberDto = new EditMemberDto("member1", "MANDOO", "gunjoun99@gmail.com",
+                "testPassword1!", "testPassword2!", "남양주시");
+        Member member = Member.builder()
+                .username("member1")
+                .email("test@test.com")
+                .loginId("testId1")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password(passwordEncoder.encode("testPassword1!"))
+                .field("서울시")
+                .build();
+
+        given(SecurityUtil.getCurrentUsername()).willReturn("member1");
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+
+        ResponseResult<String> responseResult = new ResponseResult<>(200, "MANDOO");
+        //when
+        ResponseResult<String> result = memberService.editMemberData(editMemberDto);
+        //then
+        assertThat(responseResult).isEqualTo(result);
     }
 }
