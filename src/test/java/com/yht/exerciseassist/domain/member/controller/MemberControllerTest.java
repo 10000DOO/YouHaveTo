@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
+import com.yht.exerciseassist.domain.member.dto.EditMemberDto;
 import com.yht.exerciseassist.domain.member.dto.PWDto;
 import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
 import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
@@ -133,6 +134,20 @@ class MemberControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
+    }
 
+    @Test
+    @WithMockUser()
+    public void editMember() throws Exception {
+        //given
+        EditMemberDto editMemberDto = new EditMemberDto("10000DOO", "MANDOO", "gunjoun99@gmail.com",
+                "testPassword1!", "testPassword2!", "남양주시");
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.patch("/member/edit")
+                        .content(objectMapper.writeValueAsString(editMemberDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+        //then
     }
 }
