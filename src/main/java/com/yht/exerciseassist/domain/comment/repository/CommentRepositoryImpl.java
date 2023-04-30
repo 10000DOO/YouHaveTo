@@ -9,6 +9,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.yht.exerciseassist.domain.comment.QComment.comment;
 
@@ -16,6 +17,7 @@ import static com.yht.exerciseassist.domain.comment.QComment.comment;
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
+    @Override
     public Slice<Comment> findParentAndChildComment(String role, Long postId, Long parentId, String username, Pageable pageable) {
         List<Comment> comments = queryFactory
                 .selectFrom(comment)
@@ -27,6 +29,13 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
         boolean hasNext = comments.size() > pageable.getPageSize();
         return new SliceImpl<>(comments, pageable, hasNext);
+    }
+
+    @Override
+    public Optional<Comment> findByIdWithRole(Long id, String role) {
+        return Optional.ofNullable(queryFactory.selectFrom(comment)
+                .where(comment.id.eq(id), memberRoleEq(role))
+                .fetchOne());
     }
 
     private BooleanExpression memberRoleEq(String role) {
@@ -49,5 +58,4 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     private BooleanExpression usernameEq(String username) {
         return username == null ? null : comment.commentWriter.username.eq(username);
     }
-
 }
