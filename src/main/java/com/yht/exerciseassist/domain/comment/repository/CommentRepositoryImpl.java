@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.comment.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.post.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.yht.exerciseassist.domain.comment.QComment.comment;
+import static com.yht.exerciseassist.domain.post.QPost.post;
 
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CommentRepositoryCustom {

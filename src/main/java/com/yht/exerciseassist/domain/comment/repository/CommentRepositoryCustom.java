@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.domain.comment.repository;
 
 import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.post.Post;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 

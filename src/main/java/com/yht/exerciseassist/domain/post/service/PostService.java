@@ -33,6 +33,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static com.yht.exerciseassist.domain.member.MemberType.ADMIN;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -158,19 +160,24 @@ public class PostService {
         return new ResponseResult<>(HttpStatus.OK.value(), post.getTitle());
     }
 
-    public ResponseResult<Long> deletePost(Long postId) throws IOException {
+    public ResponseResult<Long> deletePost(Long postId) throws IOException, IllegalAccessException {
         Post postById = postRepository.findNotDeletedById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 
-        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        if ((Objects.equals(postById.getPostWriter().getUsername(), SecurityUtil.getCurrentUsername()))||(SecurityUtil.getMemberRole().equals("ADMIN"))) {
+            String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-        postById.getDateTime().canceledAtUpdate();
-        commentRepository.deleteCommentByPostId(localTime, postById.getId());
-        mediaService.deletePostMedia(postById.getId());
-        likeCountRepository.deleteAllByPost(postById);
+            postById.getDateTime().canceledAtUpdate();
+            commentRepository.deleteCommentByPostId(localTime, postById.getId());
+            mediaService.deletePostMedia(postById.getId());
+            likeCountRepository.deleteAllByPost(postById);
+        } else {
+            throw new IllegalAccessException(ErrorCode.NO_MATCHED_POST.getMessage());
+        }
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postById.getId());
+
     }
 
     private List<String> getMediaList(Post post) {

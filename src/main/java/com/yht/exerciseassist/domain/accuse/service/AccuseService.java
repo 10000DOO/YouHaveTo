@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +34,13 @@ public class AccuseService {
 
     public ResponseResult<Long> savePostAccuse(Long postId, AccuseReq accuseReq) {
         String memberRole = SecurityUtil.getMemberRole();
+        String memberName = SecurityUtil.getCurrentUsername();
         Post post = postRepository.findByIdWithRole(postId, memberRole)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
+
+        if(Objects.equals(memberName, post.getPostWriter().getUsername())) {
+            new IllegalAccessException(ErrorCode.NO_ACCUSE_MINE_POST.getMessage());
+        }
 
         Accuse accuse = Accuse.builder()
                 .accuseType(accuseReq.getAccuseType())
