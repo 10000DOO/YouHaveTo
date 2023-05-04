@@ -8,12 +8,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = AdminPostController.class)
@@ -40,5 +40,12 @@ public class AdminPostExceptionController {
     public ExceptionResponse notYourPost(IllegalAccessException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ParseException.class)
+    public ExceptionResponse parseExceptionHandle(ParseException exception) {
+
+        return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
     }
 }

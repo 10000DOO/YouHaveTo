@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
 public class AdminPostController {
 
     private final PostService postService;
