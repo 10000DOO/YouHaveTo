@@ -24,11 +24,13 @@ public class CommentController {
 
     @PostMapping("/comment/write")
     public ResponseEntity<ResponseResult<String>> writeComment(@RequestBody @Valid WriteCommentDto writeCommentDto) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.saveComment(writeCommentDto));
     }
 
     @PatchMapping("/comment/delete/{commentId}")
     public ResponseEntity<ResponseResult<Long>> deleteComment(@PathVariable Long commentId) throws IllegalAccessException {
+
         return ResponseEntity.status(HttpStatus.OK).body(commentService.deleteComment(commentId));
     }
 
@@ -36,6 +38,7 @@ public class CommentController {
     public ResponseEntity<ResponseResult<CommentListwithSliceDto>> getChildComment(@RequestParam(value = "postId") Long postId,
                                                                                    @RequestParam(value = "parentId", required = false) Long parentId,
                                                                                    @RequestParam(value = "username", required = false) String username, Pageable pageable) throws ParseException, IllegalAccessException {
+
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getComment(postId, parentId, username, pageable));
     }
 }

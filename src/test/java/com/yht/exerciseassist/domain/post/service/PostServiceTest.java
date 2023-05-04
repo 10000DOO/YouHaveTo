@@ -158,7 +158,7 @@ class PostServiceTest {
     }
 
     @Test
-    public void deletePost() throws IOException {
+    public void deletePost() throws IOException, IllegalAccessException {
         //given
         Long postId = 1L;
 

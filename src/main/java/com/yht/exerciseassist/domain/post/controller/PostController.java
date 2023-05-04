@@ -54,7 +54,7 @@ public class PostController {
     }
 
     @PatchMapping("/post/delete/{postId}")
-    public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException {
+    public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException, IllegalAccessException {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
@@ -69,6 +69,7 @@ public class PostController {
     public ResponseEntity<ResponseResult<PostListWithSliceDto>> getPostList(@RequestParam(value = "postType", required = false) List<String> postType,
                                                                             @RequestParam(value = "woryOutCategory", required = false) List<String> workOutCategories,
                                                                             @RequestParam(value = "username", required = false) String username, Pageable pageable) throws ParseException {
+
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostList(postType, workOutCategories, username, pageable));
     }
 }

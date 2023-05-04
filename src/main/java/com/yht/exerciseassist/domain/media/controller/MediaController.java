@@ -18,6 +18,7 @@ public class MediaController {
 
     @GetMapping("/media/{mediaId}")
     public ResponseEntity<FileSystemResource> getMediaFile(@PathVariable Long mediaId) throws IOException {
+
         return mediaService.getMediaFile(mediaId);
     }
 }

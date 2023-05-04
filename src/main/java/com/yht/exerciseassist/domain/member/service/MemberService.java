@@ -199,6 +199,7 @@ public class MemberService implements UserDetailsService {
                     .commentCount(findMember.getComments().size())
                     .build();
 
+            log.info("{} 마이페이지 조회 성공", findMember.getUsername());
             return new ResponseResult<>(HttpStatus.OK.value(), myMemberPage);
         } else {
             OtherMemberPage otherMemberPage = OtherMemberPage.builder()
@@ -209,6 +210,7 @@ public class MemberService implements UserDetailsService {
                     .postCount(findMember.getPosts().size())
                     .build();
 
+            log.info("{} 마이페이지 조회 성공", findMember.getUsername());
             return new ResponseResult<>(HttpStatus.OK.value(), otherMemberPage);
         }
     }
