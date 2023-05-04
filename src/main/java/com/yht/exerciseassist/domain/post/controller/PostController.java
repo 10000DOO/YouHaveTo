@@ -49,7 +49,6 @@ public class PostController {
     public ResponseEntity<ResponseResult<String>> editPost(@RequestPart @Valid WritePostDto writePostDto,
                                                            @RequestPart(required = false) List<MultipartFile> files,
                                                            @PathVariable Long postId) throws java.io.IOException {
-
         return ResponseEntity.status(HttpStatus.OK).body(postService.editPost(writePostDto, files, postId));
     }
 

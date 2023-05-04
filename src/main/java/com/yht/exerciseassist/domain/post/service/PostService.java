@@ -33,6 +33,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static com.yht.exerciseassist.domain.member.MemberType.ADMIN;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -171,11 +173,12 @@ public class PostService {
             mediaService.deletePostMedia(postById.getId());
             likeCountRepository.deleteAllByPost(postById);
         } else {
-            throw new IllegalAccessException(ErrorCode.NO_MATCHED_COMMENTID.getMessage());
+            throw new IllegalAccessException(ErrorCode.NO_MATCHED_POST.getMessage());
         }
 
         log.info("username : {}, {}번 게시글 삭제 완료", SecurityUtil.getCurrentUsername(), postById.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), postById.getId());
+
     }
 
     private List<String> getMediaList(Post post) {
