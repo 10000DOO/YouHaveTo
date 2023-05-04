@@ -3,7 +3,7 @@ spring:
     active:
       on-profile: prod
   datasource:
-    url: ENC(zH6OdCVxcBqp4PxFs6Erv0JOWcLRjltGcuUX/IjZftUC5AaAGC6Y8pqT2t73G7KiMYWVUtUfBGY=)
+    url: ENC(ZCNgJqsHDOy6T+YL49HiJjFHxG8NLvYVFbb1PFmqKIZQRENUzCNynbAJDJY/SEXqX4jPQ4puym4oXesXPiy+Lw==)
     username: ENC(5g7QwLq0KlEt1EjjanVtVvVYcyiXq+Lo)
     password: ENC(tPiBP8C0yCIluTb2x0d+ibvyp99IC3Ek)
     driver-class-name: org.postgresql.Driver
@@ -36,7 +36,7 @@ file:
   dir: /app/
 
 base:
-  url: ENC(8t3i2rRfGD5PAhiQfSrwV+9w8qnvp/AIOGQgOMADkH90ECbCk2mSTw==)
+  url: ENC(0hBajist2KGxFqDz6EaPfq2Tkk0edfA2ZMhs54JEpcDpzCvXdGBARA==)
 
 server:
   ssl:
