@@ -23,11 +23,13 @@ public class AccuseController {
 
     @PostMapping("/accuse/comment/save/{commentId}")
     public ResponseEntity<ResponseResult<Long>> commentAccuse(@PathVariable Long commentId, @RequestBody @Valid AccuseReq accuseReq) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(accuseService.saveCommentAccuse(commentId, accuseReq));
     }
 
     @PatchMapping("/accuse/delete/{accuseId}")
     public ResponseEntity<ResponseResult<Long>> deleteAccuse(@PathVariable Long accuseId) {
+
         return ResponseEntity.status(HttpStatus.OK).body(accuseService.deleteAccuse(accuseId));
     }
 }

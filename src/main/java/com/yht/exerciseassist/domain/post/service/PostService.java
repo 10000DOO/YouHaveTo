@@ -33,8 +33,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.yht.exerciseassist.domain.member.MemberType.ADMIN;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
