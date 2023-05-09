@@ -37,7 +37,8 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_ACCUSE("존재하지 않는 신고입니다."),
     JSON_PARSE_EXCEPTION("JSON으로 변환 실패하였습니다."),
     FAIL_PW_AUTHENTICATION("비밀번호 인증에 실패하였습니다."),
-    FAIL_EDIT_MEMBER_DATA("본인만 수정할 수 있습니다.");
+    FAIL_EDIT_MEMBER_DATA("본인만 수정할 수 있습니다."),
+    JWT_AUTHENTICATION_FAIL("JWT토큰 인증 실패입니다. 토큰을 재발급 해주세요");
     private final String message;
 
     ErrorCode(String message) {

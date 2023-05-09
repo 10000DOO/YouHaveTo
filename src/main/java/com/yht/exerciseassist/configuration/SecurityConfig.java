@@ -9,7 +9,6 @@ import com.yht.exerciseassist.jwt.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,12 +36,12 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/email").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/signin").permitAll()
                 .requestMatchers("/find/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/ws/chat/**").permitAll()
                 .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/media/**").hasAnyRole("USER", "ADMIN")

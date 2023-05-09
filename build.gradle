@@ -30,13 +30,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.3'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
@@ -46,8 +42,10 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
     //lombok
-    testCompileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
     //jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -68,6 +66,11 @@ dependencies {
     //string to json
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    //채팅
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    implementation 'org.webjars:stomp-websocket:2.3.4'
 }
 
 tasks.named('test') {
