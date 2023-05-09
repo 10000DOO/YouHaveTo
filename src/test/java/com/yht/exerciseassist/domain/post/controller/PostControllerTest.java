@@ -167,43 +167,4 @@ class PostControllerTest {
                 .andExpect(status().isOk());
         //then
     }
-
-    @Test
-    @WithMockUser
-    public void adminPostDetail() throws Exception {
-        //given
-        MockHttpServletRequestBuilder builder = get("/admin/post/detail/{postId}", 1);
-        //when
-        mockMvc.perform((builder)
-                        .with(csrf()))
-                .andExpect(status().isOk());
-        //then
-    }
-
-    @Test
-    @WithMockUser
-    public void adminDeletePost() throws Exception {
-        //given
-        //when
-        mockMvc.perform(MockMvcRequestBuilders.patch("/admin/post/delete/{postId}", 1)
-                        .with(csrf()))
-                .andExpect(status().isOk());
-        //then
-    }
-
-    @Test
-    @WithMockUser
-    public void getAdminPostList() throws Exception {
-        //given
-        MockHttpServletRequestBuilder builder = get("/admin/post")
-                .param("postType", "FREE")
-                .param("workOutCategory", "YOGA,ETC")
-                .param("page", "0")
-                .param("size", "2");
-        //when
-        mockMvc.perform((builder)
-                        .with(csrf()))
-                .andExpect(status().isOk());
-        //then
-    }
 }

@@ -78,7 +78,7 @@ public class CommentService {
         Comment commentById = commentRepository.findByNotDeleteId(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
 
-        if (Objects.equals(commentById.getCommentWriter().getUsername(), SecurityUtil.getCurrentUsername())) {
+        if (Objects.equals(commentById.getCommentWriter().getUsername(), SecurityUtil.getCurrentUsername())||(SecurityUtil.getMemberRole().equals("ADMIN"))) {
             commentById.getDateTime().canceledAtUpdate();
 
             String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -97,7 +97,7 @@ public class CommentService {
         String memberRole = SecurityUtil.getMemberRole();
 
         Slice<Comment> commentList = null;
-        if (Objects.equals(username, SecurityUtil.getCurrentUsername()) || username == null) {
+        if (Objects.equals(username, SecurityUtil.getCurrentUsername()) || (SecurityUtil.getMemberRole().equals("ADMIN"))) {
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
         } else if (username.isEmpty() && !Objects.equals(username, SecurityUtil.getCurrentUsername())) {
             throw new IllegalAccessException(ErrorCode.NOT_MINE_COMMENT.getMessage());
