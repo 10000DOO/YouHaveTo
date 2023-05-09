@@ -86,7 +86,7 @@ public class CommentService {
             commentRepository.deleteCommentByParentId(localTime, commentById.getId());
 
         } else {
-            throw new IllegalAccessException(ErrorCode.NO_MATCHED_COMMENTID.getMessage());
+            throw new IllegalAccessException(ErrorCode.NO_MATCHED_COMMENT.getMessage());
         }
 
         log.info("username : {}, {}번 댓글 삭제 완료", SecurityUtil.getCurrentUsername(), commentById.getId());

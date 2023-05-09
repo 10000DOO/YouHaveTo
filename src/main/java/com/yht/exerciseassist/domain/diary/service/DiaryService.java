@@ -63,7 +63,7 @@ public class DiaryService {
                 }
 
                 int dailyPercentage = (int) Math.round(dailyFinished / dailyTotal * 100);
-                Calender cal = new Calender(findDiary.getExerciseDate(), dailyPercentage);
+                Calender cal = new Calender(findDiary.getExerciseDate(), dailyPercentage, findDiary.getId());
                 calender.add(cal);
             }
             int monthlyPercentage = (int) Math.round(monthlyFinished / monthlyTotal * 100);
@@ -108,6 +108,7 @@ public class DiaryService {
         List<String> mediaId = getMediaList(findDiary);
 
         DiaryDetailDto diaryDetailDto = DiaryDetailDto.builder()
+                .diaryId(findDiary.getId())
                 .exerciseDate(findDiary.getExerciseDate())
                 .review(findDiary.getReview())
                 .exerciseInfo(exInfoDto)

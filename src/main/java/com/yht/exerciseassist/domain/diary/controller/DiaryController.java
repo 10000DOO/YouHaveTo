@@ -29,6 +29,7 @@ public class DiaryController {
     public ResponseEntity<ResponseResult<DiaryListDto>> diaryList(@RequestParam("date")
                                                                   @Pattern(regexp = "(19|20)\\d{2}-(0[1-9]|1[012])",
                                                                           message = "YYYY-MM 형식과 일치해야 합니다.") String date) {
+
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.getDiaryList(date));
     }
 

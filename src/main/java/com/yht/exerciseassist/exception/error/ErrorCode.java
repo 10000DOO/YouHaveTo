@@ -27,14 +27,18 @@ public enum ErrorCode {
     NOT_MINE_POST("본인 게시글이 아닙니다."),
     NOT_MINE_COMMENT("본인 댓글이 아닙니다."),
     NO_MATCHED_EXERCISE_CATEGORY("잘못된 운동 카테고리입니다."),
-    NO_MATCHED_COMMENTID("본인이 작성한 댓글만 삭제할 수 있습니다."),
+    NO_MATCHED_COMMENT("본인이 작성한 댓글만 삭제할 수 있습니다."),
+    NO_MATCHED_POST("본인이 작성한 게시글만 삭제할 수 있습니다."),
+    NO_ACCUSE_MINE_COMMENT("본인이 작성한 댓글은 신고할 수 없습니다."),
+    NO_ACCUSE_MINE_POST("본인이 작성한 게시글은 신고할 수 없습니다."),
     ALREADY_HAVE_PARENTCOMMENT("해당 댓글에는 대댓글을 작성하실 수 없습니다."),
     WRONG_SEND_EMAIL("이메일 전송에 실패했습니다."),
     WRONG_EMAIL("이메일을 다시 확인해주세요."),
     NOT_FOUND_EXCEPTION_ACCUSE("존재하지 않는 신고입니다."),
     JSON_PARSE_EXCEPTION("JSON으로 변환 실패하였습니다."),
     FAIL_PW_AUTHENTICATION("비밀번호 인증에 실패하였습니다."),
-    FAIL_EDIT_MEMBER_DATA("본인만 수정할 수 있습니다.");
+    FAIL_EDIT_MEMBER_DATA("본인만 수정할 수 있습니다."),
+    JWT_AUTHENTICATION_FAIL("JWT토큰 인증 실패입니다. 토큰을 재발급 해주세요");
     private final String message;
 
     ErrorCode(String message) {
