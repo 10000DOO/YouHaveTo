@@ -10,4 +10,6 @@ public class Calender {
     private String exerciseDate;
 
     private int dailyPercentage;
+
+    private Long diaryId;
 }

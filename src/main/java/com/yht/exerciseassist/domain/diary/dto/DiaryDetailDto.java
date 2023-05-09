@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class DiaryDetailDto {
+    private Long diaryId;
     private String exerciseDate;
     private String review;
     private List<ExerciseInfoResDto> exerciseInfo;
@@ -14,7 +15,8 @@ public class DiaryDetailDto {
     private List<String> mediaList;
 
     @Builder
-    public DiaryDetailDto(String exerciseDate, String review, List<ExerciseInfoResDto> exerciseInfo, String createdAt, List<String> mediaList) {
+    public DiaryDetailDto(Long diaryId, String exerciseDate, String review, List<ExerciseInfoResDto> exerciseInfo, String createdAt, List<String> mediaList) {
+        this.diaryId = diaryId;
         this.exerciseDate = exerciseDate;
         this.review = review;
         this.exerciseInfo = exerciseInfo;
