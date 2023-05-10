@@ -48,4 +48,11 @@ public class AdminPostExceptionController {
 
         return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ExceptionResponse worngArgsException(IllegalArgumentException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
+    }
 }
