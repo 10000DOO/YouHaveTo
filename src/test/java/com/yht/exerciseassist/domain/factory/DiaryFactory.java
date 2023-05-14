@@ -86,6 +86,8 @@ public class DiaryFactory {
                 .mediaList(mediaIdList)
                 .build();
 
+        diaryDetailDto.setDiaryId(1L);
+
         return diaryDetailDto;
     }
 
