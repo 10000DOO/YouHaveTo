@@ -24,6 +24,19 @@ public class MemberFactory {
         return member;
     }
 
+    public static Member createTestAdmin() {
+        Member admin = Member.builder()
+                .username("member1")
+                .email("test@test.com")
+                .loginId("testId1")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.ADMIN)
+                .password("testPassword1!")
+                .field("서울시")
+                .build();
+        return admin;
+    }
+
     public static SignUpRequestDto createTestSignUpRequestDto() {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
         signUpRequestDto.setUsername("member1");

@@ -12,22 +12,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = AdminAccuseController.class)
 @RequiredArgsConstructor
 public class AdminAccuseExceptionController {
+
     private final CommonExceptionHandler commonExceptionHandler;
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ExceptionResponse commentNotFound(EntityNotFoundException exception) {
+    public ExceptionResponse accuseNotFound(EntityNotFoundException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(IllegalAccessException.class)
-    public ExceptionResponse notYourComment(IllegalAccessException exception) {
+    public ExceptionResponse forbiddenHandle(IllegalAccessException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
     }
@@ -39,4 +42,10 @@ public class AdminAccuseExceptionController {
         return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.DATE_FORMAT_EXCEPTION.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(IOException.class)
+    public ExceptionResponse ioExceptionHandle(IOException exception) {
+
+        return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.IO_FAIL_EXCEOPTION.getMessage());
+    }
 }

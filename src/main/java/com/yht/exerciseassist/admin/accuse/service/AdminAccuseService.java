@@ -61,6 +61,7 @@ public class AdminAccuseService {
                 if (accuse.getPost() != null && accuse.getComment() == null) {
                     AccuseListDto accuseListDto = AccuseListDto.builder()
                             .accuseType(accuse.getAccuseType().getMessage())
+                            .accuseGetType(accuse.getAccuseGetType().getMessage())
                             .content(accuse.getContent())
                             .postId(accuse.getPost().getId())
                             .createdAt(calculateTime)
@@ -70,6 +71,7 @@ public class AdminAccuseService {
                         } else if (accuse.getPost() == null && accuse.getComment() != null) {
                             AccuseListDto accuseListDto = AccuseListDto.builder()
                                     .accuseType(accuse.getAccuseType().getMessage())
+                                    .accuseGetType(accuse.getAccuseGetType().getMessage())
                                     .content(accuse.getContent())
                                     .commentId(accuse.getComment().getId())
                                     .createdAt(calculateTime)

@@ -1,5 +1,6 @@
 package com.yht.exerciseassist.domain.member.repository;
 
+import com.yht.exerciseassist.admin.accuse.repository.AdminAccuseRepositoryImpl;
 import com.yht.exerciseassist.domain.comment.repository.CommentRepositoryImpl;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
 import com.yht.exerciseassist.domain.member.Member;
@@ -28,6 +29,8 @@ class MemberRepositoryTest {
     private PostRepositoryImpl postRepositoryImpl;
     @MockBean
     private CommentRepositoryImpl commentRepositoryImpl;
+    @MockBean
+    private AdminAccuseRepositoryImpl adminAccuseRepositoryImpl;
     @Autowired
     private EntityManager em;
 

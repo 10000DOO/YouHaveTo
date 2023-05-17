@@ -46,7 +46,7 @@ public class AdminAccuseRepositoryImpl implements AdminAccuseRepositoryCustom {
             if (Arrays.equals(result, new BooleanExpression[0])) {
                 return null;
             } else {
-                return Expressions.allOf(result);
+                return Expressions.anyOf(result);
             }
         }
     }
