@@ -14,8 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.yht.exerciseassist.domain.accuse.AccuseGetType.*;
 import static com.yht.exerciseassist.domain.accuse.AccuseType.*;
 import static com.yht.exerciseassist.domain.accuse.QAccuse.accuse;
+import static com.yht.exerciseassist.domain.post.QPost.post;
 
 
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class AdminAccuseRepositoryImpl implements AdminAccuseRepositoryCustom {
         List<Accuse> accuses = queryFactory
                 .selectFrom(accuse)
                 .where(accuseTypeEq(accuseTypeList), typeEq(types))
-                .orderBy(accuse.dateTime.canceledAt.desc())
+                .orderBy(accuse.dateTime.createdAt.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -42,22 +44,22 @@ public class AdminAccuseRepositoryImpl implements AdminAccuseRepositoryCustom {
         if (types == null || types.isEmpty()) {
             return null;
         } else {
-            BooleanExpression[] result = types.stream().map(this::isSearchType).toArray(BooleanExpression[]::new);
-            if (Arrays.equals(result, new BooleanExpression[0])) {
+            BooleanExpression[] resultType = types.stream().map(this::isSearchType).toArray(BooleanExpression[]::new);
+            if (Arrays.equals(resultType, new BooleanExpression[0])) {
                 return null;
             } else {
-                return Expressions.anyOf(result);
+                return Expressions.anyOf(resultType);
             }
         }
     }
 
     private BooleanExpression isSearchType(String type) {
         if (Objects.equals(type, "POST")) {
-            return accuse.comment.id.isNull();
+            return accuse.accuseGetType.eq(POST);
         } else if (Objects.equals(type, "COMMENT")) {
-            return accuse.post.id.isNull();
+            return accuse.accuseGetType.eq(COMMENT);
         } else if (Objects.equals(type, "DONE")) {
-            return accuse.dateTime.canceledAt.isNotNull();
+            return accuse.accuseGetType.eq(DONE);
         } else {
             throw new IllegalArgumentException(ErrorCode.NO_MATCHED_TYPE.getMessage());
         }

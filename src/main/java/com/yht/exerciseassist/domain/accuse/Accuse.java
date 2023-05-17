@@ -49,4 +49,8 @@ public class Accuse {
         this.comment = comment;
         this.dateTime = dateTime;
     }
+
+    public void updateAccuseGetTypeDone(AccuseGetType accuseGetType) {
+        this.accuseGetType = accuseGetType;
+    }
 }

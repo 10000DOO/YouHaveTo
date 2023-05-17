@@ -2,6 +2,7 @@ package com.yht.exerciseassist.domain.accuse.service;
 
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.accuse.Accuse;
+import com.yht.exerciseassist.domain.accuse.AccuseGetType;
 import com.yht.exerciseassist.domain.accuse.dto.AccuseReq;
 import com.yht.exerciseassist.domain.accuse.repository.AccuseRepository;
 import com.yht.exerciseassist.domain.comment.Comment;
@@ -38,6 +39,7 @@ public class AccuseService {
 
         Accuse accuse = Accuse.builder()
                 .accuseType(accuseReq.getAccuseType())
+                .accuseGetType(AccuseGetType.POST)
                 .content(accuseReq.getContent())
                 .post(post)
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -56,6 +58,7 @@ public class AccuseService {
 
         Accuse accuse = Accuse.builder()
                 .accuseType(accuseReq.getAccuseType())
+                .accuseGetType(AccuseGetType.COMMENT)
                 .content(accuseReq.getContent())
                 .comment(comment)
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -73,6 +76,8 @@ public class AccuseService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_ACCUSE.getMessage()));
 
         findAccuse.getDateTime().canceledAtUpdate();
+        findAccuse.updateAccuseGetTypeDone(AccuseGetType.DONE);
+
         log.info("{}유저 {} 신고 삭제 완료", SecurityUtil.getCurrentUsername(), findAccuse.getId());
         return new ResponseResult<>(HttpStatus.OK.value(), findAccuse.getId());
     }
