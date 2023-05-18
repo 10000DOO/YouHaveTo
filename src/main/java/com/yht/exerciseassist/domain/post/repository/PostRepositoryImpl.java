@@ -74,7 +74,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             return post.postType.eq(COMPETITION);
         } else if (Objects.equals(postType, "FREE")) {
             return post.postType.eq(FREE);
-        } else if (postType.isEmpty()) {
+        } else if (postType == null) {
             return null;
         } else {
             throw new IllegalArgumentException(ErrorCode.NO_MATCHED_POST_TYPE.getMessage());
@@ -105,7 +105,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             return post.workOutCategory.eq(JOGGING);
         } else if (Objects.equals(workOutCategories, "ETC")) {
             return post.workOutCategory.eq(ETC);
-        } else if (workOutCategories.isEmpty()) {
+        } else if (workOutCategories == null) {
             return null;
         } else {
             throw new IllegalArgumentException(ErrorCode.NO_MATCHED_EXERCISE_CATEGORY.getMessage());

@@ -100,10 +100,12 @@ public class CommentService {
         //마이페이지
         if (Objects.equals(username, SecurityUtil.getCurrentUsername()) || (SecurityUtil.getMemberRole().equals("ADMIN"))) {
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
-        } else if (username.isEmpty() && parentId == null) {//게시글 조회에서 댓글 추가 조회
+        } else if (username == null && parentId == null && postId != null) {//게시글 조회에서 댓글 추가 조회
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
-        } else if (username.isEmpty()) {//게시글 조회에서 대댓글 조회
+        } else if (username == null && parentId != null && postId != null) {//게시글 조회에서 대댓글 조회
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
+        } else{
+            throw new IllegalArgumentException(ErrorCode.WRONG_REQUEST.getMessage());
         }
 
         if (commentList != null) {
