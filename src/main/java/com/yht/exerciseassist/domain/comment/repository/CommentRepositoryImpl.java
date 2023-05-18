@@ -21,7 +21,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     public Slice<Comment> findParentAndChildComment(String role, Long postId, Long parentId, String username, Pageable pageable) {
         List<Comment> comments = queryFactory
                 .selectFrom(comment)
-                .where(memberRoleEq(role), postIdEq(postId), parentIdEq(parentId, username), usernameEq(username))
+                .where(memberRoleEq(role), postIdEq(postId), parentIdEq(parentId), usernameEq(username))
                 .orderBy(comment.dateTime.createdAt.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
@@ -46,13 +46,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return postId == null ? null : comment.post.id.eq(postId);
     }
 
-    private BooleanExpression parentIdEq(Long parentId, String username) {
-        if (parentId == null && username != null)
-            return null;
-        else if (parentId == null) {
-            return comment.parent.id.isNull();
-        } else
-            return comment.parent.id.eq(parentId);
+    private BooleanExpression parentIdEq(Long parentId) {
+        return parentId == null ? null : comment.parent.id.eq(parentId);
     }
 
     private BooleanExpression usernameEq(String username) {
