@@ -3,7 +3,6 @@ package com.yht.exerciseassist.domain.chat;
 import com.yht.exerciseassist.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.List;
 
