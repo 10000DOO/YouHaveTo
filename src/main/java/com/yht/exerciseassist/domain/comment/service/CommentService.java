@@ -97,10 +97,13 @@ public class CommentService {
         String memberRole = SecurityUtil.getMemberRole();
 
         Slice<Comment> commentList = null;
+        //마이페이지
         if (Objects.equals(username, SecurityUtil.getCurrentUsername()) || (SecurityUtil.getMemberRole().equals("ADMIN"))) {
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
-        } else if (username.isEmpty() && !Objects.equals(username, SecurityUtil.getCurrentUsername())) {
-            throw new IllegalAccessException(ErrorCode.NOT_MINE_COMMENT.getMessage());
+        } else if (username.isEmpty() && parentId == null) {//게시글 조회에서 댓글 추가 조회
+            commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
+        } else if (username.isEmpty()) {//게시글 조회에서 대댓글 조회
+            commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
         }
 
         if (commentList != null) {
@@ -146,6 +149,7 @@ public class CommentService {
                 }
 
                 CommentListDto commentListDto = CommentListDto.builder()
+                        .commentId(comment.getId())
                         .username(Optional.ofNullable(comment.getCommentWriter().getUsername()).isPresent() ? comment.getCommentWriter().getUsername() : "알 수 없음")
                         .commentContext(comment.getCommentContent())
                         .createdAt(calculateTime)

@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class CommentListDto {
+    Long commentId;
     String username;
     String commentContext;
     String createdAt;
@@ -12,7 +13,8 @@ public class CommentListDto {
     int childCount;
 
     @Builder
-    public CommentListDto(String username, String commentContext, String createdAt, String profileImage, int childCount) {
+    public CommentListDto(Long commentId, String username, String commentContext, String createdAt, String profileImage, int childCount) {
+        this.commentId = commentId;
         this.username = username;
         this.commentContext = commentContext;
         this.createdAt = createdAt;
