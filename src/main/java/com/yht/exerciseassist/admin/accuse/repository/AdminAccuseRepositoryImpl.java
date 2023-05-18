@@ -17,7 +17,6 @@ import java.util.Objects;
 import static com.yht.exerciseassist.domain.accuse.AccuseGetType.*;
 import static com.yht.exerciseassist.domain.accuse.AccuseType.*;
 import static com.yht.exerciseassist.domain.accuse.QAccuse.accuse;
-import static com.yht.exerciseassist.domain.post.QPost.post;
 
 
 @RequiredArgsConstructor
@@ -89,7 +88,7 @@ public class AdminAccuseRepositoryImpl implements AdminAccuseRepositoryCustom {
             return accuse.accuseType.eq(INADEQUATE_CONTENT);
         } else if (Objects.equals(accuseType, "PORNOGRAPHY_CONTENT")) {
             return accuse.accuseType.eq(PORNOGRAPHY_CONTENT);
-        } else if (accuseType.isEmpty()) {
+        } else if (accuseType == null) {
             return null;
         } else {
             throw new IllegalArgumentException(ErrorCode.NO_MATCHED_ACCUSE_TYPE.getMessage());

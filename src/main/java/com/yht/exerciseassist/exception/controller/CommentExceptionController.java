@@ -43,6 +43,13 @@ public class CommentExceptionController {
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ExceptionResponse wrongRequest(IllegalArgumentException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.FORBIDDEN.value());
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ParseException.class)
     public ExceptionResponse parseExceptionHandle(ParseException exception) {
