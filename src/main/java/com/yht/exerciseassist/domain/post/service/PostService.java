@@ -1,6 +1,8 @@
 package com.yht.exerciseassist.domain.post.service;
 
 import com.yht.exerciseassist.domain.DateTime;
+import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.comment.dto.CommentListDto;
 import com.yht.exerciseassist.domain.comment.repository.CommentRepository;
 import com.yht.exerciseassist.domain.likeCount.LikeCount;
 import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
@@ -88,10 +90,22 @@ public class PostService {
         boolean isPressed = false;
         List<LikeCount> likeCount = postById.getLikeCount();
         for (LikeCount count : likeCount) {
-            if (count.getMember() == postById.getPostWriter()) {
-                isPressed = true;
-            } else {
-                isPressed = false;
+            isPressed = count.getMember() == postById.getPostWriter();
+        }
+
+        List<Comment> findComments = postById.getComments();
+        List<CommentListDto> sendComments = new ArrayList<>();
+        for (Comment findComment : findComments) {
+            if (findComment.getParent() == null && sendComments.size() < 3) {
+                sendComments.add(
+                        CommentListDto.builder()
+                                .username(Optional.ofNullable(findComment.getCommentWriter().getUsername()).isPresent() ? findComment.getCommentWriter().getUsername() : "알 수 없음")
+                                .commentContext(findComment.getCommentContent())
+                                .createdAt(findComment.getDateTime().getCreatedAt())
+                                .profileImage(profileImage)
+                                .childCount(findComment.getChild().size())
+                                .build()
+                );
             }
         }
 
@@ -107,7 +121,7 @@ public class PostService {
                 .createdAt(postById.getDateTime().getCreatedAt())
                 .postType(postById.getPostType())
                 .workOutCategory(postById.getWorkOutCategory())
-
+                .comments(sendComments)
                 .isMine(Objects.equals(SecurityUtil.getCurrentUsername(), postById.getPostWriter().getUsername()))
                 .build();
 
@@ -198,14 +212,10 @@ public class PostService {
         boolean isPressed = false;
         List<LikeCount> like = post.getLikeCount();
         for (LikeCount count : like) {
-            if (count.getMember() == post.getPostWriter()) {
-                isPressed = true;
-            } else {
-                isPressed = false;
-            }
+            isPressed = count.getMember() == post.getPostWriter();
         }
 
-        if (clicked == false) {
+        if (!clicked) {
             if (isPressed) {
                 throw new IllegalArgumentException(ErrorCode.ALREADY_PRESSED.getMessage());
             } else {

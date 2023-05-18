@@ -100,13 +100,14 @@ class DiaryServiceTest {
 
         for (int i = 1; i < 21; i++) {
             Diary diary = DiaryFactory.createTestDiary(member);
+            diary.setDiaryIdUsedOnlyTest((long) i);
             diaries.add(diary);
         }
 
         List<Calender> calenderList = new ArrayList<>();
 
         for (int i = 1; i < 21; i++) {
-            Calender calender = new Calender("2023-01-30", 100);
+            Calender calender = new Calender("2023-01-30", 100, (long) i);
             calenderList.add(calender);
         }
 
@@ -154,7 +155,7 @@ class DiaryServiceTest {
     }
 
     @Test
-    public void getPostEditData() {
+    public void getDiaryEditData() {
         //given
         Long diaryId = 1L;
         Member testMember = MemberFactory.createTestMember();

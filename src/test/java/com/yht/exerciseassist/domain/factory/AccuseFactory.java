@@ -2,13 +2,11 @@ package com.yht.exerciseassist.domain.factory;
 
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.accuse.Accuse;
+import com.yht.exerciseassist.domain.accuse.AccuseGetType;
 import com.yht.exerciseassist.domain.accuse.AccuseType;
 import com.yht.exerciseassist.domain.accuse.dto.AccuseReq;
 import com.yht.exerciseassist.domain.comment.Comment;
 import com.yht.exerciseassist.domain.post.Post;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class AccuseFactory {
 
@@ -16,10 +14,10 @@ public class AccuseFactory {
 
         return Accuse.builder()
                 .accuseType(AccuseType.ABUSIVE_LANGUAGE_BELITTLE)
+                .accuseGetType(AccuseGetType.POST)
                 .content("욕설")
                 .post(post)
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
     }
 
@@ -27,10 +25,10 @@ public class AccuseFactory {
 
         return Accuse.builder()
                 .accuseType(AccuseType.ABUSIVE_LANGUAGE_BELITTLE)
+                .accuseGetType(AccuseGetType.COMMENT)
                 .content("욕설")
                 .comment(comment)
-                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
                 .build();
     }
 

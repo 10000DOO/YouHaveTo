@@ -1,6 +1,6 @@
 package com.yht.exerciseassist.domain.post.dto;
 
-import com.yht.exerciseassist.domain.comment.Comment;
+import com.yht.exerciseassist.domain.comment.dto.CommentListDto;
 import com.yht.exerciseassist.domain.post.PostType;
 import com.yht.exerciseassist.domain.post.WorkOutCategory;
 import lombok.Builder;
@@ -22,11 +22,11 @@ public class PostDetailRes {
     private String createdAt;
     private PostType postType;
     private WorkOutCategory workOutCategory;
-    private List<Comment> comments;
+    private List<CommentListDto> comments;
     private boolean isMine;
 
     @Builder
-    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, boolean likePressed, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<Comment> comments, boolean isMine) {
+    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, boolean likePressed, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<CommentListDto> comments, boolean isMine) {
         this.username = username;
         this.profileImage = profileImage;
         this.title = title;

@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/accuse/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/comment/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)
