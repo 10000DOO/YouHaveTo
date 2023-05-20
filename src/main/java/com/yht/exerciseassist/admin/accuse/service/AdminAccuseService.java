@@ -4,6 +4,7 @@ import com.yht.exerciseassist.admin.accuse.dto.AccuseListDto;
 import com.yht.exerciseassist.admin.accuse.dto.AccuseListWithSliceDto;
 import com.yht.exerciseassist.admin.accuse.repository.AdminAccuseRepository;
 import com.yht.exerciseassist.domain.accuse.Accuse;
+import com.yht.exerciseassist.domain.accuse.AccuseGetType;
 import com.yht.exerciseassist.exception.error.ErrorCode;
 import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
@@ -31,9 +32,7 @@ public class AdminAccuseService {
     private final AdminAccuseRepository adminAccuseRepository;
 
     public ResponseResult<AccuseListWithSliceDto> getAccuse(List<String> accuseType, List<String> typeList, Pageable pageable) throws IllegalAccessException, ParseException {
-        String memberRole = SecurityUtil.getMemberRole();
-
-        if (memberRole.equals("ADMIN")) {
+        if (SecurityUtil.getMemberRole().equals("ADMIN")) {
             Slice<Accuse> accuseList = adminAccuseRepository.accuseAsAccuseType(accuseType, typeList, pageable);
             List<Accuse> accuses = accuseList.getContent();
             boolean hasNext = accuseList.hasNext();
@@ -92,6 +91,23 @@ public class AdminAccuseService {
 
             return new ResponseResult<>(HttpStatus.OK.value(), accuseListWithSliceDto);
         } else {
+            throw new IllegalAccessException(ErrorCode.ACCESS_DENIED.getMessage());
+        }
+    }
+
+    public ResponseResult<Long> deleteAccuse(Long accuseId) throws IllegalAccessException {
+        if (SecurityUtil.getMemberRole().equals("ADMIN")) {
+
+            Accuse findAccuse = adminAccuseRepository.findByNotDeletedId(accuseId)
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_ACCUSE.getMessage()));
+
+            findAccuse.getDateTime().canceledAtUpdate();
+            findAccuse.updateAccuseGetTypeDone(AccuseGetType.DONE);
+
+            log.info("{}유저 {} 신고 삭제 완료", SecurityUtil.getCurrentUsername(), findAccuse.getId());
+            return new ResponseResult<>(HttpStatus.OK.value(), findAccuse.getId());
+        }
+        else {
             throw new IllegalAccessException(ErrorCode.ACCESS_DENIED.getMessage());
         }
     }
