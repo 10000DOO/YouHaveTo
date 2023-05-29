@@ -29,7 +29,7 @@
 ### 안드로이드
 주요 라이브러리 : Vuforia  
 외부 API : 네이버 지도  
-개발 언어 : Kotlin, C++  
+개발 언어 : Kotlin, C#
 개발 환경 : Window, Android   
 개발 도구 : Android Studio, Unity  
 협업 : Notion, Slack, trello  
