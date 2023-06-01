@@ -1,4 +1,4 @@
-<p align="center"><img src="https://user-images.githubusercontent.com/57493546/237003537-78c89647-3a5c-4b2a-b006-335d5e8d94ee.png" alt="구조도"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/57493546/237003537-78c89647-3a5c-4b2a-b006-335d5e8d94ee.png" alt="로고"></p>
 
 # Description
 ## 작품 개요
@@ -13,6 +13,20 @@
 - 커뮤니티에 운동 영상을 업로드하여 개인별 신체적 특징이나 부상 이력을 고려한 운동 자세 피드백을 받을 수 있다.
 - 매일 운동 일지를 기록하며 규칙적인 운동 습관을 기르고, 과거의 자신과 비교를 하면서 얼마나 자신이 발전하였는지 알 수 있다.
 
+## 동작 화면
+### 📌로그인  
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/2b57e197-320c-499b-92cd-48da6ecf43d9" width="200">
+
+### 📌다이어리
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/2ef8e3e7-b896-4cae-9d58-635e5adb537f" width="200">
+
+### 📌운동 커뮤니티
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/412b2329-50c4-4f0a-98dd-8b5af1e8b947" width="200">
+
+### 📌AR
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/51653526-9e32-42af-975a-3ece3ad8950d" width="200">
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/516a690f-aae5-45b6-91dd-03e254d86ab0" width="200">
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/e42ec104-5716-4dd9-9f60-bd3f128f7f8c" width="200">
 
 # Environment
 ## 주요 적용 기술 및 구조
@@ -32,7 +46,7 @@
 개발 언어 : Kotlin, C#
 개발 환경 : Window, Android   
 개발 도구 : Android Studio, Unity  
-협업 : Notion, Slack, trello  
+협업 : Notion, Slack, Trello  
 ## 구조
 <p align="center"><img src="https://user-images.githubusercontent.com/57493546/237001396-3e01c550-f99d-4b7d-86ac-e00a587139a8.png" alt="구조도"></p>
 
