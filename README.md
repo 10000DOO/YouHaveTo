@@ -39,7 +39,7 @@
 개발 도구 : IntelliJ, Jenkins, Docker, Nginx  
 테스트 : Mockito, JUnit5  
 데이터 베이스 : Postgresql  
-협업 : Notion, Slack, trello  
+협업 : Notion, Slack, Trello  
 ### 안드로이드
 주요 라이브러리 : Vuforia  
 외부 API : 네이버 지도  
