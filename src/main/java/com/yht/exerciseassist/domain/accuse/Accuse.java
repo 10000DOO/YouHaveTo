@@ -53,4 +53,8 @@ public class Accuse {
     public void updateAccuseGetTypeDone(AccuseGetType accuseGetType) {
         this.accuseGetType = accuseGetType;
     }
+
+    public void setAccuseIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
 }

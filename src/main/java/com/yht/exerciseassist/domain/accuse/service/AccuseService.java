@@ -69,16 +69,4 @@ public class AccuseService {
         log.info("{}유저 {} 댓글 신고 완료", SecurityUtil.getCurrentUsername(), comment.getId());
         return new ResponseResult<>(HttpStatus.CREATED.value(), accuse.getId());
     }
-
-    public ResponseResult<Long> deleteAccuse(Long accuseId) {
-
-        Accuse findAccuse = accuseRepository.findByNotDeletedId(accuseId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_ACCUSE.getMessage()));
-
-        findAccuse.getDateTime().canceledAtUpdate();
-        findAccuse.updateAccuseGetTypeDone(AccuseGetType.DONE);
-
-        log.info("{}유저 {} 신고 삭제 완료", SecurityUtil.getCurrentUsername(), findAccuse.getId());
-        return new ResponseResult<>(HttpStatus.OK.value(), findAccuse.getId());
-    }
 }

@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -96,5 +98,28 @@ class AdminAccuseServiceTest {
         assertThat(result.getData().getAccuseListDto().size()).isEqualTo(1);
         assertThat(result.getData().getIsFirst()).isTrue();
         assertThat(result.getData().getHasNext()).isFalse();
+    }
+
+    @Test
+    public void deleteAccuse() throws IllegalAccessException {
+        //given
+        given(SecurityUtil.getMemberRole()).willReturn("ADMIN");
+
+        Member member = MemberFactory.createTestMember();
+
+        Post testPost = PostFactory.createTestPost(member);
+
+        Accuse testAccuse = AccuseFactory.createPostAccuse(testPost);
+
+        testAccuse.setAccuseIdUsedOnlyTest(1L);
+
+        Mockito.when(adminAccuseRepository.findByNotDeletedId(1L)).thenReturn(Optional.of(testAccuse));
+        ResponseResult<Long> mockResult = new ResponseResult<>(HttpStatus.OK.value(), 1L);
+
+        //when
+        ResponseResult<Long> responseResult = adminAccuseService.deleteAccuse(1L);
+
+        //then
+        assertThat(responseResult).isEqualTo(mockResult);
     }
 }
