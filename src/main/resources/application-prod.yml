@@ -39,6 +39,7 @@ base:
   url: ENC(0hBajist2KGxFqDz6EaPfq2Tkk0edfA2ZMhs54JEpcDpzCvXdGBARA==)
 
 server:
+  port: ENC(C7J98t9dzMaStIHiyEvOvA==)
   ssl:
     enabled: true
     key-store: /ssl/keystore.p12
