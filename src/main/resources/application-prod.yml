@@ -44,3 +44,4 @@ server:
     key-store: /ssl/keystore.p12
     key-store-type: PKCS12
     key-store-password: ENC(Wes8r4kIFAJt8f/sGpOQDH1o0TtjpTZq)
+  port: 7091
