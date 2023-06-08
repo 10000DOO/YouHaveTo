@@ -36,7 +36,7 @@
 외부 API : 서울 열린데이터 광장  
 개발 언어 : JAVA   
 개발 환경 : Mac OS, Rocky Linux  
-개발 도구 : IntelliJ, Jenkins, Docker, Nginx  
+개발 도구 : IntelliJ, DataGrip, Jenkins, Docker, Nginx  
 테스트 : Mockito, JUnit5  
 데이터 베이스 : Postgresql  
 협업 : Notion, Slack, Trello  
