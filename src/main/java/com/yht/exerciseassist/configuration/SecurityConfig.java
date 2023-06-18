@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/find/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/ws/chat/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/media/**").hasAnyRole("USER", "ADMIN")
@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/accuse/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/comment/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/chat/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new ExceptionHandlerFilter(objectMapper, jwtService), JwtAuthenticationFilter.class);

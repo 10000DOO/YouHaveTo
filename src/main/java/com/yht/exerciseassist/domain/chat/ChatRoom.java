@@ -40,6 +40,13 @@ public class ChatRoom {
         chatList.getChatRooms().add(this);
     }
 
+    public void addChatMessage(ChatMessage chatMessage) {
+        this.chatMessages.add(chatMessage);
+        if (chatMessage.getChatRoom() != this) {
+            chatMessage.linkToChatMessage(this);
+        }
+    }
+
     @Builder
     public ChatRoom(String roomName, DateTime dateTime, ChatList chatList) {
         this.roomName = roomName;

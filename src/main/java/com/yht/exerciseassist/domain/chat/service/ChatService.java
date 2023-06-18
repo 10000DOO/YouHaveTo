@@ -2,9 +2,14 @@ package com.yht.exerciseassist.domain.chat.service;
 
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.chat.ChatList;
+import com.yht.exerciseassist.domain.chat.ChatMessage;
 import com.yht.exerciseassist.domain.chat.ChatRoom;
+import com.yht.exerciseassist.domain.chat.MessageType;
 import com.yht.exerciseassist.domain.chat.dto.ChatRoomListDto;
+import com.yht.exerciseassist.domain.chat.dto.MessageResDto;
+import com.yht.exerciseassist.domain.chat.dto.SendMessageReqDto;
 import com.yht.exerciseassist.domain.chat.repository.ChatListRepository;
+import com.yht.exerciseassist.domain.chat.repository.ChatMessageRepository;
 import com.yht.exerciseassist.domain.chat.repository.ChatRoomRepository;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.repository.MemberRepository;
@@ -30,6 +35,7 @@ public class ChatService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatListRepository chatListRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     //채팅방 불러오기
     public ResponseResult<List<ChatRoomListDto>> findAllRoom() {
@@ -54,11 +60,6 @@ public class ChatService {
         return new ResponseResult<>(HttpStatus.OK.value(), chatRoomList);
     }
 
-    //채팅방 하나 불러오기
-//    public Room getChatRoomByRoomId(int roomId) {
-//        return roomRepository.findRoomByRoomId(roomId).get();
-//    }
-
     //채팅방 생성
     public ResponseResult<String> createRoom(String roomName) {
         Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
@@ -79,11 +80,43 @@ public class ChatService {
         return new ResponseResult<>(HttpStatus.CREATED.value(), roomName);
     }
 
-//    public Message enterMessage(EnterRoomMessageDTO enterRoomMessageDTO) {
-//        return messageRepository.save(enterRoomMessageDTO.toEntity(enterRoomMessageDTO.getRoomId(), enterRoomMessageDTO.getRoomName(), enterRoomMessageDTO.getNickname()));
-//    }
-//
-//    public Message sendMessage(ChatMessageDTO chatMessageDTO){
-//        return messageRepository.save(chatMessageDTO.toEntity(chatMessageDTO.getRoomId(), chatMessageDTO.getRoomName(), chatMessageDTO.getNickname(), chatMessageDTO.getContent()));
-//    }
+    public ResponseResult<MessageResDto> enterMessage(Long roomId) {
+        ChatRoom findChatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_CHATLIST.getMessage()));
+        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .chatRoom(findChatRoom)
+                .chatContent(SecurityUtil.getCurrentUsername() + "님 채팅방에 입장하셨습니다.")
+                .sender(findMember)
+                .messageType(MessageType.ENTER)
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .build();
+
+        chatMessageRepository.save(chatMessage);
+        MessageResDto messageResDto = new MessageResDto(findChatRoom.getId(), chatMessage.getChatContent());
+        return new ResponseResult<>(HttpStatus.OK.value(), messageResDto);
+    }
+
+    public ResponseResult<MessageResDto> sendMessage(SendMessageReqDto sendMessageReqDto) {
+        ChatRoom findChatRoom = chatRoomRepository.findById(sendMessageReqDto.getRoomId())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_CHATLIST.getMessage()));
+        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .chatRoom(findChatRoom)
+                .chatContent(sendMessageReqDto.getMessage())
+                .sender(findMember)
+                .messageType(MessageType.CHAT)
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .build();
+
+        chatMessageRepository.save(chatMessage);
+        MessageResDto messageResDto = new MessageResDto(findChatRoom.getId(), chatMessage.getChatContent());
+        return new ResponseResult<>(HttpStatus.OK.value(), messageResDto);
+    }
 }
