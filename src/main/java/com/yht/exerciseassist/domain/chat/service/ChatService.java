@@ -3,6 +3,7 @@ package com.yht.exerciseassist.domain.chat.service;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.chat.ChatList;
 import com.yht.exerciseassist.domain.chat.ChatRoom;
+import com.yht.exerciseassist.domain.chat.dto.ChatRoomListDto;
 import com.yht.exerciseassist.domain.chat.repository.ChatListRepository;
 import com.yht.exerciseassist.domain.chat.repository.ChatRoomRepository;
 import com.yht.exerciseassist.domain.member.Member;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -29,12 +32,27 @@ public class ChatService {
     private final ChatListRepository chatListRepository;
 
     //채팅방 불러오기
-//    public ResponseResult<ChatRoomListDto> findAllRoom() {
-//        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
-//                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
-//
-//        chatListRepository.
-//    }
+    public ResponseResult<List<ChatRoomListDto>> findAllRoom() {
+        Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        ChatList findChatList = chatListRepository.findByMember(findMember)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_CHATLIST.getMessage()));
+
+        List<ChatRoomListDto> chatRoomList = new ArrayList<>();
+        for (ChatRoom chatRoom : findChatList.getChatRooms()) {
+            ChatRoomListDto chatRoomListDto = ChatRoomListDto.builder()
+                    .roomId(chatRoom.getId())
+                    .roomName(chatRoom.getRoomName())
+                    .latestContent(chatRoom.getChatMessages().get(chatRoom.getChatMessages().size()-1).getChatContent())
+                    .latestContentCreatedAt(chatRoom.getChatMessages().get(chatRoom.getChatMessages().size()-1).getDateTime().getUpdatedAt())
+                    .build();
+
+            chatRoomList.add(chatRoomListDto);
+        }
+
+        return new ResponseResult<>(HttpStatus.OK.value(), chatRoomList);
+    }
 
     //채팅방 하나 불러오기
 //    public Room getChatRoomByRoomId(int roomId) {
