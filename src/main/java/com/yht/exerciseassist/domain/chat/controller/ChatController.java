@@ -1,30 +1,30 @@
 package com.yht.exerciseassist.domain.chat.controller;
 
+import com.yht.exerciseassist.domain.chat.ChatMessage;
 import com.yht.exerciseassist.domain.chat.dto.ChatDto;
+import com.yht.exerciseassist.domain.chat.dto.EnterRoomDto;
+import com.yht.exerciseassist.domain.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessageSendingOperations sendingOperations;
+    private final ChatService chatService;
 
-    @MessageMapping("/chat/{roomID}/enter")
-    public void enter(@Payload ChatDto chatDto, @DestinationVariable String roomID) {
-        synchronized (simpMessagingTemplate){
-            simpMessagingTemplate.convertAndSend("/topic/chat/room/" + roomID, chatDto.getMesasage());
-        }
+    @MessageMapping("/chat/enter")
+    public void enter(EnterRoomDto enterRoomDTO) {
+        ChatMessage message = chatService.enterMessage(enterRoomDTO);
+        sendingOperations.convertAndSend("/topic/chat/room/" + message.getChatRoom().getId(), message);
     }
 
-    @MessageMapping("/chat/{roomID}/sendMessage")
-    public void sendMessage(@Payload ChatDto chatDto, @DestinationVariable String roomID) {
-        synchronized (simpMessagingTemplate){
-            simpMessagingTemplate.convertAndSend("/topic/chat/room/"+ roomID, chatDto.getMesasage());
-        }
+    @MessageMapping("/chat/sendMessage")
+    public void sendMessage(ChatDto chatDto) {
+        ChatMessage message = chatService.sendMessage(chatDto);
+        sendingOperations.convertAndSend("/topic/chat/room/" + message.getChatRoom().getId(), message);
     }
 }

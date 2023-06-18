@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,28 +31,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .httpBasic().disable()
-                .csrf().disable()
-                .formLogin().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/email").permitAll()
-                .requestMatchers("/signup").permitAll()
-                .requestMatchers("/signin").permitAll()
-                .requestMatchers("/find/**").permitAll()
-                .requestMatchers("/api/**").permitAll()
-                .requestMatchers("/ws/chat/**").permitAll()
-                .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/media/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/post/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/accuse/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/comment/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers("/email").permitAll()
+                        .requestMatchers("/signup").permitAll()
+                        .requestMatchers("/signin").permitAll()
+                        .requestMatchers("/find/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/ws/chat/**").permitAll()
+                        .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/media/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/post/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/accuse/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtTokenResolver), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new ExceptionHandlerFilter(objectMapper, jwtService), JwtAuthenticationFilter.class);
         return http.build();
