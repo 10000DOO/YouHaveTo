@@ -3,7 +3,6 @@ package com.yht.exerciseassist.configuration;
 import com.yht.exerciseassist.domain.chat.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -18,7 +17,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // 클라이언트에서 web socket 연결할 때 사용할 API 경로를 설정해주는 메서드.
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/wss/chat").setAllowedOriginPatterns("*").withSockJS();
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -32,9 +31,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app");
     }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
-    }
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(stompHandler);
+//    }
 }
 

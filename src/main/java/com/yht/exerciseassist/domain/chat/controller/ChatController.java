@@ -20,12 +20,12 @@ public class ChatController {
     @MessageMapping("/chat/enter")
     public void enter(EnterRoomDto enterRoomDto) {
         ResponseResult<MessageResDto> result = chatService.enterMessage(enterRoomDto.getRoomId());
-        sendingOperations.convertAndSend("/topic/chat/room/" + result.getData().getRoomId(), result.getData().getChatContent());
+        sendingOperations.convertAndSend("/queue/chat/room/" + result.getData().getRoomId(), result.getData().getChatContent());
     }
 
     @MessageMapping("/chat/sendMessage")
     public void sendMessage(SendMessageReqDto sendMessageReqDto) {
         ResponseResult<MessageResDto> result = chatService.sendMessage(sendMessageReqDto);
-        sendingOperations.convertAndSend("/topic/chat/room/" + result.getData().getRoomId(), result.getData().getChatContent());
+        sendingOperations.convertAndSend("/queue/chat/room/" + result.getData().getRoomId(), result.getData().getChatContent());
     }
 }
