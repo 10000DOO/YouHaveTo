@@ -27,8 +27,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/post/write")
-    public ResponseEntity<ResponseResult<String>> writePost(@RequestPart @Valid WritePostDto writePostDto,
-                                                            @RequestPart(required = false) List<MultipartFile> files) throws IOException, java.io.IOException {
+    public ResponseEntity<ResponseResult<String>> writePost(@RequestPart("writePostDto") @Valid WritePostDto writePostDto,
+                                                            @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException, java.io.IOException {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.savePost(writePostDto, files));
     }

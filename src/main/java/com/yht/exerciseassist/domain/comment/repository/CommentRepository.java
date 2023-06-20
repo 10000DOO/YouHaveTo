@@ -18,11 +18,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "UPDATE Comment c SET c.dateTime.canceledAt = :canceledAt WHERE c.parent.id = :parentId and c.dateTime.canceledAt = null")
-    void deleteCommentByParentId(String canceledAt, Long parentId);
+    void deleteCommentByParentId(@Param("canceledAt") String canceledAt, @Param("parentId") Long parentId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "UPDATE Comment c SET c.dateTime.canceledAt = :canceledAt WHERE c.post.id = :postId and c.dateTime.canceledAt = null")
-    void deleteCommentByPostId(String canceledAt, Long postId);
+    void deleteCommentByPostId(@Param("canceledAt") String canceledAt, @Param("postId") Long postId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "delete from Comment c where c.dateTime.canceledAt < :minusDays")
