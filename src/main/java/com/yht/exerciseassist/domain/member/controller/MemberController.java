@@ -1,9 +1,6 @@
 package com.yht.exerciseassist.domain.member.controller;
 
-import com.yht.exerciseassist.domain.member.dto.EditMemberDto;
-import com.yht.exerciseassist.domain.member.dto.PWDto;
-import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
-import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
+import com.yht.exerciseassist.domain.member.dto.*;
 import com.yht.exerciseassist.domain.member.service.MemberService;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import com.yht.exerciseassist.util.ResponseResult;
@@ -55,9 +52,9 @@ public class MemberController {
     }
 
     @PatchMapping("/find/pw")
-    public ResponseEntity<ResponseResult<String>> findPw(@RequestParam("code") @NotBlank(message = "인증 코드를 입력해주세요.") String code) {
+    public ResponseEntity<ResponseResult<String>> findPw(@RequestBody @Valid FindPWDto findPWDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.findPw(code));
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.findPw(findPWDto));
     }
 
     @PatchMapping("member/edit")

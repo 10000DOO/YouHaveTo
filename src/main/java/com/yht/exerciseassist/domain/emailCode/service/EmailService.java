@@ -10,6 +10,7 @@ import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.TempPassword;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,5 +69,12 @@ public class EmailService {
         message.setFrom(new InternetAddress("yhthealthassist@gmail.com", "YouHaveTo"));//보내는 사람
 
         return message;
+    }
+
+    public ResponseResult<String> verifyEmailCode(String code){
+        EmailCode emailCode = emailCodeRepository.findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WRONG_EMAIL_CODE.getMessage()));
+
+        return new ResponseResult<>(HttpStatus.OK.value(), emailCode.getEmail());
     }
 }

@@ -214,14 +214,12 @@ class MemberServiceTest {
     @Test
     public void findPW() {
         //given
-        String code = "2DG7yGylFhQW";
-        Mockito.when(emailCodeRepository.findByCode(code)).thenReturn(Optional.of(EmailCodeFactory.createEmailCode()));
-        Mockito.when(memberRepository.findByEmail(EmailCodeFactory.createEmailCode().getEmail())).thenReturn(Optional.ofNullable(MemberFactory.createTestMember()));
-        given(TempPassword.generateRandomString(15)).willReturn("abcdefjhi12345jtpw1!");
+        FindPWDto findPWDto = new FindPWDto("testPassword3!", "test@test.com");
+        Mockito.when(memberRepository.findByEmail(findPWDto.getEmail())).thenReturn(Optional.ofNullable(MemberFactory.createTestMember()));
 
-        ResponseResult<String> responseResult = new ResponseResult<>(200, "abcdefjhi12345jtpw1!");
+        ResponseResult<String> responseResult = new ResponseResult<>(200, "testPassword3!");
         //when
-        ResponseResult<String> result = memberService.findPw(code);
+        ResponseResult<String> result = memberService.findPw(findPWDto);
         //then
         assertThat(result).isEqualTo(responseResult);
     }

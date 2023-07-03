@@ -55,7 +55,7 @@ public class MemberFactory {
     }
 
     public static TokenInfo createTestTokenInfo() {
-        TokenInfo tokenInfo = new TokenInfo("Bearer", "access", "refresh");
+        TokenInfo tokenInfo = new TokenInfo("Bearer", "10000DOO", "access", "refresh");
 
         return tokenInfo;
     }
