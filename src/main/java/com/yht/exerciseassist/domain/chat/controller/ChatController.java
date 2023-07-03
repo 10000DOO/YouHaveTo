@@ -17,13 +17,13 @@ public class ChatController {
     private final SimpMessageSendingOperations sendingOperations;
     private final ChatService chatService;
 
-    @MessageMapping("/chat/enter")
+    @MessageMapping("/enter")
     public void enter(EnterRoomDto enterRoomDto) {
         ResponseResult<MessageResDto> result = chatService.enterMessage(enterRoomDto.getRoomId());
         sendingOperations.convertAndSend("/queue/chat/room/" + result.getData().getRoomId(), result.getData().getChatContent());
     }
 
-    @MessageMapping("/chat/sendMessage")
+    @MessageMapping("/sendMessage")
     public void sendMessage(SendMessageReqDto sendMessageReqDto) {
         ResponseResult<MessageResDto> result = chatService.sendMessage(sendMessageReqDto);
         sendingOperations.convertAndSend("/queue/chat/room/" + result.getData().getRoomId(), result.getData().getChatContent());

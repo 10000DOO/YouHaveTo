@@ -3,11 +3,14 @@ package com.yht.exerciseassist.domain.chat;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.member.Member;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage {
 
     @Id

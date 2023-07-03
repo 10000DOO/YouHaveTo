@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional
 public class ChatService {
 
     private final MemberRepository memberRepository;
@@ -42,7 +44,7 @@ public class ChatService {
         Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
-        ChatList findChatList = chatListRepository.findByMember(findMember)
+        ChatList findChatList = chatListRepository.findByMemberId(findMember.getId())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_CHATLIST.getMessage()));
 
         List<ChatRoomListDto> chatRoomList = new ArrayList<>();
@@ -65,7 +67,13 @@ public class ChatService {
         Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
-        ChatList chatList = new ChatList(findMember);
+        ChatList chatList;
+        if(chatListRepository.findByMemberId(findMember.getId()).isEmpty()){
+            chatList = new ChatList(findMember);
+            chatListRepository.save(chatList);
+        } else {
+            chatList = chatListRepository.findByMemberId(findMember.getId()).get();
+        }
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomName(roomName)
                 .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -74,9 +82,8 @@ public class ChatService {
                 .build();
 
         chatList.addChatRoom(chatRoom);
-
-        chatListRepository.save(chatList);
         chatRoomRepository.save(chatRoom);
+
         return new ResponseResult<>(HttpStatus.CREATED.value(), roomName);
     }
 
