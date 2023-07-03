@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class TokenInfo {
 
     private String grantType;
+    private String username;
     private String accessToken;
     private String refreshToken;
 }

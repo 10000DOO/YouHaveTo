@@ -57,13 +57,14 @@ public class JWTService {
                             .compact();
                     TokenInfo tokenInfo = TokenInfo.builder()
                             .grantType("Bearer")
+                            .username(findMember.getUsername())
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
                             .build();
 
                     findMember.getRefreshToken().updateRefreshToken(tokenInfo.getRefreshToken());
                     log.info("토큰이 재발급 되었습니다.");
-                    return new ResponseResult(HttpStatus.OK.value(), tokenInfo);
+                    return new ResponseResult<>(HttpStatus.OK.value(), tokenInfo);
                 } else {
                     return new ResponseResult<>(HttpStatus.UNAUTHORIZED.value(), ErrorCode.WRONG_TOKEN.getMessage());
                 }
