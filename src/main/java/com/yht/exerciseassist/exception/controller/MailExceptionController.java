@@ -4,6 +4,7 @@ import com.yht.exerciseassist.domain.emailCode.controller.EmailController;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import com.yht.exerciseassist.exception.dto.ExceptionResponse;
 import com.yht.exerciseassist.exception.error.MailSendFailException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,12 @@ public class MailExceptionController {
     public ExceptionResponse emailExceptionHandle(MailSendFailException exception) {
 
         return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ExceptionResponse mailNotFoundHandle(EntityNotFoundException exception) {
+
+        return commonExceptionHandler.exceptionRes(exception, log, HttpStatus.BAD_REQUEST.value());
     }
 }

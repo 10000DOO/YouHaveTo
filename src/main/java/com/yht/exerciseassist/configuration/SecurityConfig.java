@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/email").permitAll()
+                        .requestMatchers("/email/**").permitAll()
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/find/**").permitAll()

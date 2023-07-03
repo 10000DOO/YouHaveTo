@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,8 +20,14 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/email")
-    public ResponseEntity<ResponseResult<EmailResDto>> emailConfirm(@RequestBody @Valid EmailReqDto emailReqDto) throws Exception {
+    public ResponseEntity<ResponseResult<EmailResDto>> sendEmailCode(@RequestBody @Valid EmailReqDto emailReqDto) throws Exception {
 
         return ResponseEntity.status(HttpStatus.OK).body(emailService.sendSimpleMessage(emailReqDto));
+    }
+
+    @PostMapping("/email/check")
+    public ResponseEntity<ResponseResult<String>> checkEmailCode(@RequestParam("code") String code) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(emailService.verifyEmailCode(code));
     }
 }
