@@ -166,6 +166,8 @@ public class PostService {
             mediaService.deletePostMedia(postId);
             List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
             post.linkToMedia(mediaList);
+        } else {
+            mediaService.deletePostMedia(postId);
         }
 
         log.info("사용자명 : " + SecurityUtil.getCurrentUsername() + " 게시글 수정 완료");

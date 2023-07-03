@@ -152,6 +152,8 @@ public class DiaryService {
             mediaService.deleteDiaryMedia(diaryId);
             List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
             diaryById.linkToMedia(mediaList);
+        } else {
+            mediaService.deletePostMedia(diaryId);
         }
         diaryRepository.save(diaryById);
 
