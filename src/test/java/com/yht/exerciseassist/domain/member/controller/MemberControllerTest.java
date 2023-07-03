@@ -3,10 +3,7 @@ package com.yht.exerciseassist.domain.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yht.exerciseassist.domain.factory.MemberFactory;
-import com.yht.exerciseassist.domain.member.dto.EditMemberDto;
-import com.yht.exerciseassist.domain.member.dto.PWDto;
-import com.yht.exerciseassist.domain.member.dto.SignInRequestDto;
-import com.yht.exerciseassist.domain.member.dto.SignUpRequestDto;
+import com.yht.exerciseassist.domain.member.dto.*;
 import com.yht.exerciseassist.domain.member.service.MemberService;
 import com.yht.exerciseassist.exception.CommonExceptionHandler;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
@@ -127,10 +124,11 @@ class MemberControllerTest {
     @WithMockUser()
     public void findPW() throws Exception {
         //given
-
+        FindPWDto findPWDto = new FindPWDto("testPassword3!", "test@test.com");
         //when
         mockMvc.perform(MockMvcRequestBuilders.patch("/find/pw")
-                        .param("code", "2eflijlsef")
+                        .content(objectMapper.writeValueAsString(findPWDto))
+                        .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk());
         //then
