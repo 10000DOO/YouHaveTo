@@ -20,7 +20,6 @@ import com.yht.exerciseassist.jwt.JwtTokenProvider;
 import com.yht.exerciseassist.jwt.dto.TokenInfo;
 import com.yht.exerciseassist.util.ResponseResult;
 import com.yht.exerciseassist.util.SecurityUtil;
-import com.yht.exerciseassist.util.TempPassword;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -230,19 +229,13 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-    public ResponseResult<String> findPw(String code) {
-        Optional<EmailCode> optionalEmailCode = emailCodeRepository.findByCode(code);
+    public ResponseResult<String> findPw(FindPWDto findPWDto) {
 
-        if (optionalEmailCode.isPresent()) {
-            Member findMember = memberRepository.findByEmail(optionalEmailCode.get().getEmail())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
-            String tempPassword = TempPassword.generateRandomString(15);
-            findMember.changeMemberData(findMember.getUsername(), findMember.getEmail(), passwordEncoder.encode(tempPassword), findMember.getField());
-            log.info("{} 임시 비밀번호 생성", findMember.getUsername());
-            return new ResponseResult<>(HttpStatus.OK.value(), tempPassword);
-        } else {
-            throw new EntityNotFoundException(ErrorCode.WRONG_EMAIL_CODE.getMessage());
-        }
+        Member findMember = memberRepository.findByEmail(findPWDto.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+        findMember.changeMemberData(findMember.getUsername(), findMember.getEmail(), passwordEncoder.encode(findPWDto.getPassword()), findMember.getField());
+        log.info("{} 임시 비밀번호 생성", findMember.getUsername());
+        return new ResponseResult<>(HttpStatus.OK.value(), findPWDto.getPassword());
     }
 
     public ResponseResult<String> editMemberData(EditMemberDto editMemberDto) {
