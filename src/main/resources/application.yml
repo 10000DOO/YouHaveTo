@@ -28,3 +28,6 @@ AdminMail:
 
 SeoulAPI:
   key: ENC(+Mx7QTrmkA8/U/sVg17P5HZ/ZpBEU49acadiNGyBe2tnF4HgzUUVWQ==)
+
+chatgpt:
+  api-key: ENC(5gW/02FXKdLrT1+uc0A2ikihmV0QT5yJ6WZ3iyUX42jDgtA8HFClWtPPWicZtmGNEFZEK3pCTr05aEG2BmUiHQ==)
