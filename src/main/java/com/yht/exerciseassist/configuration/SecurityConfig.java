@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/find/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/wss/**").permitAll()
                         .requestMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/diary").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/media/**").hasAnyRole("USER", "ADMIN")
