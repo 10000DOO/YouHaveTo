@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Choice {
+@NoArgsConstructor
+public class Message {
 
-    private int index;
-    private Message message;
+    private String role;
+    private String content;
 }

@@ -1,7 +1,6 @@
 package com.yht.exerciseassist.gpt.routine.controller;
 
 import com.yht.exerciseassist.gpt.routine.HealthPurpose;
-import com.yht.exerciseassist.gpt.routine.dto.ChatGptResponseDto;
 import com.yht.exerciseassist.gpt.routine.service.RoutineService;
 import com.yht.exerciseassist.util.ResponseResult;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ public class RoutineController {
     private final RoutineService routineService;
 
     @PostMapping("/routines")
-    public ResponseEntity<ResponseResult<ChatGptResponseDto>> getRoutines(@RequestParam("purpose")HealthPurpose healthPurpose, @RequestParam("height") int height, @RequestParam("weight") int weight, @RequestParam("divisions") int divisions){
+    public ResponseEntity<ResponseResult<String>> getRoutines(@RequestParam("purpose")HealthPurpose healthPurpose, @RequestParam("height") int height, @RequestParam("weight") int weight, @RequestParam("divisions") int divisions){
 
         return ResponseEntity.status(HttpStatus.OK).body(routineService.getRoutineResponse(healthPurpose, height, weight, divisions));
     }
