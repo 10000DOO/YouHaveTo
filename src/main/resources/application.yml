@@ -28,3 +28,11 @@ AdminMail:
 
 SeoulAPI:
   key: ENC(+Mx7QTrmkA8/U/sVg17P5HZ/ZpBEU49acadiNGyBe2tnF4HgzUUVWQ==)
+
+chatgpt:
+  api-key: ENC(5gW/02FXKdLrT1+uc0A2ikihmV0QT5yJ6WZ3iyUX42jDgtA8HFClWtPPWicZtmGNEFZEK3pCTr05aEG2BmUiHQ==)
+  model: gpt-3.5-turbo
+  url: https://api.openai.com/v1/chat/completions
+
+google:
+  api-key: ENC(i6Oh+T5al186kg4e8eXLTL8WG8jO+Gb568azw++h6l3OgslAVI21z1a/YME+y9cx)
