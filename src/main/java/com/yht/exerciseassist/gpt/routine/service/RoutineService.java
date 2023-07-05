@@ -1,5 +1,8 @@
 package com.yht.exerciseassist.gpt.routine.service;
 
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import com.yht.exerciseassist.gpt.routine.HealthPurpose;
 import com.yht.exerciseassist.gpt.routine.dto.ChatGptRequest;
 import com.yht.exerciseassist.gpt.routine.dto.ChatGptResponse;
@@ -21,11 +24,14 @@ import org.springframework.web.client.RestTemplate;
 public class RoutineService {
 
     @Value("${chatgpt.api-key}")
-    private String key;
+    private String gptKey;
     @Value("${chatgpt.url}")
     private String url;
     @Value("${chatgpt.model}")
     private String model;
+    @Value("${google.api-key}")
+    private String googleKey;
+
     private static RestTemplate restTemplate = new RestTemplate();
 
     public ResponseResult<String> getRoutineResponse(HealthPurpose healthPurpose, int height, int weight, int divisions) {
@@ -41,10 +47,13 @@ public class RoutineService {
 
         ChatGptRequest request = new ChatGptRequest(model, prompt);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + key);
+        headers.add("Authorization", "Bearer " + gptKey);
         ChatGptResponse chatGptResponse = restTemplate.postForObject(url, new HttpEntity<>(request, headers), ChatGptResponse.class);
 
+        TranslateOptions translateOptions = TranslateOptions.newBuilder().setApiKey(googleKey).build();
+        Translate translate = translateOptions.getService();
+        Translation translation = translate.translate(chatGptResponse.getChoices().get(0).getMessage().getContent(),Translate.TranslateOption.targetLanguage("ko"));
 
-        return new ResponseResult<>(HttpStatus.OK.value(), chatGptResponse.getChoices().get(0).getMessage().getContent());
+        return new ResponseResult<>(HttpStatus.OK.value(), translation.getTranslatedText());
     }
 }
