@@ -71,6 +71,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.webjars:sockjs-client:1.5.1'
     implementation 'org.webjars:stomp-websocket:2.3.4'
+
+    //google translation
+    implementation 'com.google.cloud:google-cloud-translate:2.19.0'
 }
 
 tasks.named('test') {
