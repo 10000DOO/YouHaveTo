@@ -93,7 +93,7 @@ public class CommentService {
         return new ResponseResult<>(HttpStatus.OK.value(), commentById.getId());
     }
 
-    public ResponseResult<CommentListwithSliceDto> getComment(Long postId, Long parentId, String username, Pageable pageable) throws ParseException, IllegalAccessException {
+    public ResponseResult<CommentListwithSliceDto> getComment(Long postId, Long parentId, String username, Pageable pageable) throws ParseException {
         String memberRole = SecurityUtil.getMemberRole();
 
         Slice<Comment> commentList = null;
@@ -101,7 +101,7 @@ public class CommentService {
         if (Objects.equals(username, SecurityUtil.getCurrentUsername()) || (SecurityUtil.getMemberRole().equals("ADMIN"))) {
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
         } else if (username == null && parentId == null && postId != null) {//게시글 조회에서 댓글 추가 조회
-            commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
+            commentList = commentRepository.findParentComment(postId, pageable);
         } else if (username == null && parentId != null && postId != null) {//게시글 조회에서 대댓글 조회
             commentList = commentRepository.findParentAndChildComment(memberRole, postId, parentId, username, pageable);
         } else{
