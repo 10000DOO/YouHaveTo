@@ -23,10 +23,11 @@ public class PostDetailRes {
     private PostType postType;
     private WorkOutCategory workOutCategory;
     private List<CommentListDto> comments;
+    private int commentCount;
     private boolean isMine;
 
     @Builder
-    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, boolean likePressed, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<CommentListDto> comments, boolean isMine) {
+    public PostDetailRes(String username, String profileImage, String title, String content, List<String> mediaList, Long views, int likeCount, boolean likePressed, String createdAt, PostType postType, WorkOutCategory workOutCategory, List<CommentListDto> comments, int commentCount, boolean isMine) {
         this.username = username;
         this.profileImage = profileImage;
         this.title = title;
@@ -39,6 +40,7 @@ public class PostDetailRes {
         this.postType = postType;
         this.workOutCategory = workOutCategory;
         this.comments = comments;
+        this.commentCount = commentCount;
         this.isMine = isMine;
     }
 }
