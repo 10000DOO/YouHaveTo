@@ -122,6 +122,7 @@ public class PostService {
                 .postType(postById.getPostType())
                 .workOutCategory(postById.getWorkOutCategory())
                 .comments(sendComments)
+                .commentCount(findComments.size())
                 .isMine(Objects.equals(SecurityUtil.getCurrentUsername(), postById.getPostWriter().getUsername()))
                 .build();
 
