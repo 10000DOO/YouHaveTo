@@ -187,6 +187,13 @@ public class MemberService implements UserDetailsService {
             profileImage = null;
         }
 
+        long postCount = findMember.getPosts().stream()
+                .filter(post -> post.getDateTime().getCanceledAt() == null)
+                .count();
+        long commentCount = findMember.getComments().stream()
+                .filter(post -> post.getDateTime().getCanceledAt() == null)
+                .count();
+
         if (Objects.equals(username, SecurityUtil.getCurrentUsername())) {
             MyMemberPage myMemberPage = MyMemberPage.builder()
                     .username(findMember.getUsername())
@@ -194,8 +201,9 @@ public class MemberService implements UserDetailsService {
                     .field(findMember.getField())
                     .createdAt(findMember.getDateTime().getCreatedAt())
                     .profileImage(profileImage)
-                    .postCount(findMember.getPosts().size())
-                    .commentCount(findMember.getComments().size())
+                    //게시글 댓글 전부 쿼리 날려서 삭제된거 빼고 찾기
+                    .postCount(postCount)
+                    .commentCount(commentCount)
                     .build();
 
             log.info("{} 마이페이지 조회 성공", findMember.getUsername());
@@ -206,7 +214,7 @@ public class MemberService implements UserDetailsService {
                     .field(findMember.getField())
                     .createdAt(findMember.getDateTime().getCreatedAt())
                     .profileImage(profileImage)
-                    .postCount(findMember.getPosts().size())
+                    .postCount(postCount)
                     .build();
 
             log.info("{} 마이페이지 조회 성공", findMember.getUsername());

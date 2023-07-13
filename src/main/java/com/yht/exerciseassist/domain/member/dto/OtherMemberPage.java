@@ -10,10 +10,10 @@ public class OtherMemberPage {
     private String field;
     private String createdAt;
     private String profileImage;
-    private int postCount;
+    private long postCount;
 
     @Builder
-    public OtherMemberPage(String username, String field, String createdAt, String profileImage, int postCount) {
+    public OtherMemberPage(String username, String field, String createdAt, String profileImage, long postCount) {
         this.username = username;
         this.field = field;
         this.createdAt = createdAt;

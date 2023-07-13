@@ -11,11 +11,11 @@ public class MyMemberPage {
     private String field;
     private String createdAt;
     private String profileImage;
-    private int postCount;
-    private int commentCount;
+    private long postCount;
+    private long commentCount;
 
     @Builder
-    public MyMemberPage(String username, String email, String field, String createdAt, String profileImage, int postCount, int commentCount) {
+    public MyMemberPage(String username, String email, String field, String createdAt, String profileImage, long postCount, long commentCount) {
         this.username = username;
         this.email = email;
         this.field = field;
