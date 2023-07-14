@@ -65,7 +65,7 @@ public class PostService {
                 .build();
 
         if (files != null && !(files.isEmpty())) {
-            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
+            List<Media> mediaList = mediaService.uploadMediaToFiles(files);
             post.linkToMedia(mediaList);
         }
         postRepository.save(post);
@@ -165,7 +165,7 @@ public class PostService {
 
         if (files != null && !(files.isEmpty())) {
             mediaService.deletePostMedia(postId);
-            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
+            List<Media> mediaList = mediaService.uploadMediaToFiles(files);
             post.linkToMedia(mediaList);
         } else {
             mediaService.deletePostMedia(postId);

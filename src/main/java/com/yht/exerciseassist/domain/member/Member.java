@@ -110,6 +110,13 @@ public class Member implements UserDetails {
         this.dateTime.updatedAtUpdate();
     }
 
+    public void changeMemberDataNoFile(String username, String password, String field) {
+        this.username = username;
+        this.password = password;
+        this.field = field;
+        this.dateTime.updatedAtUpdate();
+    }
+
     public void changePW(String password) {
         this.password = password;
         this.dateTime.updatedAtUpdate();

@@ -253,8 +253,30 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         if(Objects.equals(member.getId(), editMemberDto.getMemberId())){
-            Media media = mediaService.uploadMediaToFile(file);
-            member.changeMemberData(editMemberDto.getUsername(), passwordEncoder.encode(editMemberDto.getPassword()), editMemberDto.getField(), media);
+            if (file != null) {
+                try {
+                    Long mediaId = member.getMedia().getId();
+                    if (mediaId != null) {
+                        member.ChangeMedia(null);
+                        mediaService.deleteProfileImage(mediaId);
+                    }
+                } catch (NullPointerException e) {
+                    log.info("mediaId 없음");
+                }
+                Media media = mediaService.uploadMediaToFile(file);
+                member.changeMemberData(editMemberDto.getUsername(), passwordEncoder.encode(editMemberDto.getPassword()), editMemberDto.getField(), media);
+            } else {
+                try {
+                    Long mediaId = member.getMedia().getId();
+                    if (mediaId != null) {
+                        member.ChangeMedia(null);
+                        mediaService.deleteProfileImage(mediaId);
+                    }
+                } catch (NullPointerException e) {
+                    log.info("mediaId 없음");
+                }
+                member.changeMemberDataNoFile(editMemberDto.getUsername(), passwordEncoder.encode(editMemberDto.getPassword()), editMemberDto.getField());
+            }
             log.info("회원정보 수정 완료");
             return new ResponseResult<>(HttpStatus.OK.value(), editMemberDto.getUsername());
         } else {
