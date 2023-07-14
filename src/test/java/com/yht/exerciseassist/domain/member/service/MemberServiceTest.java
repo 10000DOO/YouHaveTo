@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +43,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -81,6 +83,8 @@ class MemberServiceTest {
     private CommentRepository commentRepository;
     @Value("${file.dir}")
     private String fileDir;
+    @Value("${test.address}")
+    private String testAddress;
 
     @AfterEach
     public void afterAll() {
@@ -225,26 +229,39 @@ class MemberServiceTest {
     }
 
     @Test
-    public void editMember() {
+    public void editMember() throws IOException {
         //given
-        EditMemberDto editMemberDto = new EditMemberDto("member1", "MANDOO", "gunjoun99@gmail.com",
-                "testPassword1!", "testPassword2!", "남양주시");
-        Member member = Member.builder()
-                .username("member1")
-                .email("test@test.com")
-                .loginId("testId1")
-                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
-                .role(MemberType.USER)
-                .password(passwordEncoder.encode("testPassword1!"))
-                .field("서울시")
-                .build();
+        EditMemberDto editMemberDto = new EditMemberDto("MANDOO", "testPassword1!", "남양주시", 1L);
+
+        Member testMember = MemberFactory.createTestMember();
+        testMember.setMemberIdUsedOnlyTest(1L);
+        String fileName = "tuxCoding.jpg";
+        MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
 
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
-        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
 
         ResponseResult<String> responseResult = new ResponseResult<>(200, "MANDOO");
         //when
-        ResponseResult<String> result = memberService.editMemberData(editMemberDto);
+        ResponseResult<String> result = memberService.editMemberData(editMemberDto, mediaFile);
+        //then
+        assertThat(responseResult).isEqualTo(result);
+    }
+
+    @Test
+    public void passwordValidation(){
+        //given
+        PasswordCheckDto passwordCheckDto = new PasswordCheckDto();
+        passwordCheckDto.setPassword("testPassword1!");
+
+        Member testMember = MemberFactory.createTestMember();
+        testMember.setMemberIdUsedOnlyTest(1L);
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
+        Mockito.when(passwordEncoder.matches(passwordCheckDto.getPassword(), passwordEncoder.encode(testMember.getPassword()))).thenReturn(true);
+
+        ResponseResult<Long> responseResult = new ResponseResult<>(200, testMember.getId());
+        //when
+        ResponseResult<Long> result = memberService.passwordValidation(passwordCheckDto);
         //then
         assertThat(responseResult).isEqualTo(result);
     }

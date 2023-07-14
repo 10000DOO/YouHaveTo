@@ -38,7 +38,7 @@ public class MediaService {
     @Value("${file.dir}")
     private String fileDir;
 
-    public List<Media> uploadMediaToFileSystem(List<MultipartFile> files) throws IOException {
+    public List<Media> uploadMediaToFiles(List<MultipartFile> files) throws IOException {
 
         List<Media> mediaList = new ArrayList<>();
 
@@ -59,6 +59,24 @@ public class MediaService {
             log.info(storeFileName + " 저장되었습니다.");
         }
         return mediaList;
+    }
+
+    public Media uploadMediaToFile(MultipartFile file) throws IOException {
+
+        String storeFileName = createStoreFileName(file.getOriginalFilename());
+
+        Media media = Media.builder()
+                .originalFilename(file.getOriginalFilename())
+                .filename(storeFileName)
+                .filePath(fileDir + storeFileName)
+                .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
+                .build();
+
+        file.transferTo(new File(fileDir + storeFileName));
+        mediaRepository.save(media);
+        log.info(storeFileName + " 저장되었습니다.");
+        return media;
     }
 
     private String createStoreFileName(String originalFilename) {

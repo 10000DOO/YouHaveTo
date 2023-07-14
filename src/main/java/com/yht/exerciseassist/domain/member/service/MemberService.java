@@ -7,6 +7,7 @@ import com.yht.exerciseassist.domain.diary.repository.DiaryRepository;
 import com.yht.exerciseassist.domain.emailCode.EmailCode;
 import com.yht.exerciseassist.domain.emailCode.repository.EmailCodeRepository;
 import com.yht.exerciseassist.domain.likeCount.repository.LikeCountRepository;
+import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.service.MediaService;
 import com.yht.exerciseassist.domain.member.Member;
 import com.yht.exerciseassist.domain.member.MemberType;
@@ -37,6 +38,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -241,25 +243,34 @@ public class MemberService implements UserDetailsService {
 
         Member findMember = memberRepository.findByEmail(findPWDto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
-        findMember.changeMemberData(findMember.getUsername(), findMember.getEmail(), passwordEncoder.encode(findPWDto.getPassword()), findMember.getField());
+        findMember.changePW(passwordEncoder.encode(findPWDto.getPassword()));
         log.info("{} 임시 비밀번호 생성", findMember.getUsername());
         return new ResponseResult<>(HttpStatus.OK.value(), findPWDto.getPassword());
     }
 
-    public ResponseResult<String> editMemberData(EditMemberDto editMemberDto) {
-        if (Objects.equals(editMemberDto.getCurrentUsername(), SecurityUtil.getCurrentUsername())) {
-            Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+    public ResponseResult<String> editMemberData(EditMemberDto editMemberDto, MultipartFile file) throws IOException {
+        Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
-            if (passwordEncoder.matches(editMemberDto.getCurrentPassword(), member.getPassword())) {
-                member.changeMemberData(editMemberDto.getUsernameToChange(), editMemberDto.getEmail(), passwordEncoder.encode(editMemberDto.getPasswordToChange()), editMemberDto.getField());
-                log.info("회원정보 수정 완료 {} -> {}", editMemberDto.getCurrentUsername(), editMemberDto.getUsernameToChange());
-                return new ResponseResult<>(HttpStatus.OK.value(), editMemberDto.getUsernameToChange());
-            } else {
-                throw new IllegalArgumentException(ErrorCode.FAIL_PW_AUTHENTICATION.getMessage());
-            }
+        if(Objects.equals(member.getId(), editMemberDto.getMemberId())){
+            Media media = mediaService.uploadMediaToFile(file);
+            member.changeMemberData(editMemberDto.getUsername(), passwordEncoder.encode(editMemberDto.getPassword()), editMemberDto.getField(), media);
+            log.info("회원정보 수정 완료");
+            return new ResponseResult<>(HttpStatus.OK.value(), editMemberDto.getUsername());
         } else {
             throw new IllegalArgumentException(ErrorCode.FAIL_EDIT_MEMBER_DATA.getMessage());
+        }
+    }
+
+    public ResponseResult<Long> passwordValidation(PasswordCheckDto passwordCheckDto) {
+        Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
+
+        if(passwordEncoder.matches(passwordCheckDto.getPassword(), member.getPassword())){
+            log.info("비밀번호 인증 성공");
+            return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
+        } else {
+            throw new IllegalArgumentException(ErrorCode.FAIL_PW_AUTHENTICATION.getMessage());
         }
     }
 }

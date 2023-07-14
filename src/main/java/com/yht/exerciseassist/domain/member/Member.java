@@ -89,6 +89,10 @@ public class Member implements UserDetails {
         this.media = media;
     }
 
+    public void setMemberIdUsedOnlyTest(Long id) {
+        this.id = id;
+    }
+
     public void updateRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }
@@ -98,11 +102,16 @@ public class Member implements UserDetails {
         this.likeCount.add(likeCount);
     }
 
-    public void changeMemberData(String username, String email, String password, String field) {
+    public void changeMemberData(String username, String password, String field, Media media) {
         this.username = username;
-        this.email = email;
         this.password = password;
         this.field = field;
+        this.media = media;
+        this.dateTime.updatedAtUpdate();
+    }
+
+    public void changePW(String password) {
+        this.password = password;
         this.dateTime.updatedAtUpdate();
     }
 
