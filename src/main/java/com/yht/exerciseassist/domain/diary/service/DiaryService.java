@@ -90,7 +90,7 @@ public class DiaryService {
                 .build();
 
         if (files != null && !(files.isEmpty())) {
-            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
+            List<Media> mediaList = mediaService.uploadMediaToFiles(files);
             diary.linkToMedia(mediaList);
         }
         diaryRepository.save(diary);
@@ -150,7 +150,7 @@ public class DiaryService {
 
         if (files != null && !(files.isEmpty())) {
             mediaService.deleteDiaryMedia(diaryId);
-            List<Media> mediaList = mediaService.uploadMediaToFileSystem(files);
+            List<Media> mediaList = mediaService.uploadMediaToFiles(files);
             diaryById.linkToMedia(mediaList);
         } else {
             mediaService.deleteDiaryMedia(diaryId);
