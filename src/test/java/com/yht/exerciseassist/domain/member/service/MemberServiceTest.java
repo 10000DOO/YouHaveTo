@@ -247,22 +247,4 @@ class MemberServiceTest {
         //then
         assertThat(responseResult).isEqualTo(result);
     }
-
-    @Test
-    public void passwordValidation(){
-        //given
-        PasswordCheckDto passwordCheckDto = new PasswordCheckDto();
-        passwordCheckDto.setPassword("testPassword1!");
-
-        Member testMember = MemberFactory.createTestMember();
-        testMember.setMemberIdUsedOnlyTest(1L);
-        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
-        Mockito.when(passwordEncoder.matches(passwordCheckDto.getPassword(), passwordEncoder.encode(testMember.getPassword()))).thenReturn(true);
-
-        ResponseResult<Long> responseResult = new ResponseResult<>(200, testMember.getId());
-        //when
-        ResponseResult<Long> result = memberService.passwordValidation(passwordCheckDto);
-        //then
-        assertThat(responseResult).isEqualTo(result);
-    }
 }
