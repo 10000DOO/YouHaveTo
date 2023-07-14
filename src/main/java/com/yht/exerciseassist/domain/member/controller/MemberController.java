@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -57,9 +58,16 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findPw(findPWDto));
     }
 
-    @PatchMapping("member/edit")
-    public ResponseEntity<ResponseResult<String>> editMember(@RequestBody EditMemberDto editMemberDto) {
+    @PatchMapping("/member/edit")
+    public ResponseEntity<ResponseResult<String>> editMember(@RequestPart @Valid EditMemberDto editMemberDto,
+                                                             @RequestPart(required = false) MultipartFile file) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.editMemberData(editMemberDto));
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.editMemberData(editMemberDto, file));
+    }
+
+    @PostMapping("/member/password/check")
+    public ResponseEntity<ResponseResult<Long>> passwordCheck(@RequestBody PasswordCheckDto passwordCheckDto) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.passwordValidation(passwordCheckDto));
     }
 }

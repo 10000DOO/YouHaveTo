@@ -24,10 +24,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(@Param("email") String email);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query(value = "delete from Member m where m.dateTime.canceledAt < :minusMonths")
-    void deleteByCreatedAtBefore(@Param("minusMonths") String minusMonths);
-
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "update Member m set m.refreshToken = null where m.refreshToken.id in :TokenId")
     void updateByRefreshToken(@Param("TokenId") List<Long> TokenId);
 

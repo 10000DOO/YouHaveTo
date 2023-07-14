@@ -58,7 +58,7 @@ class MediaServiceTest {
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
         //when
-        List<Media> mediaList = mediaService.uploadMediaToFileSystem(mediaFileList);
+        List<Media> mediaList = mediaService.uploadMediaToFiles(mediaFileList);
         File file = new File(mediaList.get(0).getFilePath());
         file.delete();
         //then

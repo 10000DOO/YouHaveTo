@@ -12,6 +12,7 @@ import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -85,5 +86,12 @@ public class MemberExceptionController {
         } else {
             return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.BAD_REQUEST.value(), ErrorCode.NOT_FOUND_LOGIN_ID.getMessage());
         }
+    }
+
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ExceptionResponse wrongContentTpye(HttpMediaTypeNotSupportedException exception) {
+
+        return commonExceptionHandler.customExceptionRes(exception, log, HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), ErrorCode.WRONG_CONTENT_TYPE.getMessage());
     }
 }

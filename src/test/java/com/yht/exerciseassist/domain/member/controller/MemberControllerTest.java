@@ -14,14 +14,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = MemberController.class)
@@ -138,11 +142,31 @@ class MemberControllerTest {
     @WithMockUser()
     public void editMember() throws Exception {
         //given
-        EditMemberDto editMemberDto = new EditMemberDto("10000DOO", "MANDOO", "gunjoun99@gmail.com",
-                "testPassword1!", "testPassword2!", "남양주시");
+        EditMemberDto editMemberDto = new EditMemberDto("MANDOO", "testPassword1!", "남양주시", 1L);
+        String editMemberDtoJson = objectMapper.writeValueAsString(editMemberDto);
+        MockMultipartFile jsonFile = new MockMultipartFile("editMemberDto", editMemberDtoJson, "application/json", editMemberDtoJson.getBytes(StandardCharsets.UTF_8));
         //when
-        mockMvc.perform(MockMvcRequestBuilders.patch("/member/edit")
-                        .content(objectMapper.writeValueAsString(editMemberDto))
+        mockMvc.perform(multipart("/member/edit")
+                        .file(jsonFile)
+                        .with(csrf())
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                        }))
+                .andExpect(status().isOk());
+
+        //then
+    }
+
+    @Test
+    @WithMockUser
+    public void passwordCheck() throws Exception {
+        //given
+        PasswordCheckDto passwordCheckDto = new PasswordCheckDto();
+        passwordCheckDto.setPassword("testPassword2!");
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.post("/member/password/check")
+                        .content(objectMapper.writeValueAsString(passwordCheckDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk());
