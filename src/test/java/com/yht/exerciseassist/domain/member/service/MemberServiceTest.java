@@ -247,4 +247,29 @@ class MemberServiceTest {
         //then
         assertThat(responseResult).isEqualTo(result);
     }
+
+    @Test
+    public void passwordValidation(){
+        //given
+        PasswordCheckDto passwordCheckDto = new PasswordCheckDto();
+        passwordCheckDto.setPassword("testPassword1!");
+
+        Member testMember = Member.builder()
+                .username("member1")
+                .email("test@test.com")
+                .loginId("testId1")
+                .dateTime(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null))
+                .role(MemberType.USER)
+                .password(passwordEncoder.encode("testPassword1!"))
+                .field("서울시")
+                .build();
+
+        Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
+
+        ResponseResult<Long> responseResult = new ResponseResult<>(200, testMember.getId());
+        //when
+        ResponseResult<Long> result = memberService.passwordValidation(passwordCheckDto);
+        //then
+        assertThat(responseResult).isEqualTo(result);
+    }
 }
