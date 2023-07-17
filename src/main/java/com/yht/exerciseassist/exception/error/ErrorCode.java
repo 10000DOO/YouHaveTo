@@ -45,6 +45,7 @@ public enum ErrorCode {
     JWT_AUTHENTICATION_FAIL("JWT토큰 인증 실패입니다. 토큰을 재발급 해주세요"),
     WRONG_REQUEST("잘못된 요청입니다."),
     NOT_FOUND_EXCEPTION_CHATLIST("존재하지 않는 채팅리스트입니다."),
+    UNKNOWN_SERVER_ERROR("알 수 없는 서버 에러입니다."),
     NOT_FOUND_EXCEPTION_CHATROOM("존재하지 않는 채팅방입니다.");
     private final String message;
 
