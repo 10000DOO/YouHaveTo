@@ -47,7 +47,9 @@ public class RoutineService {
                 "Day 2:\n\nExercise Name - Settings - Number of times - weight in kg\nExercise Name - Settings - Number of times - weight in kg" +
                 "\nExercise Name - Settings - Number of times - weight in kg\n.\n.\n.\nPlease answer in the following format";
 
-        return new ResponseResult<>(HttpStatus.OK.value(), requestGPT(prompt));
+        String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
+
+        return new ResponseResult<>(HttpStatus.OK.value(), answer);
     }
 
     public ResponseResult<String> getDietResponse(DietReq dietReq) {
@@ -64,12 +66,15 @@ public class RoutineService {
                 dietReq.getHealthPurpose().getMessage() + " I ate " + food +
                 " If I ate 300g each how many grams of carbohydrates, protein, and fat did I eat today? Don't talk about anything else," +
                 " just let me know the results of what I asked, even if it's not an exact number, let me know as an estimate, " +
-                "Total: Carbohydrates: ?? Protein: ?? Provincial: ?? Please answer in one line in this format\n" +
+                "Total: Carbohydrates: (sum of carbohydrates estimates, e.g., 10-20)grams Protein: (sum of protein estimates, e.g., 10-20)grams " +
+                "Fat: (sum of fat estimates, e.g., 10-20)grams Please answer in one line in this format\n" +
                 "When you have to eat a total of " + recommendedProtein + "grams of protein a day, you have to eat how many grams less than the total protein you currently " +
                 "consume and how much more protein you have now. Please answer in one line in this format\n" +
                 "Lastly, please recommend what food I should eat based on 300g to eat more protein Please list the names of the foods";
 
-        return new ResponseResult<>(HttpStatus.OK.value(), "각 음식 300g 기준 " + requestGPT(prompt));
+        String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
+
+        return new ResponseResult<>(HttpStatus.OK.value(), "각 음식 300g 기준 " + answer);
     }
 
     private String requestGPT(String prompt){
