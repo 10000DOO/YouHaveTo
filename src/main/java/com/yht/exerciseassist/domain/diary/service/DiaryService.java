@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -185,7 +184,7 @@ public class DiaryService {
                 .map(e -> ExerciseInfoResDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart().getMessage())
                         .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<ExerciseInfo> getExInfo(WriteDiaryDto writeDiaryDto) {
@@ -193,6 +192,6 @@ public class DiaryService {
                 .map(e -> ExerciseInfo.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
                         .exSetCount(e.getExSetCount()).reps(e.getReps()).cardio(e.isCardio())
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
-                .collect(Collectors.toList());
+                .toList();
     }
 }
