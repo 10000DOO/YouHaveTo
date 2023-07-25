@@ -181,7 +181,7 @@ public class DiaryService {
 
     private List<ExerciseInfoResDto> getExInfoResDto(Diary diary) {
         return diary.getExerciseInfo().stream()
-                .map(e -> ExerciseInfoResDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart().getMessage())
+                .map(e -> ExerciseInfoResDto.builder().exerciseName(e.getExerciseName()).bodyPart(e.getBodyPart())
                         .exSetCount(e.getExSetCount()).cardio(e.isCardio()).reps(e.getReps())
                         .cardioTime(e.getCardioTime()).finished(e.isFinished()).build())
                 .toList();
