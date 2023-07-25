@@ -1,8 +1,6 @@
 package com.yht.exerciseassist.domain.diary;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,13 +21,12 @@ public class ExerciseInfo {
 
     private int cardioTime; //유산소 운동 시간
 
-    @Enumerated(EnumType.STRING)
-    private BodyPart bodyPart;
+    private String bodyPart;
 
     private boolean finished;
 
     @Builder
-    public ExerciseInfo(String exerciseName, int reps, int exSetCount, boolean cardio, int cardioTime, BodyPart bodyPart, boolean finished) {
+    public ExerciseInfo(String exerciseName, int reps, int exSetCount, boolean cardio, int cardioTime, String bodyPart, boolean finished) {
         this.exerciseName = exerciseName;
         this.reps = reps;
         this.exSetCount = exSetCount;
