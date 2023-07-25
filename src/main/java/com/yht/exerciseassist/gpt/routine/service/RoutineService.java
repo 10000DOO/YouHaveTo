@@ -4,10 +4,7 @@ import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import com.yht.exerciseassist.gpt.routine.HealthPurpose;
-import com.yht.exerciseassist.gpt.routine.dto.ChatGptRequest;
-import com.yht.exerciseassist.gpt.routine.dto.ChatGptResponse;
-import com.yht.exerciseassist.gpt.routine.dto.DietReq;
-import com.yht.exerciseassist.gpt.routine.dto.RoutineReq;
+import com.yht.exerciseassist.gpt.routine.dto.*;
 import com.yht.exerciseassist.util.ResponseResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +74,23 @@ public class RoutineService {
         return new ResponseResult<>(HttpStatus.OK.value(), "각 음식 300g 기준 " + answer);
     }
 
-    private String requestGPT(String prompt){
+    public ResponseResult<String> checkPosture(PostureReq postureReq) {
+
+        String prompt = "Think of yourself as a bodybuilding trainer and tell me. " +
+                "I did " + postureReq.getExerciseName() + ". After the exercise, I felt stimulation at " + postureReq.getMuscleName() + ". " +
+                "Among the muscles I felt stimulated, when I did the " + postureReq.getExerciseName() +
+                "let me know which muscles should not be stimulated and which muscles were properly stimulated." +
+                "(rules : 1.please tell me separately among these muscles " + postureReq.getMuscleName() + ")" +
+                "I'll give you the answer format. " +
+                "Normal Stimulation Sites 1. ~~~ 2. ~~~ wrong stimulation site 1. ~~~ 2. ~~~ wrong reason 1. ~~~ 2. ~~~ " +
+                "Fix method 1. ~~~ 2. ~~~. Please don't say anything other than the format I specified. if no content just response no content do not response ~~~";
+
+        String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
+
+        return new ResponseResult<>(HttpStatus.OK.value(), answer);
+    }
+
+    public String requestGPT(String prompt){
 
         ChatGptRequest request = new ChatGptRequest(model, prompt);
         HttpHeaders headers = new HttpHeaders();
