@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.gpt.routine.controller;
 
 import com.yht.exerciseassist.gpt.routine.dto.DietReq;
+import com.yht.exerciseassist.gpt.routine.dto.PostureReq;
 import com.yht.exerciseassist.gpt.routine.dto.RoutineReq;
 import com.yht.exerciseassist.gpt.routine.service.RoutineService;
 import com.yht.exerciseassist.util.ResponseResult;
@@ -30,5 +31,11 @@ public class RoutineController {
     public ResponseEntity<ResponseResult<String>> getRoutines(@RequestBody @Valid DietReq dietReq){
 
         return ResponseEntity.status(HttpStatus.OK).body(routineService.getDietResponse(dietReq));
+    }
+
+    @PostMapping("/posture")
+    public ResponseEntity<ResponseResult<String>> confirmPosture(@RequestBody @Valid PostureReq postureReq){
+
+        return ResponseEntity.status(HttpStatus.OK).body(routineService.checkPosture(postureReq));
     }
 }

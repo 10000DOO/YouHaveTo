@@ -31,7 +31,7 @@ SeoulAPI:
 
 chatgpt:
   api-key: ENC(5gW/02FXKdLrT1+uc0A2ikihmV0QT5yJ6WZ3iyUX42jDgtA8HFClWtPPWicZtmGNEFZEK3pCTr05aEG2BmUiHQ==)
-  model: gpt-3.5-turbo
+  model: gpt-3.5-turbo-0613
   url: https://api.openai.com/v1/chat/completions
 
 google:

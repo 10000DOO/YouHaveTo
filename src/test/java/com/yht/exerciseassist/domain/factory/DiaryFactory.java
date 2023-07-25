@@ -1,7 +1,6 @@
 package com.yht.exerciseassist.domain.factory;
 
 import com.yht.exerciseassist.domain.DateTime;
-import com.yht.exerciseassist.domain.diary.BodyPart;
 import com.yht.exerciseassist.domain.diary.Diary;
 import com.yht.exerciseassist.domain.diary.ExerciseInfo;
 import com.yht.exerciseassist.domain.diary.dto.DiaryDetailDto;
@@ -24,7 +23,7 @@ public class DiaryFactory {
                 .cardio(true)
                 .cardioTime(30)
                 .finished(true)
-                .bodyPart(BodyPart.TRICEP)
+                .bodyPart("TRICEP")
                 .build();
 
         List<ExerciseInfo> exInfoList = new ArrayList<>();
@@ -48,7 +47,7 @@ public class DiaryFactory {
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart(BodyPart.TRICEP);
+        exerciseInfoDto.setBodyPart("TRICEP");
         exerciseInfoDto.setFinished(true);
 
         List<ExerciseInfoDto> exerciseInfoDtoList = new ArrayList<>();
@@ -72,7 +71,7 @@ public class DiaryFactory {
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart("삼두");
+        exerciseInfoDto.setBodyPart("TRICEP");
         exerciseInfoDto.setFinished(true);
 
         List<ExerciseInfoResDto> exerciseInfoDtoList = new ArrayList<>();
@@ -98,7 +97,7 @@ public class DiaryFactory {
         exerciseInfoDto.setCardio(true);
         exerciseInfoDto.setExSetCount(10);
         exerciseInfoDto.setCardioTime(30);
-        exerciseInfoDto.setBodyPart("삼두");
+        exerciseInfoDto.setBodyPart("TRICEP");
         exerciseInfoDto.setFinished(true);
 
         List<ExerciseInfoResDto> exerciseInfoDtoList = new ArrayList<>();
