@@ -1,5 +1,7 @@
 package com.yht.exerciseassist.domain.media.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,32 +36,31 @@ public class MediaService {
 
     private final MediaRepository mediaRepository;
 
-    @Value("${file.dir}")
-    private String fileDir;
+    private final AmazonS3 amazonS3;
 
-//    private final AmazonS3 amazonS3;
-//
-//    @Value("${cloud.aws.s3.bucket}")
-//    private String bucket;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     public List<Media> uploadMediaToFiles(List<MultipartFile> files) throws IOException {
-
         List<Media> mediaList = new ArrayList<>();
         System.out.println(files.size());
 
         for (MultipartFile file : files) {
-            String storeFileName = createStoreFileName(file.getOriginalFilename());
+            String originalFilename = file.getOriginalFilename();
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+            amazonS3.putObject(bucket, originalFilename, file.getInputStream(), metadata);
+            String storeFileName = createStoreFileName(originalFilename);
 
             Media media = Media.builder()
-                    .originalFilename(file.getOriginalFilename())
+                    .originalFilename(originalFilename)
                     .filename(storeFileName)
-                    .filePath(fileDir + storeFileName)
+                    .filePath(amazonS3.getUrl(bucket, originalFilename).toString())
                     .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                     .build();
-
             mediaList.add(media);
-            file.transferTo(new File(fileDir + storeFileName));
             mediaRepository.save(media);
             log.info(storeFileName + " 저장되었습니다.");
         }
@@ -120,13 +120,7 @@ public class MediaService {
     }
 
     private void deleteFile(Media media) throws IOException {
-        File file = new File(media.getFilePath());
-        mediaRepository.deleteById(media.getId());
-        boolean deleteSuccess = file.delete();
-        if (!deleteSuccess) {
-            throw new IOException();
-        }
-
+        amazonS3.deleteObject(bucket, media.getOriginalFilename());
         log.info(media.getFilename() + " 삭제 완료");
     }
 }

@@ -74,6 +74,10 @@ dependencies {
 
     //google translation
     implementation 'com.google.cloud:google-cloud-translate:2.19.0'
+
+    //aws s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.514'
 }
 
 tasks.named('test') {

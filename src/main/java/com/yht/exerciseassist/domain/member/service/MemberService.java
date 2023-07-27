@@ -248,12 +248,12 @@ public class MemberService implements UserDetailsService {
         return new ResponseResult<>(HttpStatus.OK.value(), findPWDto.getPassword());
     }
 
-    public ResponseResult<String> editMemberData(EditMemberDto editMemberDto, MultipartFile file) throws IOException {
+    public ResponseResult<String> editMemberData(EditMemberDto editMemberDto, List<MultipartFile> files) throws IOException {
         Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
         if(Objects.equals(member.getId(), editMemberDto.getMemberId())){
-            if (file != null) {
+            if (files != null && !files.isEmpty()) {
                 try {
                     Long mediaId = member.getMedia().getId();
                     if (mediaId != null) {
@@ -263,8 +263,8 @@ public class MemberService implements UserDetailsService {
                 } catch (NullPointerException e) {
                     log.info("mediaId 없음");
                 }
-                Media media = mediaService.uploadMediaToFile(file);
-                member.changeMemberData(editMemberDto.getUsername(), passwordEncoder.encode(editMemberDto.getPassword()), editMemberDto.getField(), media);
+                List<Media> media = mediaService.uploadMediaToFiles(files);
+                member.changeMemberData(editMemberDto.getUsername(), passwordEncoder.encode(editMemberDto.getPassword()), editMemberDto.getField(), media.get(0));
             } else {
                 try {
                     Long mediaId = member.getMedia().getId();

@@ -147,7 +147,7 @@ public class DiaryService {
         diaryById.editDiary(writeDiaryDto.getExerciseDate(), writeDiaryDto.getReview(), exInfo);
         diaryById.getDateTime().updatedAtUpdate();
 
-        if (files != null && !(files.isEmpty())) {
+        if (files != null && !files.isEmpty()) {
             mediaService.deleteDiaryMedia(diaryId);
             List<Media> mediaList = mediaService.uploadMediaToFiles(files);
             diaryById.linkToMedia(mediaList);

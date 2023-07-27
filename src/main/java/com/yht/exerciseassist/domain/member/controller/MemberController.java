@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,9 +61,9 @@ public class MemberController {
 
     @PatchMapping("/member/edit")
     public ResponseEntity<ResponseResult<String>> editMember(@RequestPart @Valid EditMemberDto editMemberDto,
-                                                             @RequestPart(required = false) MultipartFile file) throws IOException {
+                                                             @RequestPart(required = false) List<MultipartFile> files) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.editMemberData(editMemberDto, file));
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.editMemberData(editMemberDto, files));
     }
 
     @PostMapping("/member/password/check")

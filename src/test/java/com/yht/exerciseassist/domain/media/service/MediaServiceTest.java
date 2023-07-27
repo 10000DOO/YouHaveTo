@@ -1,11 +1,13 @@
 package com.yht.exerciseassist.domain.media.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.yht.exerciseassist.domain.factory.MediaFactory;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,13 +41,17 @@ class MediaServiceTest {
     private String fileDir;
     @Value("${test.address}")
     private String testAddress;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @MockBean
     private MediaRepository mediaRepository;
+    @Autowired
+    private AmazonS3 amazonS3;
 
     @BeforeEach
     void setUp() {
-        mediaService = new MediaService(mediaRepository);
+        mediaService = new MediaService(mediaRepository, amazonS3);
     }
 
     @Test
