@@ -1,26 +1,19 @@
 package com.yht.exerciseassist.domain.media.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,32 +28,31 @@ public class MediaService {
 
     private final MediaRepository mediaRepository;
 
-    @Value("${file.dir}")
-    private String fileDir;
+    private final AmazonS3 amazonS3;
 
-//    private final AmazonS3 amazonS3;
-//
-//    @Value("${cloud.aws.s3.bucket}")
-//    private String bucket;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     public List<Media> uploadMediaToFiles(List<MultipartFile> files) throws IOException {
-
         List<Media> mediaList = new ArrayList<>();
         System.out.println(files.size());
 
         for (MultipartFile file : files) {
-            String storeFileName = createStoreFileName(file.getOriginalFilename());
+            String originalFilename = file.getOriginalFilename();
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+            amazonS3.putObject(bucket, originalFilename, file.getInputStream(), metadata);
+            String storeFileName = createStoreFileName(originalFilename);
 
             Media media = Media.builder()
-                    .originalFilename(file.getOriginalFilename())
+                    .originalFilename(originalFilename)
                     .filename(storeFileName)
-                    .filePath(fileDir + storeFileName)
+                    .filePath(amazonS3.getUrl(bucket, originalFilename).toString())
                     .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                     .build();
-
             mediaList.add(media);
-            file.transferTo(new File(fileDir + storeFileName));
             mediaRepository.save(media);
             log.info(storeFileName + " 저장되었습니다.");
         }
@@ -78,22 +70,7 @@ public class MediaService {
         return originalFilename.substring(pos + 1);
     }
 
-    public ResponseEntity<FileSystemResource> getMediaFile(Long mediaId) throws IOException {
-        Media findMedia = mediaRepository.findByNotDeletedId(mediaId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
-
-        FileSystemResource fileSystemResource = new FileSystemResource(findMedia.getFilePath());
-        Path filePath = Paths.get(findMedia.getFilePath());
-
-        HttpHeaders header = new HttpHeaders();
-        header.add("Content-Type", Files.probeContentType(filePath));
-
-        log.info(findMedia.getFilePath() + "출력 성공");
-
-        return ResponseEntity.status(HttpStatus.OK).headers(header).body(fileSystemResource);
-    }
-
-    public void deleteDiaryMedia(Long diaryId) throws IOException {
+    public void deleteDiaryMedia(Long diaryId) {
         List<Media> byDiaryId = mediaRepository.findByNotDeletedDiaryId(diaryId);
 
         if (byDiaryId != null && !byDiaryId.isEmpty()) {
@@ -103,7 +80,7 @@ public class MediaService {
         }
     }
 
-    public void deletePostMedia(Long postId) throws IOException {
+    public void deletePostMedia(Long postId) {
         List<Media> byPostId = mediaRepository.findByNotDeletedPostId(postId);
 
         if (byPostId != null && !byPostId.isEmpty()) {
@@ -113,20 +90,14 @@ public class MediaService {
         }
     }
 
-    public void deleteProfileImage(Long mediaId) throws IOException {
+    public void deleteProfileImage(Long mediaId) {
         Media media = mediaRepository.findByNotDeletedId(mediaId)
                 .orElseThrow(() -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
         deleteFile(media);
     }
 
-    private void deleteFile(Media media) throws IOException {
-        File file = new File(media.getFilePath());
-        mediaRepository.deleteById(media.getId());
-        boolean deleteSuccess = file.delete();
-        if (!deleteSuccess) {
-            throw new IOException();
-        }
-
+    private void deleteFile(Media media) {
+        amazonS3.deleteObject(bucket, media.getOriginalFilename());
         log.info(media.getFilename() + " 삭제 완료");
     }
 }

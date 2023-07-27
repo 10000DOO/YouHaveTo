@@ -63,7 +63,7 @@ public class DiaryFactory {
 
     public static DiaryDetailDto createTestDiaryDetailDto() {
         List<String> mediaIdList = new ArrayList<>();
-        mediaIdList.add("null" + "/media/" + 1);
+        mediaIdList.add("www.amazon-s3.com/tuxCoding.jpg");
 
         ExerciseInfoResDto exerciseInfoDto = new ExerciseInfoResDto(); //내가 기대한 Dto반환값
         exerciseInfoDto.setExerciseName("pushUp");

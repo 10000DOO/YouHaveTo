@@ -17,7 +17,6 @@ import com.yht.exerciseassist.util.TimeConvertUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -39,8 +38,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    @Value("${base.url}")
-    private String baseUrl;
 
     public ResponseResult<String> saveComment(WriteCommentDto writeCommentDto) {
         Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
@@ -138,7 +135,7 @@ public class CommentService {
 
                 String profileImage;
                 try {
-                    profileImage = baseUrl + "/media/" + comment.getCommentWriter().getMedia().getId();
+                    profileImage = comment.getCommentWriter().getMedia().getFilePath();
                 } catch (NullPointerException e) {
                     profileImage = null;
                 }

@@ -36,3 +36,16 @@ chatgpt:
 
 google:
   api-key: ENC(i6Oh+T5al186kg4e8eXLTL8WG8jO+Gb568azw++h6l3OgslAVI21z1a/YME+y9cx)
+
+cloud:
+  aws:
+    s3:
+      bucket: yht-health
+    credentials:
+      access-key: ENC(6r+V6PDTP9j4xHh8ffaDco+6yIdOfJRNakbM4od2e58=)
+      secret-key: ENC(2jC46nX6m3yR9viF04+bdNvufFntbWelpfs9rIk94nJML7RsDZzT6m8KR4Ne3V8TJYs6/SyFMco=)
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

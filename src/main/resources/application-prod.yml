@@ -32,12 +32,6 @@ decorator:
     p6spy:
       enable-logging: false
 
-file:
-  dir: /app/
-
-base:
-  url: ENC(YWvRA4a5iR/Bhj3d59v1rplvHPqT14LKtsg+c+P6x0tXCbapSjbJvw==)
-
 server:
   port: ENC(C7J98t9dzMaStIHiyEvOvA==)
   ssl:

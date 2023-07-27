@@ -18,7 +18,7 @@ public class MediaTest {
     public void MediaTest() {
         //given
         //when
-        Media media = MediaFactory.createTeatMedia(testAddress + "test1.png");
+        Media media = MediaFactory.createTeatMedia();
 
         media.setMediaIdUsedOnlyTest(1L);
 
@@ -26,7 +26,7 @@ public class MediaTest {
         assertThat(media.getId()).isEqualTo(1L);
         assertThat(media.getOriginalFilename()).isEqualTo("tuxCoding.jpg");
         assertThat(media.getFilename()).isEqualTo("test1.png");
-        assertThat(media.getFilePath()).isEqualTo(testAddress + "test1.png");
+        assertThat(media.getFilePath()).isEqualTo("www.amazon-s3.com/tuxCoding.jpg");
         assertThat(media.getDateTime()).isEqualTo(new DateTime("2023-02-11 11:11", "2023-02-11 11:11", null));
 
     }
