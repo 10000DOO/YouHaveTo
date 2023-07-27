@@ -45,8 +45,6 @@ class DiaryServiceTest {
 
     private static MockedStatic<SecurityUtil> securityUtilMockedStatic;
     DiaryService diaryService;
-    @Value("${file.dir}")
-    private String fileDir;
     @MockBean
     private DiaryRepository diaryRepository;
     @MockBean
@@ -128,7 +126,7 @@ class DiaryServiceTest {
 
         Member member = MemberFactory.createTestMember();
 
-        Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
+        Media media = MediaFactory.createTeatMedia();
         media.setMediaIdUsedOnlyTest(1L);
 
         List<Media> mediaId = new ArrayList<>();
@@ -187,7 +185,7 @@ class DiaryServiceTest {
 
         diaryDetail.setDiaryIdUsedOnlyTest(1L);
 
-        Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
+        Media media = MediaFactory.createTeatMedia();
 
         List<Media> mediaId = new ArrayList<>();
         mediaId.add(media);
@@ -222,7 +220,7 @@ class DiaryServiceTest {
         Diary diaryDetail = DiaryFactory.createTestDiary(member);
         diaryDetail.setDiaryIdUsedOnlyTest(diaryId);
 
-        Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
+        Media media = MediaFactory.createTeatMedia();
         media.setMediaIdUsedOnlyTest(1L);
         List<Media> mediaId = new ArrayList<>();
         mediaId.add(media);

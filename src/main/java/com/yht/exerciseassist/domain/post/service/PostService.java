@@ -20,7 +20,6 @@ import com.yht.exerciseassist.util.TimeConvertUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -46,8 +45,6 @@ public class PostService {
     private final MediaService mediaService;
     private final LikeCountRepository likeCountRepository;
     private final CommentRepository commentRepository;
-    @Value("${base.url}")
-    private String baseUrl;
 
     public ResponseResult<String> savePost(WritePostDto writePostDto, List<MultipartFile> files) throws IOException {
         Member findMember = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
@@ -83,7 +80,7 @@ public class PostService {
 
         String profileImage;
         try {
-            profileImage = baseUrl + "/media/" + postById.getPostWriter().getMedia().getId();
+            profileImage = postById.getPostWriter().getMedia().getFilePath();
         } catch (NullPointerException e) {
             profileImage = null;
         }
@@ -199,7 +196,7 @@ public class PostService {
     private List<String> getMediaList(Post post) {
         List<String> mediaList = new ArrayList<>();
         for (Media media : post.getMediaList()) {
-            mediaList.add(baseUrl + "/media/" + media.getId());
+            mediaList.add(media.getFilePath());
         }
         return mediaList;
     }

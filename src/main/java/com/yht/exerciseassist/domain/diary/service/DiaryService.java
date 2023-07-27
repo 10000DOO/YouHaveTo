@@ -15,7 +15,6 @@ import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +35,6 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
     private final MediaService mediaService;
-    @Value("${base.url}")
-    private String baseUrl;
 
     public ResponseResult<DiaryListDto> getDiaryList(String date) {
         List<Diary> findDiaries = diaryRepository.findDiariesByUsername(SecurityUtil.getCurrentUsername(), date);
@@ -174,7 +171,7 @@ public class DiaryService {
     private List<String> getMediaList(Diary diary) {
         List<String> mediaList = new ArrayList<>();
         for (Media media : diary.getMediaList()) {
-            mediaList.add(baseUrl + "/media/" + media.getId());
+            mediaList.add(media.getFilePath());
         }
         return mediaList;
     }

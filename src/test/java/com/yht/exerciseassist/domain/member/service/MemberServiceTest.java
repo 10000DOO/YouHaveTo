@@ -84,8 +84,6 @@ class MemberServiceTest {
     private PostRepository postRepository;
     @MockBean
     private CommentRepository commentRepository;
-    @Value("${file.dir}")
-    private String fileDir;
     @Value("${test.address}")
     private String testAddress;
 
@@ -168,7 +166,7 @@ class MemberServiceTest {
                 .field("서울시")
                 .build();
 
-        Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
+        Media media = MediaFactory.createTeatMedia();
 
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
         Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
@@ -244,7 +242,7 @@ class MemberServiceTest {
         files.add(mediaFile);
 
         List<Media> media = new ArrayList<>();
-        media.add(MediaFactory.createTeatMedia(testAddress));
+        media.add(MediaFactory.createTeatMedia());
 
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
         Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));

@@ -6,22 +6,14 @@ import com.yht.exerciseassist.domain.DateTime;
 import com.yht.exerciseassist.domain.media.Media;
 import com.yht.exerciseassist.domain.media.repository.MediaRepository;
 import com.yht.exerciseassist.exception.error.ErrorCode;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,22 +70,7 @@ public class MediaService {
         return originalFilename.substring(pos + 1);
     }
 
-    public ResponseEntity<FileSystemResource> getMediaFile(Long mediaId) throws IOException {
-        Media findMedia = mediaRepository.findByNotDeletedId(mediaId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
-
-        FileSystemResource fileSystemResource = new FileSystemResource(findMedia.getFilePath());
-        Path filePath = Paths.get(findMedia.getFilePath());
-
-        HttpHeaders header = new HttpHeaders();
-        header.add("Content-Type", Files.probeContentType(filePath));
-
-        log.info(findMedia.getFilePath() + "출력 성공");
-
-        return ResponseEntity.status(HttpStatus.OK).headers(header).body(fileSystemResource);
-    }
-
-    public void deleteDiaryMedia(Long diaryId) throws IOException {
+    public void deleteDiaryMedia(Long diaryId) {
         List<Media> byDiaryId = mediaRepository.findByNotDeletedDiaryId(diaryId);
 
         if (byDiaryId != null && !byDiaryId.isEmpty()) {
@@ -103,7 +80,7 @@ public class MediaService {
         }
     }
 
-    public void deletePostMedia(Long postId) throws IOException {
+    public void deletePostMedia(Long postId) {
         List<Media> byPostId = mediaRepository.findByNotDeletedPostId(postId);
 
         if (byPostId != null && !byPostId.isEmpty()) {
@@ -113,13 +90,13 @@ public class MediaService {
         }
     }
 
-    public void deleteProfileImage(Long mediaId) throws IOException {
+    public void deleteProfileImage(Long mediaId) {
         Media media = mediaRepository.findByNotDeletedId(mediaId)
                 .orElseThrow(() -> new IllegalStateException(ErrorCode.NOT_FOUND_EXCEPTION_MEDIA.getMessage()));
         deleteFile(media);
     }
 
-    private void deleteFile(Media media) throws IOException {
+    private void deleteFile(Media media) {
         amazonS3.deleteObject(bucket, media.getOriginalFilename());
         log.info(media.getFilename() + " 삭제 완료");
     }

@@ -24,7 +24,6 @@ import com.yht.exerciseassist.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -63,8 +62,6 @@ public class MemberService implements UserDetailsService {
     private final LikeCountRepository likeCountRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    @Value("${base.url}")
-    private String baseUrl;
 
     public ResponseResult<String> join(SignUpRequestDto signUpRequestDto, String code) {
         EmailCode emailCode = emailCodeRepository.findByCode(code)
@@ -184,7 +181,7 @@ public class MemberService implements UserDetailsService {
 
         String profileImage;
         try {
-            profileImage = baseUrl + "/media/" + findMember.getMedia().getId();
+            profileImage = findMember.getMedia().getFilePath();
         } catch (NullPointerException e) {
             profileImage = null;
         }
