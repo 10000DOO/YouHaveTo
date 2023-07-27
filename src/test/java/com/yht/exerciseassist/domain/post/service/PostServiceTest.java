@@ -60,8 +60,6 @@ class PostServiceTest {
     PostService postService;
     @Autowired
     EntityManager em;
-    @Value("${file.dir}")
-    private String fileDir;
     @MockBean
     private PostRepository postRepository;
     @MockBean
@@ -102,6 +100,11 @@ class PostServiceTest {
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + fileName));
         List<MultipartFile> mediaFileList = new ArrayList<>();
         mediaFileList.add(mediaFile);
+
+        List<Media> mediaList = new ArrayList<>();
+        mediaList.add(MediaFactory.createTeatMedia());
+
+        Mockito.when(mediaService.uploadMediaToFiles(mediaFileList)).thenReturn(mediaList);
         //when
         ResponseResult responseResult1 = postService.savePost(writePostDto, mediaFileList);
 
@@ -169,7 +172,7 @@ class PostServiceTest {
         Post testPost = PostFactory.createTestPost(member);
         testPost.setPostIdUsedOnlyTest(postId);
 
-        Media media = MediaFactory.createTeatMedia(fileDir + "tuxCoding.jpg");
+        Media media = MediaFactory.createTeatMedia();
         media.setMediaIdUsedOnlyTest(1L);
         List<Media> mediaId = new ArrayList<>();
         mediaId.add(media);

@@ -42,9 +42,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,8 +84,6 @@ class MemberServiceTest {
     private PostRepository postRepository;
     @MockBean
     private CommentRepository commentRepository;
-    @Value("${file.dir}")
-    private String fileDir;
     @Value("${test.address}")
     private String testAddress;
 
@@ -165,7 +166,7 @@ class MemberServiceTest {
                 .field("서울시")
                 .build();
 
-        Media media = MediaFactory.createTeatMedia(fileDir + "test1.png");
+        Media media = MediaFactory.createTeatMedia();
 
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
         Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(member));
@@ -237,13 +238,19 @@ class MemberServiceTest {
         testMember.setMemberIdUsedOnlyTest(1L);
         String fileName = "tuxCoding.jpg";
         MockMultipartFile mediaFile = new MockMultipartFile("files", fileName, "image/jpeg", new FileInputStream(testAddress + "tuxCoding.jpg"));
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(mediaFile);
+
+        List<Media> media = new ArrayList<>();
+        media.add(MediaFactory.createTeatMedia());
 
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");
         Mockito.when(memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())).thenReturn(Optional.ofNullable(testMember));
+        Mockito.when(mediaService.uploadMediaToFiles(files)).thenReturn(media);
 
         ResponseResult<String> responseResult = new ResponseResult<>(200, "MANDOO");
         //when
-        ResponseResult<String> result = memberService.editMemberData(editMemberDto, mediaFile);
+        ResponseResult<String> result = memberService.editMemberData(editMemberDto, files);
         //then
         assertThat(responseResult).isEqualTo(result);
     }
