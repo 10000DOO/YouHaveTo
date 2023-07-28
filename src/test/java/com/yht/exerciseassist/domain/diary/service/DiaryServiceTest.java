@@ -197,7 +197,6 @@ class DiaryServiceTest {
         fileList.add(mediaFile);
         Mockito.when(diaryRepository.findByNotDeleteId(id)).thenReturn(Optional.of(diaryDetail));
         Mockito.when(mediaService.uploadMediaToFiles(fileList)).thenReturn(mediaId);
-        Mockito.when(diaryRepository.save(diaryDetail)).thenReturn(diaryDetail);
 
         WriteDiaryDto writeDiaryDto = DiaryFactory.createTestWriteDiaryDto();
 
