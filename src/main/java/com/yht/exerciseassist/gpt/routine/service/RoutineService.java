@@ -76,14 +76,16 @@ public class RoutineService {
 
     public ResponseResult<String> checkPosture(PostureReq postureReq) {
 
-        String prompt = "Think of yourself as a bodybuilding trainer and tell me. " +
-                "I did " + postureReq.getExerciseName() + ". After the exercise, I felt stimulation at " + postureReq.getMuscleName() + ". " +
-                "Among the muscles I felt stimulated, when I did the " + postureReq.getExerciseName() +
-                "let me know which muscles should not be stimulated and which muscles were properly stimulated." +
-                "(rules : 1.please tell me separately among these muscles " + postureReq.getMuscleName() + ")" +
-                "I'll give you the answer format. " +
-                "Normal Stimulation Sites 1. ~~~ 2. ~~~ wrong stimulation site 1. ~~~ 2. ~~~ wrong reason 1. ~~~ 2. ~~~ " +
-                "Fix method 1. ~~~ 2. ~~~. Please don't say anything other than the format I specified. if no content just response no content do not response ~~~";
+        String prompt = "You are now a bodybuilding trainer. I did " + postureReq.getExerciseName() +
+                " and felt a pump in my " + postureReq.getMuscleName() + ". Please let me know which muscle should be " +
+                "pumped among the " + postureReq.getMuscleName() + " if I did the " + postureReq.getExerciseName() +
+                " with the correct posture. Also, let me know which muscle should not be pumped among the " + postureReq.getMuscleName() +
+                " if I did the exercise with the correct posture. Lastly, if there is any incorrect muscle pumped, tell me why it was pumped and how to correct it. " +
+                "All answers should be determined between the " + postureReq.getMuscleName() + "." +
+                "And tell me that out of the " + postureReq.getMuscleName() + " muscles, only the muscles that are usually pumped through "
+                + postureReq.getExerciseName() + " are correct." +
+                " I'll give you the answer format. Normal Stimulation Sites 1. ~~~ 2. ~~~ wrong stimulation site 1. ~~~ 2. ~~~ wrong reason 1. ~~~ 2. ~~~ " +
+                "Fix method 1. ~~~ 2. ~~~. Please don't say anything other than the format I specified. if no content just response (no content) do not response ~~~";
 
         String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
 
