@@ -98,6 +98,7 @@ public class MediaService {
 
     private void deleteFile(Media media) {
         amazonS3.deleteObject(bucket, media.getOriginalFilename());
+        mediaRepository.deleteById(media.getId());
         log.info(media.getFilename() + " 삭제 완료");
     }
 }
