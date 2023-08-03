@@ -39,16 +39,16 @@ public class MediaService {
 
         for (MultipartFile file : files) {
             String originalFilename = file.getOriginalFilename();
+            String storeFileName = createStoreFileName(originalFilename);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
-            amazonS3.putObject(bucket, originalFilename, file.getInputStream(), metadata);
-            String storeFileName = createStoreFileName(originalFilename);
+            amazonS3.putObject(bucket, storeFileName, file.getInputStream(), metadata);
 
             Media media = Media.builder()
                     .originalFilename(originalFilename)
                     .filename(storeFileName)
-                    .filePath(amazonS3.getUrl(bucket, originalFilename).toString())
+                    .filePath(amazonS3.getUrl(bucket, storeFileName).toString())
                     .dateTime(new DateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), null))
                     .build();
@@ -97,7 +97,7 @@ public class MediaService {
     }
 
     private void deleteFile(Media media) {
-        amazonS3.deleteObject(bucket, media.getOriginalFilename());
+        amazonS3.deleteObject(bucket, media.getFilename());
         mediaRepository.deleteById(media.getId());
         log.info(media.getFilename() + " 삭제 완료");
     }
