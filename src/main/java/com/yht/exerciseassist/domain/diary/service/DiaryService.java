@@ -145,12 +145,10 @@ public class DiaryService {
         diaryById.getDateTime().updatedAtUpdate();
 
         if (files != null && !files.isEmpty()) {
-            System.out.println("여기?");
             mediaService.deleteDiaryMedia(diaryId);
             List<Media> mediaList = mediaService.uploadMediaToFiles(files);
             diaryById.linkToMedia(mediaList);
         } else {
-            System.out.println("여기?1");
             mediaService.deleteDiaryMedia(diaryId);
         }
 
