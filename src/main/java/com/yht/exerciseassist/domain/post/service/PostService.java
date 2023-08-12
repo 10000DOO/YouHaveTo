@@ -172,7 +172,7 @@ public class PostService {
         return new ResponseResult<>(HttpStatus.OK.value(), post.getTitle());
     }
 
-    public ResponseResult<Long> deletePost(Long postId) throws IOException, IllegalAccessException {
+    public ResponseResult<Long> deletePost(Long postId) throws IllegalAccessException {
         Post postById = postRepository.findNotDeletedById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_POST.getMessage()));
 

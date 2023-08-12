@@ -156,7 +156,7 @@ public class DiaryService {
         return new ResponseResult<>(HttpStatus.OK.value(), diaryById.getExerciseDate());
     }
 
-    public ResponseResult<Long> deleteDiary(Long diaryId) throws IOException {
+    public ResponseResult<Long> deleteDiary(Long diaryId) {
         Diary diaryById = diaryRepository.findByNotDeleteId(diaryId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_DIARY.getMessage()));
 

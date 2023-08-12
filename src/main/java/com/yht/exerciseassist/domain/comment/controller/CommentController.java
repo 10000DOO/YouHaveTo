@@ -37,7 +37,7 @@ public class CommentController {
     @GetMapping({"/comment"})
     public ResponseEntity<ResponseResult<CommentListwithSliceDto>> getComment(@RequestParam(value = "postId", required = false) Long postId,
                                                                               @RequestParam(value = "parentId", required = false) Long parentId,
-                                                                              @RequestParam(value = "username", required = false) String username, Pageable pageable) throws ParseException, IllegalAccessException {
+                                                                              @RequestParam(value = "username", required = false) String username, Pageable pageable) throws ParseException {
 
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getComment(postId, parentId, username, pageable));
     }

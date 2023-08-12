@@ -208,7 +208,7 @@ class DiaryServiceTest {
     }
 
     @Test
-    public void deleteDiary() throws IOException {
+    public void deleteDiary() {
         //given
         Long diaryId = 1L;
 

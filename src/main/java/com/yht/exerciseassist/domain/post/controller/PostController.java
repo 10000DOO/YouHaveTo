@@ -54,7 +54,7 @@ public class PostController {
     }
 
     @PatchMapping("/post/delete/{postId}")
-    public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws java.io.IOException, IllegalAccessException {
+    public ResponseEntity<ResponseResult<Long>> deletePost(@PathVariable Long postId) throws IllegalAccessException {
 
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
