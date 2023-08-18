@@ -154,7 +154,7 @@ class MemberServiceTest {
     }
 
     @Test
-    public void deleteMember() throws IOException {
+    public void deleteMember() {
         //given
         Member member = Member.builder()
                 .username("member1")

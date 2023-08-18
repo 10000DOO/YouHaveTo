@@ -136,7 +136,7 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
-    public ResponseResult<Long> deleteMember(PWDto pwDto) throws IOException {
+    public ResponseResult<Long> deleteMember(PWDto pwDto) {
         Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 

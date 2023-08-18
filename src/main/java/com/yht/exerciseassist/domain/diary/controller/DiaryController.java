@@ -63,7 +63,7 @@ public class DiaryController {
     }
 
     @PatchMapping("/diary/delete/{diaryId}")
-    public ResponseEntity<ResponseResult<Long>> deleteDiary(@PathVariable Long diaryId) throws IOException {
+    public ResponseEntity<ResponseResult<Long>> deleteDiary(@PathVariable Long diaryId) {
 
         return ResponseEntity.status(HttpStatus.OK).body(diaryService.deleteDiary(diaryId));
     }

@@ -36,7 +36,7 @@ public class MemberController {
     }
 
     @PatchMapping("/member/delete")
-    public ResponseEntity<ResponseResult<Long>> memberDelete(@RequestBody @Valid PWDto pwDto) throws IOException {
+    public ResponseEntity<ResponseResult<Long>> memberDelete(@RequestBody @Valid PWDto pwDto) {
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember(pwDto));
     }
