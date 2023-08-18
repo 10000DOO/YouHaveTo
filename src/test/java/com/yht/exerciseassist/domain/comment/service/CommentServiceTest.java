@@ -112,7 +112,7 @@ class CommentServiceTest {
     }
 
     @Test
-    public void getComment() throws ParseException, IllegalAccessException {
+    public void getComment() throws ParseException {
         //given
         given(SecurityUtil.getMemberRole()).willReturn("USER");
         given(SecurityUtil.getCurrentUsername()).willReturn("member1");

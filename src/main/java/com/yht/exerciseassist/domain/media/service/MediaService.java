@@ -35,7 +35,6 @@ public class MediaService {
 
     public List<Media> uploadMediaToFiles(List<MultipartFile> files) throws IOException {
         List<Media> mediaList = new ArrayList<>();
-        System.out.println(files.size());
 
         for (MultipartFile file : files) {
             String originalFilename = file.getOriginalFilename();
