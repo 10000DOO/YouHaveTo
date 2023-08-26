@@ -96,6 +96,7 @@ public class PostService {
             if (findComment.getParent() == null && sendComments.size() < 3) {
                 sendComments.add(
                         CommentListDto.builder()
+                                .commentId(findComment.getId())
                                 .username(Optional.ofNullable(findComment.getCommentWriter().getUsername()).isPresent() ? findComment.getCommentWriter().getUsername() : "알 수 없음")
                                 .commentContext(findComment.getCommentContent())
                                 .createdAt(findComment.getDateTime().getCreatedAt())
