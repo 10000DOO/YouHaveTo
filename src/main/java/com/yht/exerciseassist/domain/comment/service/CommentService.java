@@ -17,6 +17,7 @@ import com.yht.exerciseassist.util.TimeConvertUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -71,17 +72,23 @@ public class CommentService {
         return new ResponseResult<>(HttpStatus.CREATED.value(), writeCommentDto.getCommentContent());
     }
 
+    @Transactional
     public ResponseResult<Long> deleteComment(Long commentId) throws IllegalAccessException {
         Comment commentById = commentRepository.findByNotDeleteId(commentId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT.getMessage()));
 
         if (Objects.equals(commentById.getCommentWriter().getUsername(), SecurityUtil.getCurrentUsername())||(SecurityUtil.getMemberRole().equals("ADMIN"))) {
-            commentById.getDateTime().canceledAtUpdate();
 
             String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-            commentRepository.deleteCommentByParentId(localTime, commentById.getId());
-
+            if (commentById.getParent() != null) {
+                //자식
+                commentRepository.deleteCommentByParentId(localTime, commentById.getId());
+            }else {
+                //부모
+                commentRepository.deleteCommentBycommentId(localTime, commentById.getId());
+                commentRepository.deleteCommentByParentId(localTime, commentById.getId());
+            }
         } else {
             throw new IllegalAccessException(ErrorCode.NO_MATCHED_COMMENT.getMessage());
         }
@@ -140,9 +147,17 @@ public class CommentService {
                     profileImage = null;
                 }
 
-                int childCount;
+                int childCount = 0;
+                Hibernate.initialize(comment.getParent());
                 if (comment.getParent() == null) {
-                    childCount = comment.getChild().size();
+                    List<Comment> childComments = comment.getChild();
+                    for (Comment childComment : childComments) {
+                        if (childComment.getParent() != null && childComment.getParent().getId() > 0) {
+                            System.out.println("start -- childComment.getId() = " + childComment.getId());
+                            System.out.println("childComment.getParent().getId() -- end = " + childComment.getParent().getId());
+                            childCount++;
+                        }
+                    }
                 } else {
                     childCount = -1;
                 }
