@@ -265,7 +265,7 @@ public class PostService {
             }
 
             PostListDto postListDto = PostListDto.builder()
-                    .username(Optional.ofNullable(post.getPostWriter().getUsername()).isPresent() ? post.getPostWriter().getUsername() : "알 수 없음")
+                    .username(Optional.ofNullable(post.getPostWriter()).isPresent() ? post.getPostWriter().getUsername() : "알 수 없음")
                     .postType(post.getPostType().getMessage())
                     .workOutCategory(post.getWorkOutCategory().getMessage())
                     .createdAt(calculateTime)
