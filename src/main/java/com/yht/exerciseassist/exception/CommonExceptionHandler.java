@@ -29,13 +29,21 @@ public class CommonExceptionHandler {
 
     public ExceptionResponse exceptionRes(Exception exception, Logger log, int statusCode) {
 
+        List<ErrorMessageDto> exceptionResponses = new ArrayList<>();
+        ErrorMessageDto errorMessageDto = new ErrorMessageDto(exception.getMessage());
+        exceptionResponses.add(errorMessageDto);
+
         log.error(exception.getMessage());
-        return new ExceptionResponse(statusCode, exception.getMessage());
+        return new ExceptionResponse(statusCode, exceptionResponses);
     }
 
     public ExceptionResponse customExceptionRes(Exception exception, Logger log, int statusCode, String message) {
 
+        List<ErrorMessageDto> exceptionResponses = new ArrayList<>();
+        ErrorMessageDto errorMessageDto = new ErrorMessageDto(message);
+        exceptionResponses.add(errorMessageDto);
+
         log.error("{} // {}", exception.getMessage(), message);
-        return new ExceptionResponse(statusCode, message);
+        return new ExceptionResponse(statusCode, exceptionResponses);
     }
 }
