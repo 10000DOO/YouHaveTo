@@ -45,11 +45,17 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer")) {
                 String token = refreshToken.substring(7);
                 ResponseResult result = jwtService.refreshToken(token.substring(0, token.length() - 1));
-                response.setStatus(HttpStatus.OK.value());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.setCharacterEncoding("UTF-8");
-
-                mapper.writeValue(response.getWriter(), result);
+                if (result.getStatus() == HttpStatus.OK.value()) {
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.setCharacterEncoding("UTF-8");
+                    mapper.writeValue(response.getWriter(), result);
+                } else {
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.setCharacterEncoding("UTF-8");
+                    mapper.writeValue(response.getWriter(), result);
+                }
             } else {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
