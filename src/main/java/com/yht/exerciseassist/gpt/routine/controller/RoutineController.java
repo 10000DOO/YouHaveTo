@@ -9,10 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +22,12 @@ public class RoutineController {
     public ResponseEntity<ResponseResult<String>> getRoutines(@RequestBody @Valid RoutineReq routineReq){
 
         return ResponseEntity.status(HttpStatus.OK).body(routineService.getRoutineResponse(routineReq));
+    }
+
+    @GetMapping("/token/issue")
+    public ResponseEntity reIssueToken () {
+
+        return ResponseEntity.status(HttpStatus.OK).body("재발급");
     }
 
     @PostMapping("/diet")

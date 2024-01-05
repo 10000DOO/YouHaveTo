@@ -36,9 +36,9 @@ public class MemberController {
     }
 
     @PatchMapping("/member/delete")
-    public ResponseEntity<ResponseResult<Long>> memberDelete(@RequestBody @Valid PWDto pwDto) {
+    public ResponseEntity<ResponseResult<Long>> memberDelete() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember(pwDto));
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.deleteMember());
     }
 
     @GetMapping("/member/info")

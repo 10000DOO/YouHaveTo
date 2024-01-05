@@ -34,8 +34,8 @@ chatgpt:
   model: gpt-3.5-turbo
   url: https://api.openai.com/v1/chat/completions
 
-google:
-  api-key: ENC(i6Oh+T5al186kg4e8eXLTL8WG8jO+Gb568azw++h6l3OgslAVI21z1a/YME+y9cx)
+#google:
+#  api-key: ENC(85W2ZabGwVEBlHDa7mpJgvsEpvn+v219pFWWVlyjWtufZnwsunMDZpWmsT8wPARK)
 
 cloud:
   aws:

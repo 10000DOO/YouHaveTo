@@ -1,8 +1,5 @@
 package com.yht.exerciseassist.gpt.routine.service;
 
-import com.google.cloud.translate.Translate;
-import com.google.cloud.translate.TranslateOptions;
-import com.google.cloud.translate.Translation;
 import com.yht.exerciseassist.gpt.routine.HealthPurpose;
 import com.yht.exerciseassist.gpt.routine.dto.*;
 import com.yht.exerciseassist.util.ResponseResult;
@@ -28,8 +25,6 @@ public class RoutineService {
     private String url;
     @Value("${chatgpt.model}")
     private String model;
-    @Value("${google.api-key}")
-    private String googleKey;
 
     private static RestTemplate restTemplate = new RestTemplate();
 
@@ -42,7 +37,8 @@ public class RoutineService {
                 "I'll tell you the answer format\n\nDay 1:\n\nExercise Name - Settings - Number of times - weight in kg\n" +
                 "Exercise Name - Settings - Number of times - weight in kg\nExercise Name - Settings - Number of times - weight in kg\n" +
                 "Day 2:\n\nExercise Name - Settings - Number of times - weight in kg\nExercise Name - Settings - Number of times - weight in kg" +
-                "\nExercise Name - Settings - Number of times - weight in kg\n.\n.\n.\nPlease answer in the following format";
+                "\nExercise Name - Settings - Number of times - weight in kg\n.\n.\n.\nPlease answer in the following format" +
+                "Please answer in Korean";
 
         String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
 
@@ -67,7 +63,8 @@ public class RoutineService {
                 "Fat: (sum of fat estimates, e.g., 10-20)grams Please answer in one line in this format\n" +
                 "When you have to eat a total of " + recommendedProtein + "grams of protein a day, you have to eat how many grams less than the total protein you currently " +
                 "consume and how much more protein you have now. Please answer in one line in this format\n" +
-                "Lastly, please recommend what food I should eat based on 300g to eat more protein Please list the names of the foods";
+                "Lastly, please recommend what food I should eat based on 300g to eat more protein Please list the names of the foods" +
+                "Please answer in Korean";
 
         String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
 
@@ -85,25 +82,27 @@ public class RoutineService {
                 "And tell me that out of the " + postureReq.getMuscleName() + " muscles, only the muscles that are usually pumped through "
                 + postureReq.getExerciseName() + " are correct." +
                 " I'll give you the answer format. Normal Stimulation Sites 1. ~~~ 2. ~~~ wrong stimulation site 1. ~~~ 2. ~~~ wrong reason 1. ~~~ 2. ~~~ " +
-                "Fix method 1. ~~~ 2. ~~~. Please don't say anything other than the format I specified. if no content just response (no content) do not response ~~~";
+                "Fix method 1. ~~~ 2. ~~~. Please don't say anything other than the format I specified. if no content just response (no content) do not response ~~~" +
+                "Please answer in Korean";
 
         String answer = requestGPT(prompt) + " 결과는 openAI의 gpt모델에 의해 계산된 것으로 참고의 목적으로만 사용하길 권장합니다.";
 
         return new ResponseResult<>(HttpStatus.OK.value(), answer);
     }
 
-    public String requestGPT(String prompt){
+    public String requestGPT(String prompt) {
 
         ChatGptRequest request = new ChatGptRequest(model, prompt);
+        System.out.println(prompt);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + gptKey);
         ChatGptResponse chatGptResponse = restTemplate.postForObject(url, new HttpEntity<>(request, headers), ChatGptResponse.class);
 
-        TranslateOptions translateOptions = TranslateOptions.newBuilder().setApiKey(googleKey).build();
-        System.out.println(chatGptResponse.getChoices().get(0).getMessage().getContent());
-        Translate translate = translateOptions.getService();
-        Translation translation = translate.translate(chatGptResponse.getChoices().get(0).getMessage().getContent(),Translate.TranslateOption.targetLanguage("ko"));
+//        TranslateOptions translateOptions = TranslateOptions.newBuilder().setApiKey(googleKey).build();
+//        System.out.println(chatGptResponse.getChoices().get(0).getMessage().getContent());
+//        Translate translate = translateOptions.getService();
+//        Translation translation = translate.translate(chatGptResponse.getChoices().get(0).getMessage().getContent(),Translate.TranslateOption.targetLanguage("ko"));
 
-        return translation.getTranslatedText();
+        return chatGptResponse.getChoices().get(0).getMessage().getContent();
     }
 }

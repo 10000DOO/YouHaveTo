@@ -42,7 +42,7 @@ public class JWTService {
                 if (Objects.equals(token, inputToken)) {
                     long now = (new Date()).getTime();
                     // Access Token 생성
-                    Date accessTokenExpiresIn = new Date(now + 30 * 60 * 1000);
+                    Date accessTokenExpiresIn = new Date(now + 5 * 60 * 1000);
                     String accessToken = Jwts.builder()
                             .setSubject(findMember.getUsername())
                             .claim("auth", "ROLE_" + findMember.getRole())

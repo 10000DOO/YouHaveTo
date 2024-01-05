@@ -136,43 +136,39 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
-    public ResponseResult<Long> deleteMember(PWDto pwDto) {
+    public ResponseResult<Long> deleteMember() {
         Member member = memberRepository.findByNotDeletedUsername(SecurityUtil.getCurrentUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_MEMBER.getMessage()));
 
-        if (passwordEncoder.matches(pwDto.getPassword(), member.getPassword())) {
-            Long mediaId = null;
+        Long mediaId = null;
 
-            try {
-                mediaId = member.getMedia().getId();
-            } catch (NullPointerException e) {
-                log.info("mediaId 없음");
-            }
-
-            if (mediaId != null) {
-                member.ChangeMedia(null);
-                mediaService.deleteProfileImage(mediaId);
-            }
-
-            String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            List<Diary> diaries = member.getDiaries();
-            if (diaries != null && !diaries.isEmpty()) {
-                for (Diary diary : diaries) {
-                    mediaService.deleteDiaryMedia(diary.getId());
-                }
-            }
-            member.getDateTime().canceledAtUpdate();
-            likeCountRepository.deleteAllByMember(member);
-            postRepository.updatePostWriterToNull(member);
-            commentRepository.updateCommentWriterToNull(member);
-            diaryRepository.deleteByMemberId(localTime, member);
-
-
-            log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
-            return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
-        } else {
-            throw new IllegalArgumentException(ErrorCode.FAIL_PW_AUTHENTICATION.getMessage());
+        try {
+            mediaId = member.getMedia().getId();
+        } catch (NullPointerException e) {
+            log.info("mediaId 없음");
         }
+
+        if (mediaId != null) {
+            member.ChangeMedia(null);
+            mediaService.deleteProfileImage(mediaId);
+        }
+
+        String localTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        List<Diary> diaries = member.getDiaries();
+        if (diaries != null && !diaries.isEmpty()) {
+            for (Diary diary : diaries) {
+                mediaService.deleteDiaryMedia(diary.getId());
+            }
+        }
+        member.getDateTime().canceledAtUpdate();
+        likeCountRepository.deleteAllByMember(member);
+        postRepository.updatePostWriterToNull(member);
+        commentRepository.updateCommentWriterToNull(member);
+        diaryRepository.deleteByMemberId(localTime, member);
+
+
+        log.info("username : {}, {}번 유저 삭제 완료", SecurityUtil.getCurrentUsername(), member.getId());
+        return new ResponseResult<>(HttpStatus.OK.value(), member.getId());
     }
 
     public ResponseResult getMemberPage(String username) {

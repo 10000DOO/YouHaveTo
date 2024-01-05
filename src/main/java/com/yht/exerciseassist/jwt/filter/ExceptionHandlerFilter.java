@@ -1,6 +1,7 @@
 package com.yht.exerciseassist.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yht.exerciseassist.exception.dto.ErrorMessageDto;
 import com.yht.exerciseassist.exception.dto.ExceptionResponse;
 import com.yht.exerciseassist.exception.error.jwt.EmptyJWTTokenExcep;
 import com.yht.exerciseassist.exception.error.jwt.ExpiredJWTTokenExcep;
@@ -19,6 +20,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
@@ -36,7 +39,10 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+            ErrorMessageDto errorMessageDto = new ErrorMessageDto(e.getMessage());
+            List<ErrorMessageDto> errorMessageDtos = new ArrayList<>();
+            errorMessageDtos.add(errorMessageDto);
+            ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), errorMessageDtos);
 
             mapper.writeValue(response.getWriter(), exceptionResponse);
         } catch (ExpiredJWTTokenExcep e) {
@@ -60,7 +66,10 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setCharacterEncoding("UTF-8");
-                ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+                ErrorMessageDto errorMessageDto = new ErrorMessageDto(e.getMessage());
+                List<ErrorMessageDto> errorMessageDtos = new ArrayList<>();
+                errorMessageDtos.add(errorMessageDto);
+                ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), errorMessageDtos);
 
                 mapper.writeValue(response.getWriter(), exceptionResponse);
             }

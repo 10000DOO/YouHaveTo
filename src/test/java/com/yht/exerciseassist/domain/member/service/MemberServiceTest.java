@@ -175,9 +175,8 @@ class MemberServiceTest {
         Media findMedia = em.find(Media.class, media.getId());
         member.ChangeMedia(findMedia);
         em.persist(member);
-        PWDto pwDto = new PWDto("testPassword1!");
         //when
-        memberService.deleteMember(pwDto);
+        memberService.deleteMember();
         em.flush();
         em.clear();
         //then

@@ -3,9 +3,9 @@ spring:
     active:
       on-profile: local
   datasource:
-    url: ENC(NQxiVuU4ZdWeAk6RXvP9/dxl6/Dl8vtObkYvdVlMW1VxH+xVkLfcBOxfhvZ1x69U1PdlG94jUD4=)
-    username: ENC(p5TQy9RibTHPW52M4ieIV9uxHTWKRduq)
-    password: ENC(VKcNsgn8v8h0Y/0MPuqZXUzQtKehS0RO)
+    url: ENC(OvXrkqK5y37y5anSoeiWh4FtK7aR5RGaSKFARID6He/IcmJ6lJioyh/8yqMpu+2hxrAxChWmfmdjqcn4hetRf18t1C59k+ar67HmzDo8TCgkVfy0Lmx9cbAHvaTeOXpQ)
+    username: ENC(5g7QwLq0KlEt1EjjanVtVvVYcyiXq+Lo)
+    password: ENC(tPiBP8C0yCIluTb2x0d+ibvyp99IC3Ek)
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
