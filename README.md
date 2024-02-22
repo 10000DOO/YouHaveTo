@@ -61,6 +61,11 @@
   <img src="https://github.com/10000DOO/YHT/assets/57493546/00a67a61-ce76-451c-b482-2533a838ea6f" width="235" /> 
 </p>
 
+### 🚨현재 서버 비용 문제로 앱스토어 판매 중단 상태입니다.
+
+<p float="left">
+  <img src="https://github.com/10000DOO/YHT/assets/57493546/e54e5026-0d15-460f-8e98-1493cf0b784d" width="235" />
+</p>
 
 # Environment
 ## 주요 적용 기술 및 구조
