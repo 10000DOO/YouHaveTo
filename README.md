@@ -98,7 +98,7 @@
 개발 도구 : Android Studio, Unity  
 협업 : Git, Notion, Slack, Trello  
 ## 구조
-<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/7f980335-2480-49a9-bc83-837b8e4e63e9" alt="구조도" width="600">
+<img src="https://github.com/10000DOO/YouHaveTo/assets/57493546/815ab382-91fc-417a-ae04-0cc17874336d" alt="구조도" width="600">
 
 # Reference
 iOS GitHub : https://github.com/10000DOO/YHT  
